@@ -1,0 +1,72 @@
+name: Bump SW cache version
+
+# Запускается при каждом push в main, если изменился index.html.
+# Вписывает в sw.js версию вида planner-v<N>-<хеш8 от index.html> и коммитит обратно.
+# Хеш меняется при любой правке index.html → service worker гарантированно обновляется.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'index.html'
+
+# нужно право записи, чтобы бот мог закоммитить правку sw.js
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # берём полную историю, чтобы корректно коммитить
+          fetch-depth: 0
+
+      - name: Compute hash and bump sw.js
+        run: |
+          set -e
+
+          if [ ! -f sw.js ]; then
+            echo "sw.js не найден — пропускаю"
+            exit 0
+          fi
+
+          # короткий хеш содержимого index.html (первые 8 символов sha256)
+          HASH=$(sha256sum index.html | cut -c1-8)
+          echo "index.html hash: $HASH"
+
+          # текущая строка версии в sw.js
+          CURRENT=$(grep -oP "const CACHE = '\K[^']+" sw.js || echo "")
+          echo "Текущая версия: $CURRENT"
+
+          # вытащить базовый номер N из planner-vN или planner-vN-xxxx (по умолчанию 1)
+          NUM=$(echo "$CURRENT" | grep -oP 'planner-v\K[0-9]+' || echo "1")
+          echo "Базовый номер: $NUM"
+
+          NEW="planner-v${NUM}-${HASH}"
+          echo "Новая версия: $NEW"
+
+          # если версия уже совпадает (index.html не менялся реально) — выходим без коммита
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "Версия не изменилась — коммит не нужен"
+            echo "changed=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          # заменить строку версии
+          sed -i "s|const CACHE = '[^']*';|const CACHE = '${NEW}';|" sw.js
+          echo "changed=true" >> "$GITHUB_ENV"
+
+          echo "--- новая строка в sw.js ---"
+          grep "const CACHE" sw.js
+
+      - name: Commit updated sw.js
+        if: env.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sw.js
+          git commit -m "chore: bump sw cache version [skip ci]"
+          git push
