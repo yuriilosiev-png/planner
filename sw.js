@@ -2,7 +2,7 @@
    App is fully local (localStorage), no backend needed.
    Bump CACHE version on every release to refresh cached files. */
 
-const CACHE = 'planner-v2-e85bdbb9';
+const CACHE = 'planner-v2-';
 const ASSETS = [
   './',
   './index.html',
