@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.planner.app"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <!-- INTERNET нужен для гибрид-режима: WebView сначала пробует загрузить
+         GitHub Pages, при отсутствии сети падает на офлайн-копию из assets. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- POST_NOTIFICATIONS — задел на Этап 2 (persistent-уведомление со списком
+         задач). На Этапе 1 уведомлений ещё нет, но permission объявляем сразу,
+         чтобы не менять манифест позже. Runtime-запрос — в MainActivity. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="35" />
+
+    <!-- ОТЛИЧИЕ ОТ for-options: тема БЕЗ fullscreen.
+         Планировщику нужен обычный статусбар (время, батарея, уведомления).
+         Theme.DeviceDefault.Light.NoActionBar даёт нативный статусбар без
+         своей ActionBar-полосы поверх WebView (заголовок рисует сам index.html). -->
+    <application
+        android:label="Planner"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar"
+        android:hardwareAccelerated="true"
+        android:allowBackup="true"
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden|navigation"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- НЕТ Firebase-сервиса и НЕТ FCM meta-data — уведомления локальные,
+             будут через собственный foreground service на Этапе 2. -->
+
+    </application>
+
+</manifest>
