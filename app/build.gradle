@@ -1,0 +1,59 @@
+// app/build.gradle — настройки приложения Planner.
+//
+// ОТЛИЧИЯ ОТ for-options (Options Analyst):
+//   - applicationId/namespace = com.planner.app  (у Options было com.options.analyst)
+//   - убран plugin 'com.google.gms.google-services' (Firebase не используем)
+//   - убраны зависимости firebase-bom и firebase-messaging
+//   - versionCode=1, versionName="1.0" (первый релиз планировщика)
+// Тулчейн (compileSdk 35, minSdk 24, target 35, AGP 8.1.0) — как в рабочем билде
+// Options Analyst, чтобы гарантированно собралось тем же CI.
+apply plugin: 'com.android.application'
+
+android {
+    namespace "com.planner.app"
+    compileSdkVersion 35
+    defaultConfig {
+        applicationId "com.planner.app"
+        minSdkVersion 24
+        targetSdkVersion 35
+        versionCode 1
+        versionName "1.0"
+    }
+    signingConfigs {
+        release {
+            // keystore и пароли приходят из env-переменных, которые задаёт workflow
+            // из GitHub Secrets. Имя файла по умолчанию — planner.jks.
+            storeFile file(System.getenv("KEYSTORE_PATH") ?: "planner.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug { minifyEnabled false }
+    }
+    sourceSets {
+        main { res.srcDirs = ['src/main/res'] }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+configurations {
+    all {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+    }
+}
+
+dependencies {
+    // androidx.core нужен для ActivityCompat/ContextCompat (runtime-запрос
+    // POST_NOTIFICATIONS на Android 13+). Firebase-зависимости НЕ подключаем.
+    implementation 'androidx.core:core:1.10.1'
+}
