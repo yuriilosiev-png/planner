@@ -1,0 +1,21 @@
+// КОРНЕВОЙ build.gradle (в корне репозитория, рядом с settings.gradle).
+// Задаёт версию Android Gradle Plugin и репозитории для всех модулей.
+// НЕ путать с app/build.gradle — там настройки самого приложения.
+// Версии AGP 8.1.0 + google-services 4.4.1 — как в рабочем билде #43.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath 'com.google.gms:google-services:4.4.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
