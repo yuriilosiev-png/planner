@@ -1,0 +1,17 @@
+# Секреты — НИКОГДА не коммитить keystore и пароли
+*.jks
+*.keystore
+google-services.json
+local.properties
+
+# Сборка
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.iml
+.DS_Store
