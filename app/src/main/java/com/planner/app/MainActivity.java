@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -25,6 +28,17 @@ import androidx.core.content.ContextCompat;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * Planner — нативная обёртка (WebView) для веб-планировщика.
+ *
+ * EDGE-TO-EDGE: WebView рисуется ПОД статусбаром и навигацией, статусбар
+ * прозрачный. Это убирает белую полосу под статусбаром — фон приложения
+ * (градиент из index.html) заходит под часы. В index.html зона под статусбаром
+ * закрывается через env(safe-area-inset-top), поэтому контент не залезает под часы.
+ *
+ * ГИБРИД: сначала грузим GitHub Pages (PAGES_URL); при ошибке — офлайн-копия
+ * из assets (ASSET_URL).
+ */
 public class MainActivity extends Activity {
 
     private static final String TAG = "PlannerMain";
@@ -50,10 +64,29 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         sInstance = new WeakReference<>(this);
 
+        // ---- EDGE-TO-EDGE: контент под статусбаром + прозрачный статусбар ----
+        // Просим систему рисовать наш layout за системными барами.
+        getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);       // контент заходит под статусбар
+        // Прозрачный статусбар и навбар — сквозь них виден фон приложения.
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        }
+        // Иконки статусбара (часы/батарея) — светлые, т.к. фон приложения тёмный
+        // (тема планировщика тёмная). На Android 6+ это флаг LIGHT_STATUS_BAR
+        // делает иконки ТЁМНЫМИ; нам нужны светлые → флаг НЕ ставим.
+
         createNotificationChannel();
         requestNotificationPermission();
 
         webView = new WebView(this);
+        // Фон WebView под цвет темы приложения (--bg: #0f1115) — чтобы в момент
+        // загрузки/в safe-area не мелькало белым.
+        webView.setBackgroundColor(Color.parseColor("#0f1115"));
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
@@ -102,7 +135,7 @@ public class MainActivity extends Activity {
         });
 
         webView.setWebChromeClient(new WebChromeClient());
-        webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         webView.loadUrl(PAGES_URL);
     }
