@@ -4,7 +4,7 @@
 //   - applicationId/namespace = com.planner.app  (у Options было com.options.analyst)
 //   - убран plugin 'com.google.gms.google-services' (Firebase не используем)
 //   - убраны зависимости firebase-bom и firebase-messaging
-//   - versionCode=1, versionName="1.0" (первый релиз планировщика)
+//   - versionCode=2, versionName="1.1" (нативный бэкап: шаринг/сохранение/импорт)
 // Тулчейн (compileSdk 35, minSdk 24, target 35, AGP 8.1.0) — как в рабочем билде
 // Options Analyst, чтобы гарантированно собралось тем же CI.
 apply plugin: 'com.android.application'
@@ -16,8 +16,8 @@ android {
         applicationId "com.planner.app"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     signingConfigs {
         release {
