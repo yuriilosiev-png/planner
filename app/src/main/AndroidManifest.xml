@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.planner.app"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="2"
+    android:versionName="1.1">
 
     <!-- INTERNET нужен для гибрид-режима: WebView сначала пробует загрузить
          GitHub Pages, при отсутствии сети падает на офлайн-копию из assets. -->
@@ -10,18 +10,21 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- POST_NOTIFICATIONS — задел на Этап 2 (persistent-уведомление со списком
-         задач). На Этапе 1 уведомлений ещё нет, но permission объявляем сразу,
-         чтобы не менять манифест позже. Runtime-запрос — в MainActivity. -->
+         задач). Runtime-запрос — в MainActivity. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Запись в Downloads на Android 9 и ниже (API 24-28).
+         На Android 10+ (API 29+) используется MediaStore — разрешение не нужно,
+         поэтому ограничиваем maxSdkVersion. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <uses-sdk
         android:minSdkVersion="24"
         android:targetSdkVersion="35" />
 
-    <!-- ОТЛИЧИЕ ОТ for-options: тема БЕЗ fullscreen.
-         Планировщику нужен обычный статусбар (время, батарея, уведомления).
-         Theme.DeviceDefault.Light.NoActionBar даёт нативный статусбар без
-         своей ActionBar-полосы поверх WebView (заголовок рисует сам index.html). -->
+    <!-- Тема БЕЗ fullscreen: планировщику нужен обычный статусбар (время,
+         батарея). Edge-to-edge включается программно в MainActivity. -->
     <application
         android:label="Planner"
         android:icon="@mipmap/ic_launcher"
@@ -41,6 +44,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- FileProvider — обязателен для «Поделиться» файлом на Android 7+.
+             Без него система бросает FileUriExposedException.
+             authorities должен совпадать с кодом:
+             getPackageName() + ".fileprovider" -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.planner.app.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!-- НЕТ Firebase-сервиса и НЕТ FCM meta-data — уведомления локальные,
              будут через собственный foreground service на Этапе 2. -->
