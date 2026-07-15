@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Пути, которые FileProvider разрешает отдавать другим приложениям.
+     Используется для «Поделиться» резервной копией: файл кладётся в
+     cache/backups, оттуда шарится в Telegram / Google Drive / Files. -->
+<paths>
+    <cache-path name="backups" path="backups/" />
+</paths>
