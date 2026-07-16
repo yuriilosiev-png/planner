@@ -43,16 +43,13 @@ import java.nio.charset.StandardCharsets;
 /**
  * Planner — нативная обёртка (WebView) для веб-планировщика.
  *
- * EDGE-TO-EDGE: WebView под статусбаром, статусбар прозрачный (фон приложения
- * заходит под часы). В index.html зона закрыта через env(safe-area-inset-top).
- *
- * ГИБРИД: сначала GitHub Pages (PAGES_URL); при ошибке — офлайн-копия из assets.
+ * EDGE-TO-EDGE: WebView под статусбаром, статусбар прозрачный.
+ * ГИБРИД: сначала GitHub Pages; при ошибке — офлайн-копия из assets.
  *
  * МОСТ ДЛЯ БЭКАПА (работает на любом Android, minSdk 24):
- *   - shareBackup(json, filename)  — системный «Поделиться» (Telegram, Drive, почта)
+ *   - shareBackup(json, filename)    — системный «Поделиться» (Telegram, Drive)
  *   - saveToDownloads(json, filename) — сохранить в папку Загрузки
- *   - pickBackupFile()             — системный выбор .json для импорта
- * Web Share API НЕ используем — он нестабилен в WebView на части устройств.
+ *   - pickBackupFile()               — выбор .json для импорта (через chooser)
  */
 public class MainActivity extends Activity {
 
@@ -149,9 +146,6 @@ public class MainActivity extends Activity {
         webView.loadUrl(PAGES_URL);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // Вызвать JS-функцию в WebView (натив → веб)
-    // ─────────────────────────────────────────────────────────────────
     private void callJs(final String js) {
         if (webView == null) return;
         webView.post(new Runnable() {
@@ -162,7 +156,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    // экранирование строки для безопасной вставки в JS
     private static String jsEscape(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
@@ -185,20 +178,14 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String getVersion() {
-            return "1.0";
+            return "1.2";
         }
 
-        /** Есть ли нативный мост (JS проверяет, чтобы решить какие кнопки показать). */
         @JavascriptInterface
         public boolean hasNativeBackup() {
             return true;
         }
 
-        /**
-         * Системный «Поделиться»: сохраняет JSON во внутренний кэш и открывает
-         * системный диалог (Telegram, Google Drive, почта, Files...).
-         * Работает на любом Android через FileProvider.
-         */
         @JavascriptInterface
         public void shareBackup(final String json, final String filename) {
             final MainActivity a = activityRef.get();
@@ -211,7 +198,6 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Сохранить JSON в папку Загрузки (Downloads). */
         @JavascriptInterface
         public void saveToDownloads(final String json, final String filename) {
             final MainActivity a = activityRef.get();
@@ -224,7 +210,6 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Открыть системный выбор файла для импорта бэкапа. */
         @JavascriptInterface
         public void pickBackupFile() {
             final MainActivity a = activityRef.get();
@@ -244,7 +229,6 @@ public class MainActivity extends Activity {
     private void doShareBackup(String json, String filename) {
         try {
             if (filename == null || filename.trim().isEmpty()) filename = "planner-backup.json";
-            // Кладём в cache/backups (этот путь прописан в file_paths.xml)
             File dir = new File(getCacheDir(), "backups");
             if (!dir.exists()) dir.mkdirs();
             File f = new File(dir, filename);
@@ -271,8 +255,8 @@ public class MainActivity extends Activity {
 
     // ─────────────────────────────────────────────────────────────────
     // СОХРАНЕНИЕ В DOWNLOADS
-    // Android 10+ (API 29): MediaStore (без разрешений)
-    // Android 9-  (API 24-28): прямая запись в public Downloads
+    // Android 10+ : MediaStore (без разрешений)
+    // Android 7-9 : прямая запись в public Downloads
     // ─────────────────────────────────────────────────────────────────
     private void doSaveToDownloads(String json, String filename) {
         try {
@@ -313,18 +297,35 @@ public class MainActivity extends Activity {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // ИМПОРТ: системный выбор файла → чтение → отдать JSON в JS
+    // ИМПОРТ: выбор файла → чтение → отдать JSON в JS
+    // createChooser обязателен: без него на MIUI intent молча уходит в
+    // Google Drive и выбрать другой источник нельзя.
     // ─────────────────────────────────────────────────────────────────
     private void doPickBackupFile() {
         try {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");   // некоторые провайдеры не отдают application/json
-            startActivityForResult(i, REQ_PICK_BACKUP);
+            i.setType("*/*");
+            i.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                "application/json", "text/plain", "application/octet-stream", "*/*"
+            });
+            i.putExtra(Intent.EXTRA_LOCAL_ONLY, false);
+            Intent chooser = Intent.createChooser(i, "Откуда взять резервную копию?");
+            startActivityForResult(chooser, REQ_PICK_BACKUP);
         } catch (Exception e) {
             Log.e(TAG, "pickBackupFile failed", e);
-            callJs("window.onNativeImportResult && window.onNativeImportResult('error','"
-                + jsEscape(e.getMessage()) + "','')");
+            try {
+                Intent g = new Intent(Intent.ACTION_GET_CONTENT);
+                g.addCategory(Intent.CATEGORY_OPENABLE);
+                g.setType("*/*");
+                startActivityForResult(
+                    Intent.createChooser(g, "Откуда взять резервную копию?"),
+                    REQ_PICK_BACKUP);
+            } catch (Exception e2) {
+                Log.e(TAG, "GET_CONTENT fallback failed", e2);
+                callJs("window.onNativeImportResult && window.onNativeImportResult('error','"
+                    + jsEscape(e2.getMessage()) + "','')");
+            }
         }
     }
 
@@ -351,7 +352,6 @@ public class MainActivity extends Activity {
             }
             is.close();
             String json = new String(bos.toByteArray(), StandardCharsets.UTF_8);
-            // отдаём JSON в JS через base64, чтобы не ломать кавычками/переносами
             String b64 = android.util.Base64.encodeToString(
                 json.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
             callJs("window.onNativeImportResult && window.onNativeImportResult('ok','','" + b64 + "')");
