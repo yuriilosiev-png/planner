@@ -7,6 +7,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,13 +47,16 @@ import java.nio.charset.StandardCharsets;
 /**
  * Planner — нативная обёртка (WebView) для веб-планировщика.
  *
- * EDGE-TO-EDGE: WebView под статусбаром, статусбар прозрачный.
- * ГИБРИД: сначала GitHub Pages; при ошибке — офлайн-копия из assets.
+ * EDGE-TO-EDGE: WebView под статусбаром, статусбар прозрачный (фон приложения
+ * заходит под часы). В index.html зона закрыта через env(safe-area-inset-top).
+ *
+ * ГИБРИД: сначала GitHub Pages (PAGES_URL); при ошибке — офлайн-копия из assets.
  *
  * МОСТ ДЛЯ БЭКАПА (работает на любом Android, minSdk 24):
- *   - shareBackup(json, filename)    — системный «Поделиться» (Telegram, Drive)
+ *   - shareBackup(json, filename)  — системный «Поделиться» (Telegram, Drive, почта)
  *   - saveToDownloads(json, filename) — сохранить в папку Загрузки
- *   - pickBackupFile()               — выбор .json для импорта (через chooser)
+ *   - pickBackupFile()             — системный выбор .json для импорта
+ * Web Share API НЕ используем — он нестабилен в WebView на части устройств.
  */
 public class MainActivity extends Activity {
 
@@ -99,7 +106,13 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // КЭШ: если сеть есть — всегда берём свежую версию с Pages (LOAD_NO_CACHE),
+        // если сети нет — разрешаем кэш (LOAD_CACHE_ELSE_NETWORK), а при полном
+        // провале загрузки onReceivedError уведёт на офлайн-копию из assets.
+        // Это убирает баг «белый экран / старая версия до перезапуска».
+        settings.setCacheMode(isOnline()
+            ? WebSettings.LOAD_NO_CACHE
+            : WebSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
@@ -109,14 +122,13 @@ public class MainActivity extends Activity {
         settings.setUseWideViewPort(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setUserAgentString(
-            settings.getUserAgentString() + " PlannerApp/1.0"
+            settings.getUserAgentString() + " PlannerApp/1.2"
         );
 
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
         webView.addJavascriptInterface(new AndroidBridge(this), "AndroidBridge");
-
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -143,9 +155,25 @@ public class MainActivity extends Activity {
         webView.setWebChromeClient(new WebChromeClient());
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
+        // Если есть сеть — чистим кэш WebView перед загрузкой.
+        // Это добивает старый залипший service-worker-кэш (из прежних сборок),
+        // из-за которого приложение показывало устаревшую версию/белый экран
+        // до ручного перезапуска. JS со своей стороны тоже снимает регистрацию SW.
+        if (isOnline()) {
+            try {
+                webView.clearCache(true);
+                webView.clearHistory();
+            } catch (Exception e) {
+                Log.w(TAG, "clearCache failed", e);
+            }
+        }
+
         webView.loadUrl(PAGES_URL);
     }
 
+    // ─────────────────────────────────────────────────────────────────
+    // Вызвать JS-функцию в WebView (натив → веб)
+    // ─────────────────────────────────────────────────────────────────
     private void callJs(final String js) {
         if (webView == null) return;
         webView.post(new Runnable() {
@@ -156,6 +184,32 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * Есть ли интернет. От этого зависит стратегия кэша:
+     * онлайн → всегда свежая версия с Pages; офлайн → кэш/assets.
+     */
+    private boolean isOnline() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return false;
+            if (Build.VERSION.SDK_INT >= 23) {
+                Network n = cm.getActiveNetwork();
+                if (n == null) return false;
+                NetworkCapabilities caps = cm.getNetworkCapabilities(n);
+                return caps != null
+                    && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            } else {
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                return ni != null && ni.isConnected();
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "isOnline check failed", e);
+            return false;
+        }
+    }
+
+    // экранирование строки для безопасной вставки в JS
     private static String jsEscape(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
@@ -178,14 +232,20 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String getVersion() {
-            return "1.2";
+            return "1.0";
         }
 
+        /** Есть ли нативный мост (JS проверяет, чтобы решить какие кнопки показать). */
         @JavascriptInterface
         public boolean hasNativeBackup() {
             return true;
         }
 
+        /**
+         * Системный «Поделиться»: сохраняет JSON во внутренний кэш и открывает
+         * системный диалог (Telegram, Google Drive, почта, Files...).
+         * Работает на любом Android через FileProvider.
+         */
         @JavascriptInterface
         public void shareBackup(final String json, final String filename) {
             final MainActivity a = activityRef.get();
@@ -198,6 +258,7 @@ public class MainActivity extends Activity {
             });
         }
 
+        /** Сохранить JSON в папку Загрузки (Downloads). */
         @JavascriptInterface
         public void saveToDownloads(final String json, final String filename) {
             final MainActivity a = activityRef.get();
@@ -210,6 +271,7 @@ public class MainActivity extends Activity {
             });
         }
 
+        /** Открыть системный выбор файла для импорта бэкапа. */
         @JavascriptInterface
         public void pickBackupFile() {
             final MainActivity a = activityRef.get();
@@ -229,6 +291,7 @@ public class MainActivity extends Activity {
     private void doShareBackup(String json, String filename) {
         try {
             if (filename == null || filename.trim().isEmpty()) filename = "planner-backup.json";
+            // Кладём в cache/backups (этот путь прописан в file_paths.xml)
             File dir = new File(getCacheDir(), "backups");
             if (!dir.exists()) dir.mkdirs();
             File f = new File(dir, filename);
@@ -255,8 +318,8 @@ public class MainActivity extends Activity {
 
     // ─────────────────────────────────────────────────────────────────
     // СОХРАНЕНИЕ В DOWNLOADS
-    // Android 10+ : MediaStore (без разрешений)
-    // Android 7-9 : прямая запись в public Downloads
+    // Android 10+ (API 29): MediaStore (без разрешений)
+    // Android 9-  (API 24-28): прямая запись в public Downloads
     // ─────────────────────────────────────────────────────────────────
     private void doSaveToDownloads(String json, String filename) {
         try {
@@ -297,23 +360,27 @@ public class MainActivity extends Activity {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // ИМПОРТ: выбор файла → чтение → отдать JSON в JS
-    // createChooser обязателен: без него на MIUI intent молча уходит в
-    // Google Drive и выбрать другой источник нельзя.
+    // ИМПОРТ: системный выбор файла → чтение → отдать JSON в JS
+    // createChooser обязателен: без него на части устройств (MIUI и др.)
+    // intent молча уходит в Google Drive, и выбрать другой источник нельзя.
+    // С chooser система показывает список: Файлы, Диск, Telegram, Загрузки…
     // ─────────────────────────────────────────────────────────────────
     private void doPickBackupFile() {
         try {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
+            i.setType("*/*");   // некоторые провайдеры не отдают application/json
+            // подсказка системе, какие типы нам интересны (Files подсветит .json)
             i.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
                 "application/json", "text/plain", "application/octet-stream", "*/*"
             });
-            i.putExtra(Intent.EXTRA_LOCAL_ONLY, false);
+            i.putExtra(Intent.EXTRA_LOCAL_ONLY, false); // разрешить облачные источники
+
             Intent chooser = Intent.createChooser(i, "Откуда взять резервную копию?");
             startActivityForResult(chooser, REQ_PICK_BACKUP);
         } catch (Exception e) {
             Log.e(TAG, "pickBackupFile failed", e);
+            // запасной путь: ACTION_GET_CONTENT понимают почти все файловые приложения
             try {
                 Intent g = new Intent(Intent.ACTION_GET_CONTENT);
                 g.addCategory(Intent.CATEGORY_OPENABLE);
@@ -352,6 +419,7 @@ public class MainActivity extends Activity {
             }
             is.close();
             String json = new String(bos.toByteArray(), StandardCharsets.UTF_8);
+            // отдаём JSON в JS через base64, чтобы не ломать кавычками/переносами
             String b64 = android.util.Base64.encodeToString(
                 json.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
             callJs("window.onNativeImportResult && window.onNativeImportResult('ok','','" + b64 + "')");
