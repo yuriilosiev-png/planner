@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.planner.app"
-    android:versionCode="4"
-    android:versionName="1.3">
-
+    android:versionCode="5"
+    android:versionName="1.4">
     <!-- INTERNET нужен для гибрид-режима: WebView сначала пробует загрузить
          GitHub Pages, при отсутствии сети падает на офлайн-копию из assets. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- POST_NOTIFICATIONS — задел на Этап 2 (persistent-уведомление со списком
-         задач). Runtime-запрос — в MainActivity. -->
+    <!-- POST_NOTIFICATIONS — persistent-уведомление со списком задач (Этап 2).
+         Runtime-запрос — в MainActivity. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <!-- Этап 2: foreground service для постоянного уведомления.
+         FOREGROUND_SERVICE — с Android 9 (API 28).
+         FOREGROUND_SERVICE_SPECIAL_USE — обязателен с Android 14 (API 34),
+         тип объявлен в <service> ниже. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Перезапуск сервиса после перезагрузки телефона (Этап 2). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Запись в Downloads на Android 9 и ниже (API 24-28).
          На Android 10+ (API 29+) используется MediaStore — разрешение не нужно,
          поэтому ограничиваем maxSdkVersion. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-
     <uses-sdk
         android:minSdkVersion="24"
         android:targetSdkVersion="35" />
-
     <!-- Тема БЕЗ fullscreen: планировщику нужен обычный статусбар (время,
          батарея). Edge-to-edge включается программно в MainActivity. -->
     <application
@@ -32,19 +35,29 @@
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:usesCleartextTraffic="false">
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden|navigation"
             android:windowSoftInputMode="adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <!-- Этап 2: foreground service постоянного уведомления.
+             specialUse — потому что кейс (постоянный read-only список задач)
+             не подходит под dataSync/shortService/остальные типы Android 14.
+             exported=false — сервис только для внутреннего запуска. -->
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Постоянное уведомление со списком задач пользователя на сегодня" />
+        </service>
         <!-- FileProvider — обязателен для «Поделиться» файлом на Android 7+.
              Без него система бросает FileUriExposedException.
              authorities должен совпадать с кодом:
@@ -58,10 +71,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
         <!-- НЕТ Firebase-сервиса и НЕТ FCM meta-data — уведомления локальные,
-             будут через собственный foreground service на Этапе 2. -->
-
+             через собственный foreground service (NotificationService). -->
     </application>
-
 </manifest>
