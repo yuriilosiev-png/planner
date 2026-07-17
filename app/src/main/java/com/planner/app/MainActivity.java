@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -57,6 +59,15 @@ import java.nio.charset.StandardCharsets;
  *   - saveToDownloads(json, filename) — сохранить в папку Загрузки
  *   - pickBackupFile()             — системный выбор .json для импорта
  * Web Share API НЕ используем — он нестабилен в WebView на части устройств.
+ *
+ * МОСТ ДЛЯ УВЕДОМЛЕНИЯ (Этап 2, локально, без Firebase/FCM):
+ *   - updateNotificationTasks(json) — JS отдаёт задачи на сегодня
+ *   - setNotificationEnabled(bool)  — тумблер в настройках приложения
+ *   - isNotificationEnabled()       — состояние тумблера для UI
+ *   - setNotificationMaxTasks(int)  — сколько задач показывать (1..5)
+ *   - getNotificationMaxTasks()     — текущее значение для UI
+ *   - openBatterySettings()         — MIUI: экономия батареи вручную
+ *   - openAutostartSettings()       — MIUI: автозапуск вручную
  */
 public class MainActivity extends Activity {
 
@@ -169,6 +180,11 @@ public class MainActivity extends Activity {
         }
 
         webView.loadUrl(PAGES_URL);
+
+        // Этап 2: если тумблер уведомления включён — поднять сервис при старте.
+        // Задачи берутся из SharedPreferences (кэш последнего updateNotificationTasks),
+        // поэтому уведомление появляется сразу, не дожидаясь загрузки WebView.
+        restoreNotificationServiceIfEnabled();
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -217,6 +233,21 @@ public class MainActivity extends Activity {
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // ЭТАП 2: запуск сервиса уведомления при старте приложения
+    // ─────────────────────────────────────────────────────────────────
+    private void restoreNotificationServiceIfEnabled() {
+        try {
+            SharedPreferences sp = getSharedPreferences(
+                NotificationService.PREFS, Context.MODE_PRIVATE);
+            if (sp.getBoolean(NotificationService.KEY_ENABLED, false)) {
+                NotificationService.start(this);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "restoreNotificationServiceIfEnabled failed", e);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -280,6 +311,144 @@ public class MainActivity extends Activity {
                 @Override
                 public void run() {
                     a.doPickBackupFile();
+                }
+            });
+        }
+
+        // ───────── ЭТАП 2: постоянное уведомление ─────────
+
+        /** Есть ли нативное уведомление (JS решает, показывать ли тумблер). */
+        @JavascriptInterface
+        public boolean hasNativeNotification() {
+            return true;
+        }
+
+        /**
+         * JS отдаёт задачи на сегодня.
+         * Формат: [{"time":"09:30","title":"Дев-сессия"},{"time":"","title":"..."}]
+         * time — "HH:MM" или "" (тогда колонка времени скрыта).
+         * Порядок задач = порядок в уведомлении, натив не сортирует.
+         */
+        @JavascriptInterface
+        public void updateNotificationTasks(final String json) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        NotificationService.updateTasks(a, json);
+                    } catch (Exception e) {
+                        Log.e(TAG, "updateNotificationTasks failed", e);
+                    }
+                }
+            });
+        }
+
+        /** Тумблер «Показывать уведомление» из настроек приложения. */
+        @JavascriptInterface
+        public void setNotificationEnabled(final boolean enabled) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        SharedPreferences sp = a.getSharedPreferences(
+                            NotificationService.PREFS, Context.MODE_PRIVATE);
+                        sp.edit().putBoolean(NotificationService.KEY_ENABLED, enabled).apply();
+                        if (enabled) {
+                            NotificationService.start(a);
+                        } else {
+                            NotificationService.stop(a);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "setNotificationEnabled failed", e);
+                    }
+                }
+            });
+        }
+
+        /** Состояние тумблера — чтобы JS отрисовал настройки в актуальном виде. */
+        @JavascriptInterface
+        public boolean isNotificationEnabled() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return false;
+            try {
+                SharedPreferences sp = a.getSharedPreferences(
+                    NotificationService.PREFS, Context.MODE_PRIVATE);
+                return sp.getBoolean(NotificationService.KEY_ENABLED, false);
+            } catch (Exception e) {
+                Log.e(TAG, "isNotificationEnabled failed", e);
+                return false;
+            }
+        }
+
+        /** Сколько задач показывать в уведомлении (1..5). */
+        @JavascriptInterface
+        public void setNotificationMaxTasks(final int max) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int v = max;
+                        if (v < 1) v = 1;
+                        if (v > 5) v = 5;
+                        SharedPreferences sp = a.getSharedPreferences(
+                            NotificationService.PREFS, Context.MODE_PRIVATE);
+                        sp.edit().putInt(NotificationService.KEY_MAX_TASKS, v).apply();
+                        if (sp.getBoolean(NotificationService.KEY_ENABLED, false)) {
+                            NotificationService.start(a);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "setNotificationMaxTasks failed", e);
+                    }
+                }
+            });
+        }
+
+        /** Текущее «сколько задач» для отрисовки настроек. */
+        @JavascriptInterface
+        public int getNotificationMaxTasks() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return 5;
+            try {
+                SharedPreferences sp = a.getSharedPreferences(
+                    NotificationService.PREFS, Context.MODE_PRIVATE);
+                return sp.getInt(NotificationService.KEY_MAX_TASKS, 5);
+            } catch (Exception e) {
+                Log.e(TAG, "getNotificationMaxTasks failed", e);
+                return 5;
+            }
+        }
+
+        /**
+         * MIUI душит фоновые сервисы. Открыть системные настройки батареи,
+         * чтобы юзер вручную снял ограничение для Planner.
+         */
+        @JavascriptInterface
+        public void openBatterySettings() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.doOpenBatterySettings();
+                }
+            });
+        }
+
+        /** MIUI: экран автозапуска (у Xiaomi он отдельный от батареи). */
+        @JavascriptInterface
+        public void openAutostartSettings() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.doOpenAutostartSettings();
                 }
             });
         }
@@ -431,6 +600,62 @@ public class MainActivity extends Activity {
     }
 
     // ─────────────────────────────────────────────────────────────────
+    // ЭТАП 2 / MIUI: системные экраны батареи и автозапуска.
+    // Xiaomi без этих настроек убивает foreground service через несколько часов.
+    // Экраны у MIUI нестандартные — пробуем фирменный intent, при провале
+    // откатываемся на общие настройки приложения.
+    // ─────────────────────────────────────────────────────────────────
+    private void doOpenBatterySettings() {
+        // 1) MIUI: фирменный экран экономии батареи для конкретного приложения
+        try {
+            Intent i = new Intent();
+            i.setClassName("com.miui.powerkeeper",
+                "com.miui.powerkeeper.ui.HiddenAppsConfigActivity");
+            i.putExtra("package_name", getPackageName());
+            i.putExtra("package_label", "Planner");
+            startActivity(i);
+            return;
+        } catch (Exception e) {
+            Log.w(TAG, "MIUI powerkeeper screen unavailable: " + e.getMessage());
+        }
+        // 2) Общий системный экран оптимизации батареи (чистый Android)
+        try {
+            Intent i = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            startActivity(i);
+            return;
+        } catch (Exception e) {
+            Log.w(TAG, "battery optimization screen unavailable: " + e.getMessage());
+        }
+        // 3) Последний рубеж: карточка приложения в настройках
+        openAppDetailsSettings();
+    }
+
+    private void doOpenAutostartSettings() {
+        // 1) MIUI: экран автозапуска (Безопасность → Разрешения → Автозапуск)
+        try {
+            Intent i = new Intent();
+            i.setClassName("com.miui.securitycenter",
+                "com.miui.permcenter.autostart.AutoStartManagementActivity");
+            startActivity(i);
+            return;
+        } catch (Exception e) {
+            Log.w(TAG, "MIUI autostart screen unavailable: " + e.getMessage());
+        }
+        // 2) Фолбэк: карточка приложения
+        openAppDetailsSettings();
+    }
+
+    private void openAppDetailsSettings() {
+        try {
+            Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            i.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(i);
+        } catch (Exception e) {
+            Log.e(TAG, "openAppDetailsSettings failed", e);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= 33) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
@@ -451,6 +676,11 @@ public class MainActivity extends Activity {
             boolean granted = grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
             Log.d(TAG, "POST_NOTIFICATIONS granted: " + granted);
+            // Разрешение дали и тумблер включён — поднять сервис сразу,
+            // не заставляя перезапускать приложение.
+            if (granted) {
+                restoreNotificationServiceIfEnabled();
+            }
         }
     }
 
