@@ -28,6 +28,11 @@ public class NotificationService extends Service {
     public static final String KEY_TASKS_JSON = "notif_tasks_json";
     public static final String KEY_ENABLED = "notif_enabled";
     public static final String KEY_MAX_TASKS = "notif_max_tasks";
+    // i18n: подписи приходят из JS (index.html) — натив их только рисует.
+    // Так перевод правится без пересборки APK. Если не пришли — русские по умолчанию.
+    public static final String KEY_L_TITLE = "notif_l_title";
+    public static final String KEY_L_EMPTY = "notif_l_empty";
+    public static final String KEY_L_MORE  = "notif_l_more";
 
     public static final String ACTION_START = "com.planner.app.NOTIF_START";
     public static final String ACTION_UPDATE = "com.planner.app.NOTIF_UPDATE";
@@ -48,10 +53,36 @@ public class NotificationService extends Service {
             R.id.row_3_title, R.id.row_4_title
     };
 
-    /** Сохранить задачи из JS и обновить уведомление (если включено). */
+    /** Сохранить задачи из JS и обновить уведомление (если включено).
+     *  Принимает либо новый формат {"tasks":[...],"labels":{"title":"…","empty":"…","more":"…"}},
+     *  либо старый голый массив [...] (обратная совместимость со сборками до i18n). */
     public static void updateTasks(Context ctx, String json) {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        sp.edit().putString(KEY_TASKS_JSON, json).apply();
+        String tasksJson = json;
+        String lTitle = null, lEmpty = null, lMore = null;
+        try {
+            String trimmed = json == null ? "" : json.trim();
+            if (trimmed.startsWith("{")) {
+                JSONObject root = new JSONObject(trimmed);
+                JSONArray arr = root.optJSONArray("tasks");
+                tasksJson = arr != null ? arr.toString() : "[]";
+                JSONObject lb = root.optJSONObject("labels");
+                if (lb != null) {
+                    lTitle = lb.optString("title", null);
+                    lEmpty = lb.optString("empty", null);
+                    lMore  = lb.optString("more",  null);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "updateTasks parse failed: " + e.getMessage());
+            tasksJson = json;
+        }
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString(KEY_TASKS_JSON, tasksJson);
+        if (lTitle != null && !lTitle.isEmpty()) ed.putString(KEY_L_TITLE, lTitle);
+        if (lEmpty != null && !lEmpty.isEmpty()) ed.putString(KEY_L_EMPTY, lEmpty);
+        if (lMore  != null && !lMore.isEmpty())  ed.putString(KEY_L_MORE,  lMore);
+        ed.apply();
 
         if (!sp.getBoolean(KEY_ENABLED, false)) return;
 
@@ -172,6 +203,11 @@ public class NotificationService extends Service {
         if (maxTasks < 1) maxTasks = 1;
         if (maxTasks > MAX_ROWS) maxTasks = MAX_ROWS;
 
+        // i18n-подписи от JS (или русские по умолчанию)
+        String lTitle = sp.getString(KEY_L_TITLE, "Задачи на сегодня");
+        String lEmpty = sp.getString(KEY_L_EMPTY, "Задач нет");
+        String lMore  = sp.getString(KEY_L_MORE,  "и ещё");
+
         JSONArray tasks = parseTasks(json);
         int total = tasks.length();
         int shown = Math.min(total, maxTasks);
@@ -179,13 +215,13 @@ public class NotificationService extends Service {
         RemoteViews rv = new RemoteViews(getPackageName(), R.layout.notification_tasks);
 
         if (total == 0) {
-            rv.setTextViewText(R.id.notif_title, "Задачи на сегодня");
-            rv.setTextViewText(R.id.notif_subtitle, "Задач нет");
+            rv.setTextViewText(R.id.notif_title, lTitle);
+            rv.setTextViewText(R.id.notif_subtitle, lEmpty);
             rv.setViewVisibility(R.id.notif_subtitle, View.VISIBLE);
         } else {
-            rv.setTextViewText(R.id.notif_title, "Задачи на сегодня (" + total + ")");
+            rv.setTextViewText(R.id.notif_title, lTitle + " (" + total + ")");
             if (total > shown) {
-                rv.setTextViewText(R.id.notif_subtitle, "и ещё " + (total - shown));
+                rv.setTextViewText(R.id.notif_subtitle, lMore + " " + (total - shown));
                 rv.setViewVisibility(R.id.notif_subtitle, View.VISIBLE);
             } else {
                 rv.setViewVisibility(R.id.notif_subtitle, View.GONE);
@@ -229,7 +265,7 @@ public class NotificationService extends Service {
         }
 
         b.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Задачи на сегодня")
+                .setContentTitle(lTitle)
                 .setContentIntent(pi)
                 .setOngoing(true)
                 .setShowWhen(false)
