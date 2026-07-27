@@ -5,6 +5,8 @@
 //   - убран plugin 'com.google.gms.google-services' (Firebase не используем)
 //   - убраны зависимости firebase-bom и firebase-messaging
 //   - versionCode=2, versionName="1.1" (нативный бэкап: шаринг/сохранение/импорт)
+//   - versionCode=8, versionName="1.7" (релиз в Google Play: i18n RU/EN, фикс модалки
+//     настроек, кнопка закрытия, свои категории; specialUse subtype переведён на английский)
 // Тулчейн (compileSdk 35, minSdk 24, target 35, AGP 8.1.0) — как в рабочем билде
 // Options Analyst, чтобы гарантированно собралось тем же CI.
 apply plugin: 'com.android.application'
@@ -16,8 +18,8 @@ android {
         applicationId "com.planner.app"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 7
-        versionName "1.6"
+        versionCode 8
+        versionName "1.7"
     }
     signingConfigs {
         release {
