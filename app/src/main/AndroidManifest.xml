@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Версия задаётся ТОЛЬКО в app/build.gradle (defaultConfig). Раньше versionCode/
+     versionName дублировались здесь и отстали (7/1.6 против 8/1.7) — Gradle их
+     переопределяет, но читать манифест было обманчиво. Убраны намеренно. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.planner.app"
-    android:versionCode="7"
-    android:versionName="1.6">
+    package="com.planner.app">
     <!-- INTERNET нужен для гибрид-режима: WebView сначала пробует загрузить
          GitHub Pages, при отсутствии сети падает на офлайн-копию из assets. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -60,11 +61,14 @@
         </service>
         <!-- FileProvider — обязателен для «Поделиться» файлом на Android 7+.
              Без него система бросает FileUriExposedException.
-             authorities должен совпадать с кодом:
-             getPackageName() + ".fileprovider" -->
+             authorities ОБЯЗАН совпадать с тем, что строит код:
+             getPackageName() + ".fileprovider" (MainActivity, строка ~472).
+             Раньше здесь было жёстко "com.planner.app.fileprovider", и при смене
+             applicationId шаринг падал бы с IllegalArgumentException. Плейсхолдер
+             ${applicationId} Gradle подставляет сам — теперь расхождение невозможно. -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.planner.app.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
