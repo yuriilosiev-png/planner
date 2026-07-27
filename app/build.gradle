@@ -1,7 +1,7 @@
 // app/build.gradle — настройки приложения Planner.
 //
 // ОТЛИЧИЯ ОТ for-options (Options Analyst):
-//   - applicationId/namespace = com.planner.app  (у Options было com.options.analyst)
+//   - namespace = com.planner.app, applicationId = com.losev.planner (com.planner.app занят в Play)
 //   - убран plugin 'com.google.gms.google-services' (Firebase не используем)
 //   - убраны зависимости firebase-bom и firebase-messaging
 //   - versionCode=2, versionName="1.1" (нативный бэкап: шаринг/сохранение/импорт)
@@ -15,7 +15,10 @@ android {
     namespace "com.planner.app"
     compileSdkVersion 35
     defaultConfig {
-        applicationId "com.planner.app"
+        // applicationId — идентификатор в Google Play, необратим после публикации.
+        // com.planner.app оказался занят чужим приложением. namespace ниже остаётся
+        // прежним (это Java-пакет, Play его не видит) — Java-файлы трогать не нужно.
+        applicationId "com.losev.planner"
         minSdkVersion 24
         targetSdkVersion 35
         versionCode 8
