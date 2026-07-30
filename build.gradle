@@ -3,14 +3,16 @@
 // НЕ путать с app/build.gradle — там настройки самого приложения.
 //
 // ОТЛИЧИЕ ОТ for-options: убран google-services classpath (Firebase не используем).
-// Версия AGP 8.1.0 — как в рабочем билде Options Analyst (тот же тулчейн = гарантия сборки).
+// AGP 8.9.1 — минимум для compileSdk 36 (Android 16). Требует Gradle 8.11.1+ и JDK 17.
+// Подняли с 8.1.0 ради требования Play «target API 36 до 31.08.2026».
+// Версия слово в слово как в рабочем билде Options Analyst (тот же тулчейн = гарантия сборки).
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath 'com.android.tools.build:gradle:8.9.1'
     }
 }
 
