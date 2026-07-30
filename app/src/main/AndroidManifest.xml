@@ -24,12 +24,19 @@
          поэтому ограничиваем maxSdkVersion. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <uses-sdk
-        android:minSdkVersion="24"
-        android:targetSdkVersion="35" />
+    <!-- <uses-sdk> убран: min/target SDK задаются ТОЛЬКО в app/build.gradle, Gradle
+         их всё равно переопределяет при мердже. Строка висела с targetSdkVersion="35"
+         и вводила в заблуждение — ровно та же ловушка, что была с versionCode. -->
     <!-- Тема БЕЗ fullscreen: планировщику нужен обычный статусбар (время,
          батарея). Edge-to-edge включается программно в MainActivity. -->
+    <!-- enableOnBackInvokedCallback="false" — ОПТ-АУТ ОТ PREDICTIVE BACK.
+         С target API 36 Android перестаёт вызывать Activity.onBackPressed() и не
+         рассылает KEYCODE_BACK. У нас onBackPressed() переопределён (MainActivity,
+         webView.canGoBack() → goBack()), и без этого флага кнопка «назад» в офлайн-
+         фолбэке повела бы себя иначе. Флаг возвращает старое поведение целиком.
+         ВРЕМЕННО: в 1.8 мигрировать на OnBackInvokedCallback и флаг убрать. -->
     <application
+        android:enableOnBackInvokedCallback="false"
         android:label="Planner"
         android:icon="@mipmap/ic_launcher"
         android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar"
