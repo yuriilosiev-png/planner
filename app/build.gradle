@@ -7,22 +7,24 @@
 //   - versionCode=2, versionName="1.1" (нативный бэкап: шаринг/сохранение/импорт)
 //   - versionCode=8, versionName="1.7" (релиз в Google Play: i18n RU/EN, фикс модалки
 //     настроек, кнопка закрытия, свои категории; specialUse subtype переведён на английский)
-// Тулчейн (compileSdk 35, minSdk 24, target 35, AGP 8.1.0) — как в рабочем билде
-// Options Analyst, чтобы гарантированно собралось тем же CI.
+//   - versionCode=9, versionName="1.7.1" (target API 36 — требование Play, дедлайн
+//     31.08.2026; фикс наезда заголовка на дату в шапке; опт-аут predictive back)
+// Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
+// рабочем билде Options Analyst, чтобы гарантированно собралось тем же CI.
 apply plugin: 'com.android.application'
 
 android {
     namespace "com.planner.app"
-    compileSdkVersion 35
+    compileSdkVersion 36
     defaultConfig {
         // applicationId — идентификатор в Google Play, необратим после публикации.
         // com.planner.app оказался занят чужим приложением. namespace ниже остаётся
         // прежним (это Java-пакет, Play его не видит) — Java-файлы трогать не нужно.
         applicationId "com.losev.planner"
         minSdkVersion 24
-        targetSdkVersion 35
-        versionCode 8
-        versionName "1.7"
+        targetSdkVersion 36
+        versionCode 9
+        versionName "1.7.1"
     }
     signingConfigs {
         release {
