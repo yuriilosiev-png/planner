@@ -6,6 +6,7 @@ on:
       - 'app/**'
       - 'index.html'
       - 'build.gradle'
+      - 'gradle.properties'
       - 'settings.gradle'
       - '.github/workflows/build-apk.yml'
   workflow_dispatch:
@@ -25,16 +26,18 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK platform 35
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android SDK platform 36
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
 
-      - name: Install Gradle 8.4
+      # Gradle 8.11.1 — минимум для AGP 8.9.1. Версии связаны жёстко: 8.4 с AGP 8.9.1
+      # упадёт с «Minimum supported Gradle version is 8.11.1».
+      - name: Install Gradle 8.11.1
         run: |
-          wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip -O /tmp/gradle.zip
+          wget -q https://services.gradle.org/distributions/gradle-8.11.1-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /opt/gradle
-          echo "/opt/gradle/gradle-8.4/bin" >> $GITHUB_PATH
+          echo "/opt/gradle/gradle-8.11.1/bin" >> $GITHUB_PATH
 
       # Копируем актуальный планировщик из корня репо в assets ПЕРЕД сборкой.
       # Это офлайн-копия для гибрид-фолбэка. index.html остаётся в корне для
