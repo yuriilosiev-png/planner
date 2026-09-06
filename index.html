@@ -616,6 +616,24 @@ input,select,textarea{font-family:inherit;font-size:16px}
 /* Header right + gear */
 .head-right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .gear{font-size:20px;padding:4px;line-height:1;border-radius:8px}
+/* Чип языка в шапке: показывает текущий язык, по тапу — список. */
+.langchip{
+  font-size:12px;font-weight:800;letter-spacing:.4px;line-height:1;
+  padding:5px 7px;border-radius:8px;border:1px solid var(--line);
+  background:var(--surface2);color:var(--fg);flex:0 0 auto;
+}
+.langchip:active{transform:scale(.92)}
+.lang-menu{
+  position:fixed;z-index:120;display:none;flex-direction:column;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:6px;box-shadow:0 8px 26px rgba(0,0,0,.35);min-width:132px;
+}
+.lang-menu.show{display:flex}
+.lang-menu button{
+  text-align:left;padding:10px 12px;border-radius:8px;font-size:14px;font-weight:600;
+  background:transparent;color:var(--fg);
+}
+.lang-menu button.on{background:var(--accent);color:#fff}
 .gear:active{transform:scale(.9)}
 
 /* Theme modal */
@@ -714,6 +732,7 @@ input,select,textarea{font-family:inherit;font-size:16px}
   <h1 id="screenTitle">Сегодня</h1>
   <div class="head-right">
     <div class="date" id="todayDate"></div>
+    <button class="langchip" id="langChip" onclick="toggleLangMenu(event)" aria-label="Язык">RU</button>
     <button class="gear" onclick="openThemeModal()" aria-label="Настройки">⚙️</button>
   </div>
 </div>
@@ -764,6 +783,9 @@ input,select,textarea{font-family:inherit;font-size:16px}
 <div class="toast" id="toast"></div>
 
 <!-- Разовая подсказка о свайпе. Текст ставится из i18n при показе. -->
+<!-- Список языков, открывается из чипа в шапке -->
+<div class="lang-menu" id="langMenu"></div>
+
 <div class="swipe-hint" id="swipeHint">
   <div class="sh-arrows">
     <span class="sh-l">◀</span><span class="sh-hand">👆</span><span class="sh-r">▶</span>
@@ -786,7 +808,7 @@ const SWATCH_COLORS = ['#3ecf8e','#ffb648','#b98cff','#5b9dff','#ff7eb6','#ff5c5
 /* WEEKDAYS — языкозависимые короткие дни (index 0=Mon).
    Оставлено имя WEEKDAYS, чтобы не трогать 6 существующих мест использования:
    геттер отдаёт нужный массив по текущему языку. */
-Object.defineProperty(window,'WEEKDAYS',{get:function(){ return curLang()==='en'?WEEKDAYS_EN:WEEKDAYS_RU; }});
+Object.defineProperty(window,'WEEKDAYS',{get:function(){ const l=curLang(); return l==='en'?WEEKDAYS_EN:(l==='es'?WEEKDAYS_ES:WEEKDAYS_RU); }});
 const DOW_MAP = [6,0,1,2,3,4,5]; // JS getDay()=0(Sun) -> our index
 /* GOAL_TYPES — id и emoji постоянны (это данные, лежат в g.type).
    label/ph — геттеры из словаря: язык меняется на лету, g.type НЕ трогаем. */
@@ -833,6 +855,13 @@ const WEEKDAYS_RU = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']; // index
 const WEEKDAYS_EN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const WEEKDAYS_FULL_RU = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота']; // JS getDay()
 const WEEKDAYS_FULL_EN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+/* --- Испанский (Латинская Америка) --- */
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MONTHS_ES_SHORT = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+// в датах вида «5 de enero» месяц пишется со строчной — отдельный массив
+const MONTHS_ES_LOW = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const WEEKDAYS_ES = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']; // index 0=Mon
+const WEEKDAYS_FULL_ES = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado']; // JS getDay()
 
 /* ============================================================
    i18N — ЭТАП 1: каркас (словарь, t(), детект языка, plural)
@@ -1705,23 +1734,450 @@ en:{
   'th.vivid':'Vivid',
   'th.reset':'Reset',
   'th.wasReset':'Reset done'
+},
+es:{
+  'nav.today':'Hoy',
+  'nav.goals':'Metas',
+  'nav.undone':'Pendientes',
+  'nav.history':'Historial',
+  'nav.calendar':'Calendario',
+  'hint.swipe':'Ahora puedes deslizar a izquierda y derecha para cambiar de pantalla. Los botones de abajo siguen funcionando.',
+  'title.today':'Hoy',
+  'title.goals':'Metas',
+  'title.undone':'Pendientes',
+  'title.history':'Historial',
+  'title.calendar':'Calendario',
+  'title.tree':'Árbol de metas',
+  'today.empty':'No hay nada planeado para hoy.',
+  'today.emptyHint':'Crea una meta o agrega una tarea con el botón +',
+  'empty.ctaTask':'+ Crear tarea',
+  'empty.ctaGoal':'+ Crear meta',
+  'empty.ctaBigGoal':'+ Crear una meta grande',
+  'today.fromGoal':'◎ de una meta',
+  'today.manual':'✎ manual',
+  'today.fromTree':'🌳 del árbol',
+  'vis.badge':'👁 Visión',
+  'vis.title':'Visión de la meta',
+  'vis.ph':'Describe el punto final: cómo se ve la meta lograda, qué hay alrededor, qué se siente…',
+  'vis.saved':'Visión guardada',
+  'tn.edVision':'👁 Visión de la meta (opcional)',
+  'today.noItems':'Sin subelementos',
+  'today.skipToday':'⊘ Saltar hoy',
+  'today.statusManual':'estado manual',
+  'today.st.green':'aprendido',
+  'today.st.yellow':'falta practicar',
+  'today.st.pink':'repasar',
+  'act.done':'✓ Hecho',
+  'act.edit':'✎ Editar',
+  'act.move':'→ Mover',
+  'act.skip':'⊘ Saltar',
+  'act.delete':'🗑 Eliminar',
+  'badge.inNotif':'🔔 en la notificación',
+  'badge.notYet':'⏳ todavía no',
+  'notif.title':'Tareas de hoy',
+  'notif.empty':'Sin tareas',
+  'notif.more':'y',
+  /* metas en la barra de notificaciones */
+  'notif.goal':'{n} — hoy: {v}',
+  'notif.goalStatus':'{n} — hoy: {v} · {s}',
+  'notif.goalPlain':'{n}',
+  'notif.goalMark':'{n} — {m}',
+  'lang.label':'🌐 Idioma de la interfaz',
+  'lang.hint':'Solo cambia la interfaz. Los nombres de tus metas, tareas y eventos quedan igual.',
+  'lang.changed':'Idioma cambiado a español',
+  'pl.branch':['rama','ramas'],
+  'pl.day':['día','días'],
+  'pl.year':['año','años'],
+  'pl.month':['mes','meses'],
+  'pl.task':['tarea','tareas'],
+  'pl.piece':['elemento','elementos'],
+  'pl.branchCreated':['rama creada','ramas creadas'],
+  'term.overdue':'vencida',
+  'term.dueToday':'vence hoy',
+  'term.left':'faltan {v}',
+  'cat.sport':'Deporte',
+  'cat.fin':'Finanzas',
+  'cat.rest':'Descanso',
+  'cat.edu':'Aprendizaje',
+  'cat.none':'Sin categoría',
+  'gt.material':'Cosa',
+  'gt.material.ph':'Ahorrar para un auto',
+  'gt.physical':'Cuerpo',
+  'gt.physical.ph':'Correr 10 km',
+  'gt.learning':'Habilidad',
+  'gt.learning.ph':'Aprender inglés',
+  'gt.travel':'Viaje',
+  'gt.travel.ph':'Viajar a Japón',
+  'gm.titleNew':'Nueva meta',
+  'gm.titleEdit':'Editar meta',
+  'gm.name':'Nombre de la meta',
+  'gm.namePh':'Nombre de la meta',
+  'gm.time':'Hora en «Hoy»',
+  'gm.timeHint':'(opcional, para ordenar)',
+  'gm.cat':'Categoría',
+  'gm.whatGoal':'Área de la meta',
+  'gm.kind':'Tipo de meta',
+  'gm.kindLocked':'(no se puede cambiar)',
+  'gm.kind.numeric':'Número',
+  'gm.kind.checklist':'Lista',
+  'gm.kind.manual':'Estado',
+  'gm.vision':'Visión (opcional)',
+  'gm.visionPh':'Por qué esta meta, cómo será, qué voy a sentir…',
+  'gm.showInNotif':'🔔 Mostrar en la notificación',
+  'gm.showInNotifHint':'La meta aparecerá en la barra junto a las tareas de hoy',
+  'gm.cancel':'Cancelar',
+  'gm.save':'Guardar',
+  'gm.create':'Crear meta',
+  'gm.deadline':'Fecha límite',
+  'gm.deadlineLabel':'📅 Fecha límite',
+  'gm.deadlineDate':'Día de la fecha límite',
+  'gm.now':'Ahora',
+  'gm.target':'Objetivo',
+  'gm.unit':'Unidad (opc.)',
+  'gm.unitPh':'reps',
+  'gm.days':'Días activos',
+  'gm.daysShort':'Días',
+  'gm.fact':'📍 Valor actual (real)',
+  'gm.factPh':'dónde estás ahora',
+  'gm.factHint':'Anota lo que realmente lograste hoy. La app lo compara con el plan y muestra si vas adelantado o atrasado. Se guarda la fecha del registro.',
+  'gm.hintChecklist':'Arma una lista de elementos para cada día de la semana. Ese día aparecen en «Hoy» como lista de verificación. El color del día se calcula solo: todos ✓ — 🟢, más de la mitad — 🟡, menos — 🌸.',
+  'gm.hintManual':'Una meta diaria sin subelementos. En «Hoy» defines el estado tú mismo: 🟢 aprendido · 🟡 repasar · 🌸 repetir. Útil para idiomas, lectura y cosas así.',
+  'gm.prevEqual':'📊 El inicio y el objetivo son iguales: la cantidad diaria se mantiene constante: <b>{v}</b> cada día activo.',
+  'gm.prevSteps':'📊 Desglose por pasos: {a} días activos en total, {s} pasos. Mantén el valor durante <b>{i} días activos seguidos</b>, luego <b>{d}</b>, y así hasta el objetivo. Inicio: {st}.',
+  'wp.itemPh':'Ejercicio / elemento',
+  'wp.timeTitle':'Hora (opcional)',
+  'wp.dayOff':'día libre',
+  'wp.tasksN':'{v} elementos',
+  'wp.timedN':' · {v} con hora',
+  'wp.add':'＋ agregar elemento',
+  'gv.name':'Escribe un nombre',
+  'gv.deadline':'Elige una fecha límite',
+  'gv.deadlineOrOff':'Elige la fecha límite o desactívala',
+  'gv.future':'La fecha límite debe estar en el futuro',
+  'gv.numbers':'Escribe los números de «ahora» y «objetivo»',
+  'gv.oneDay':'Elige al menos un día',
+  'gv.oneTask':'Agrega al menos un elemento para la semana',
+  'gt.updated':'Meta actualizada',
+  'gt.created':'Meta creada',
+  'btn.cancel':'Cancelar',
+  'btn.save':'Guardar',
+  'btn.add':'Agregar',
+  'tm.titleNew':'Nueva tarea',
+  'tm.titleEdit':'Editar tarea',
+  'tm.text':'Texto de la tarea',
+  'tm.textPh':'Por ejemplo: comprar leche',
+  'tm.cat':'Categoría',
+  'tm.date':'Fecha',
+  'tm.vText':'Escribe el texto de la tarea',
+  'tm.vDate':'Elige una fecha',
+  'tm.saved':'Guardado',
+  'tm.added':'Agregada',
+  'mv.title':'Mover tarea',
+  'mv.newDate':'Nueva fecha',
+  'mv.btn':'Mover',
+  'mv.done':'Movida al {v}',
+  'tt.done':'Hecho ✓',
+  'tt.deleted':'Eliminada',
+  'tt.skipped':'Saltada',
+  'tt.markedDone':'Marcada como hecha ✓',
+  'tt.status':'Estado: {v}',
+  'na.hasKids':'Esta meta tiene subramas: las acciones se definen en los nodos finales',
+  'na.title':'📋 Acciones por día',
+  'na.hint':'«{v}» ({n}). Define los elementos para cada día de la semana: aparecerán en «Hoy» el día que corresponda. El color del día se calcula solo: todos ✓ — 🟢, más de la mitad — 🟡, menos — 🌸.',
+  'na.revert':'↩ Volver a meta normal',
+  'na.reverted':'De nuevo es una meta normal',
+  'na.savedTitle':'✓ Guardado',
+  'na.savedHint':'Elementos guardados ({n} {u} para la semana). Aparecerán en «Hoy» el día que corresponda.',
+  'na.savedEmpty':'La lista está vacía: no hay elementos para la semana. El nodo queda sin acciones.',
+  'na.more':'Seguir editando',
+  'na.back':'Volver al árbol',
+  'ts.title':'¿Actualizar los elementos de hoy?',
+  'ts.hint':'Los elementos de hoy ya se crearon, con los horarios anteriores. ¿Actualizarlos al nuevo plan? Las marcas de «hecho» se conservan.',
+  'ts.keep':'Dejar como está',
+  'ts.apply':'Actualizar horarios',
+  'ts.updated':'Horarios actualizados: {n} {u}',
+  'ts.none':'No se encontraron coincidencias',
+  /* --- Etapa 3a: árbol de metas --- */
+  'tn.empty':'Todavía no hay árbol de metas.<br>Toca + y crea una meta grande.<br>Después divídela en submetas y acciones concretas.',
+  'tn.rootSec':'Metas principales',
+  'tn.crumbRoot':'🌳 Árbol',
+  'tn.childSec':'Submetas y acciones',
+  'tn.notSplit':'Todavía sin dividir.<br>Divídela en submetas o define acciones del sistema.',
+  'tn.deadline':'Fecha límite: {v}',
+  'tn.noDeadline':'Sin fecha límite',
+  'tn.kindActions':'Acciones del sistema',
+  'tn.kindGoal':'Meta (se puede dividir)',
+  'tn.btnOpenActions':'📋 Abrir acciones',
+  'tn.btnSplit':'🌿 Dividir en metas',
+  'tn.btnActions':'📋 Acciones del sistema',
+  'tn.editTime':'⏰ Hora',
+  'tn.editDeadline':'📅 Fecha límite',
+  'tn.editRename':'✎ Renombrar',
+  'tn.editDelete':'🗑 Eliminar',
+  /* formulario único de edición de un nodo */
+  'tn.editOne':'✎ Editar',
+  'tn.edTitle':'Editar',
+  'tn.edHint':'{n} · {v}',
+  'tn.edName':'Nombre',
+  'tn.edTime':'Hora',
+  'tn.edTimeNone':'sin hora',
+  'tn.edDeadline':'Fecha límite',
+  'tn.edDlNone':'sin definir',
+  'tn.edClear':'✕ borrar',
+  'tn.edNotif':'🔔 Mostrar en la notificación',
+  'tn.edYes':'Sí',
+  'tn.edNo':'No',
+  'tn.edSaved':'Guardado',
+  'tn.chActions':'📋 Acciones',
+  'tn.chGoal':'🌿 Meta',
+  'tn.perWeek':'/sem',
+  'tn.chEmpty':'vacío',
+  'tn.chNotSplit':'sin dividir',
+  'tn.newRoot':'Nueva meta principal',
+  'tn.newChild':'Nueva submeta',
+  'tn.newRootHint':'Una meta grande a largo plazo: la cima del árbol. Después la dividirás en partes.',
+  'tn.newChildHint':'Una rama de la meta principal. También se puede dividir más.',
+  'tn.name':'Título',
+  'tn.phRoot':'Cambiar de profesión',
+  'tn.phChild':'Aprender una habilidad',
+  'tn.timeTitle':'Hora en «Hoy»',
+  'tn.optional':'(opc.)',
+  'tn.dlSwitch':'📅 Fecha límite (opc.)',
+  'tn.btnCreate':'Crear',
+  'tn.created':'Meta creada',
+  'tn.splitTitle':'Dividir en submetas',
+  'tn.splitHint':'«{v}» ({n}) → divídela en varias submetas. Cada una se puede dividir más o convertir en acciones.',
+  'tn.splitPh':'Submeta {i}',
+  'tn.splitAdd':'＋ agregar submeta',
+  'tn.splitBtn':'Crear ramas',
+  'tn.splitEmpty':'Agrega al menos una submeta',
+  'tn.renameTitle':'Renombrar',
+  'tn.renamed':'Renombrada',
+  'tn.dlTitle':'Fecha límite de la submeta',
+  'tn.dlClear':'Borrar fecha límite',
+  'tn.dlRemoved':'Fecha límite borrada',
+  'tn.vDate':'Elige una fecha',
+  'tn.timeHint':'{n} {v} — para ordenar en la lista del día',
+  'tn.timeField':'Hora (opcional)',
+  'tn.timeClear':'Borrar hora',
+  'tn.timeSaved':'Hora: {v}',
+  'tn.timeRemoved':'Hora borrada',
+  'tn.delTitle':'¿Eliminar el nodo?',
+  'tn.delHint':'«{v}» ({n}){d} se eliminará de forma permanente.',
+  'tn.delKids':' y todas las ramas anidadas ({c})',
+  'tn.delBtn':'Eliminar',
+  /* --- Etapa 3a: tarjetas de metas --- */
+  'gc.overdue':'⏰ Se cumplió la fecha límite ({v})',
+  'gc.achieved':'✓ Lograda',
+  'gc.extend':'📅 Aplazar',
+  'gc.today':'hoy',
+  'gc.ago':'hace {n} {u}',
+  'gc.ahead':'Adelantado por {v}',
+  'gc.on':'Justo según el plan',
+  'gc.behind':'Atrasado por {v}',
+  'gc.pace':'Real {f} ({a}) · plan para hoy {p}',
+  'gc.noFact':'Escribe tu número actual para ver el ritmo',
+  'gc.checklist':'Lista por día · {n} {u} por semana',
+  'gc.days':'Días: {v}',
+  'gc.todayLbl':'Hoy:',
+  'gc.manual':'Estado manual (🟢/🟡/🌸)',
+  'gc.everyDay':'todos los días',
+  'gc.totalDays':'días activos en total: {n}',
+  'gc.emptyGoals':'Todavía no hay metas.<br>Toca + para agregar una.<br>La app la dividirá en pasos diarios.',
+  'gc.tabActive':'Activas',
+  'gc.tabLong':'A largo plazo',
+  /* --- Etapa 3a: eliminar / lograr / aplazar una meta --- */
+  'gd.delTitle':'¿Eliminar la meta?',
+  'gd.delHint':'Los elementos que ya se agregaron a tus días se quedan. Los pasos futuros no se van a generar.',
+  'gd.deleted':'Meta eliminada',
+  'gd.achieved':'Meta lograda 🏆',
+  'gd.extTitle':'Aplazar la fecha límite',
+  'gd.extHint':'Fecha límite actual: {d} (ya pasó). Elige una nueva y la meta sigue corriendo.',
+  'gd.extLabel':'Nueva fecha límite',
+  'gd.extBtn':'Aplazar',
+  'gd.extDone':'Fecha límite movida al {v}',
+  'gd.vFuture':'La fecha debe estar en el futuro',
+  /* --- Etapa 3b: calendario y eventos --- */
+  'ev.monthEvents':'Eventos de este mes',
+  'ev.noneDay':'Sin eventos. Toca «+» para agregar uno.',
+  'ev.noneMonth':'Sin eventos este mes.<br>Elige un día y toca «+».',
+  'ev.type.meeting':'Reunión',
+  'ev.type.event':'Evento',
+  'ev.type.birthday':'Cumpleaños',
+  'ev.rep.once':'Una vez',
+  'ev.rep.monthly':'Cada mes',
+  'ev.rep.yearly':'Cada año',
+  'ev.titleNew':'Nuevo evento',
+  'ev.titleEdit':'Evento',
+  'ev.namePh':'Reunión en el banco',
+  'ev.typeLabel':'Tipo',
+  'ev.repeatLabel':'Repetir',
+  'ev.alert':'🔔 Recordatorio',
+  'ev.alertTime':'Hora',
+  'ev.note':'Nota (opc.)',
+  'ev.notePh':'Detalles del evento…',
+  'ev.del':'🗑 Eliminar evento',
+  'ev.delConfirm':'¿Eliminar este evento?',
+  'ev.deleted':'Evento eliminado',
+  'ev.created':'Evento creado',
+  'ev.banner':'Hoy · {v}',
+  /* --- Etapa 4a: pendientes, historial, categorías --- */
+  'un.empty':'No hay pendientes. ¡Todo al día!',
+  'un.skipped':'⊘ saltada',
+  'hi.achievedSec':'🏆 Metas logradas',
+  'hi.sameDay':'el mismo día',
+  'hi.achievedOn':'lograda el {d} · en {v}',
+  'hi.empty':'El historial está vacío.<br>Aquí van a aparecer los elementos completados y las metas logradas.',
+  'hi.doneSec':'Elementos completados',
+  'hi.restore':'↩ Completar',
+  /* --- gráfico de disciplina (pantalla Historial) --- */
+  'dc.title':'📈 Gráfico de disciplina',
+  'dc.dayShort':'d',
+  'dc.pAll':'Todo',
+  'dc.days':'Días',
+  'dc.level':'Nivel',
+  'dc.best':'Mejor',
+  'dc.worst':'Peor',
+  'dc.rate':'Disciplina',
+  'dc.empty':'Todavía no hay nada que mostrar: marca tus primeros elementos.',
+  'ad.progress':'Progreso',
+  'ad.start':'Inicio',
+  'ad.hadDeadline':'La fecha límite era',
+  'ad.achieved':'Lograda',
+  'ad.took':'Tomó',
+  'ad.restore':'↩ Devolver a las metas activas',
+  'ad.close':'Cerrar',
+  'ad.already':'Esta meta ya está activa',
+  'ad.restored':'Devuelta a las activas',
+  'cm.title':'Categorías',
+  'cm.none':'Sin categorías',
+  'cm.new':'Nueva categoría',
+  'cm.hint':'Elige un color: la categoría lo va a usar.',
+  'cm.done':'Listo',
+  'cm.needOne':'Se necesita al menos una categoría',
+  'cm.inUse':'La categoría está en uso: no se puede eliminar',
+  'cm.addNew':'＋ Nueva categoría…',
+  'cm.added':'Categoría agregada ✓',
+  'sc.undone':'Pend.',
+
+  /* --- Etapa 4b: común --- */
+  'err.generic':'Error: {v}',
+  'a11y.back':'Atrás',
+  'a11y.settings':'Ajustes',
+  'pl.entry':['registro','registros'],
+
+  /* --- Etapa 4b: ajustes de notificación --- */
+  'ns.title':'🔔 Notificación con la lista de tareas',
+  'ns.hint':'Una notificación fija en la barra. La tarea aparece cuando llega su hora y se queda hasta que la marques. Las tareas sin hora se quedan todo el día. Una lista de verificación se muestra en una sola línea.',
+  'ns.toggle':'Mostrar la notificación con las tareas',
+  'ns.count':'Cuántas tareas mostrar',
+  'ns.now':'Tareas para hoy: <b>{v}</b>',
+  'ns.overflow':' · {m} en la notificación, el resto como «y {r} más»',
+  'ns.miuiTitle':'⚠️ MIUI puede cerrar la notificación',
+  'ns.miuiHint':'Si la notificación desaparece, permite que la app funcione en segundo plano.',
+  'ns.battery':'Ahorro de batería',
+  'ns.autostart':'Inicio automático',
+  'ns.on':'Notificación activada',
+  'ns.off':'Notificación desactivada',
+  'ns.errSettings':'No se pudieron abrir los ajustes',
+
+  /* --- Etapa 4b: copia de seguridad --- */
+  'bk.title':'💾 Copia de seguridad de tus planes',
+  'bk.hint':'Todas tus metas, tareas, calendario e historial se guardan en un solo archivo. Envíatelo a ti mismo (Telegram, Google Drive) o descárgalo al celular. En un dispositivo nuevo restauras todo desde ese archivo. <b>¡Haz siempre una copia antes de desinstalar la app!</b>',
+  'bk.share':'Compartir una copia',
+  'bk.save':'Descargar una copia',
+  'bk.restore':'Restaurar desde una copia',
+  'bk.pickTarget':'Elige dónde guardarla (Telegram, Google Drive, Archivos…)',
+  'bk.saved':'Copia guardada ✓',
+  'bk.saveBtn':'Guardar una copia',
+  'bk.chooseTitle':'¿Dónde guardar la copia?',
+  'bk.chooseHint':'Un archivo con tus metas, tareas e historial.',
+  'bk.optCloud':'☁️ Google Drive, Telegram, correo…',
+  'bk.optCloudHint':'Se abre una lista de apps: elige a dónde enviar el archivo.',
+  'bk.optDl':'⬇ Carpeta Descargas de este celular',
+  'bk.optDlHint':'El archivo va a Descargas. Se queda solo en este dispositivo.',
+  'bk.savedInfo':'✓ Copia en Descargas: {f} — {v} {u}.',
+  'bk.restTitle':'¿Restaurar desde dónde?',
+  'bk.restHint':'Elige dónde guardaste la copia y te digo dónde buscarla.',
+  'bk.srcDrive':'☁️ Google Drive',
+  'bk.srcDriveHint':'En el selector de archivos: menú ☰ a la izquierda → Google Drive.',
+  'bk.srcTg':'✈️ Telegram',
+  'bk.srcTgHint':'Primero descarga el archivo dentro de Telegram. Después aquí: ☰ → Descargas → carpeta Telegram.',
+  'bk.srcDl':'⬇ Carpeta Descargas',
+  'bk.srcDlHint':'En el selector de archivos: menú ☰ a la izquierda → Descargas.',
+  'bk.tipDrive':'Búscalo en ☰ → Google Drive',
+  'bk.tipTg':'Búscalo en ☰ → Descargas → Telegram',
+  'bk.tipDl':'Búscalo en ☰ → Descargas',
+  'bk.sentInfo':'✓ Copia enviada — {v} {u}.',
+  'bk.saveFail':'No se pudo guardar la copia',
+  'bk.errInfo':'✕ Error: {v}',
+  'bk.unknown':'desconocido',
+  'bk.openFail':'No se pudo abrir el archivo',
+  'bk.corrupt':'El archivo está dañado',
+  'bk.unreadable':'✕ No se pudo leer el archivo.',
+  'bk.notBackupInfo':'✕ Esto no es una copia de seguridad: el archivo no se puede leer.',
+  'bk.notBackup':'Esto no es una copia de seguridad',
+  'bk.wrongFile':'✕ Archivo incorrecto. Necesitas planner-backup-*.json de esta app.',
+  'bk.created':'✓ Archivo creado ({v} {u}). Revisa la carpeta Descargas.',
+  'bk.downloaded':'Archivo guardado en Descargas ✓',
+  'bk.exportErr':'Falló la exportación',
+  'bk.createFail':'✕ No se pudo crear el archivo: {v}',
+  'bk.notJson':'El archivo está dañado (no es JSON)',
+  'bk.notJsonInfo':'✕ El archivo no se puede leer: no es una copia de Planner.',
+  'bk.notPlanner':'Esto no es una copia de Planner',
+  'bk.wrongFileShort':'✕ Archivo incorrecto. Necesitas planner-backup-*.json.',
+  'bk.readFail':'No se pudo leer el archivo',
+  'bk.confirmTitle':'¿Restaurar los planes desde la copia?',
+  'bk.madeAt':'Copia creada: {v}',
+  'bk.contains':'Contiene: <b>{g}</b> metas, <b>{t}</b> tareas, <b>{e}</b> eventos, <b>{n}</b> nodos del árbol, <b>{a}</b> metas logradas.',
+  'bk.warn':'⚠️ Todo lo que hay ahora en la app se va a reemplazar con los datos de la copia. Esto no se puede deshacer: si tus planes actuales te importan, guárdalos antes en otra copia.',
+  'bk.replace':'Reemplazar y restaurar',
+  'bk.noData':'No hay nada que importar',
+  'bk.restored':'Datos restaurados ✓',
+  'bk.restoreErr':'Falló la restauración',
+  'bk.applyErr':'✕ No se pudo aplicar: {v}',
+
+  /* --- Etapa 4b: ventana de tema --- */
+  'th.title':'⚙️ Fondo de la pantalla',
+  'th.hint':'Un color distinto para cada pantalla. En modo «Degradado» defines por separado el color de arriba y el de abajo. El texto se adapta solo.',
+  'th.solid':'Sólido',
+  'th.gradient':'Degradado',
+  'th.top':'⬆ Arriba',
+  'th.bottom':'⬇ Abajo',
+  'th.sideTop':'lado de arriba',
+  'th.sideBottom':'lado de abajo',
+  'th.sideBg':'fondo',
+  'th.preview':'Tarjeta de ejemplo',
+  'th.color':'Color',
+  'th.sat':'Saturación',
+  'th.white':'Blanco',
+  'th.vivid':'Intenso',
+  'th.reset':'Restablecer',
+  'th.wasReset':'Restablecido'
 }
 };
 
-// язык системы при первом запуске: русский → ru, остальное → en
+/* Поддерживаемые языки. Добавить новый = дописать код сюда,
+   положить блок в I18N и добавить кнопку в селектор (renderThemeModal). */
+const LANGS = ['ru','en','es'];
+
+// язык системы при первом запуске: ru → ru, es → es, остальное → en
 function detectLang(){
   try{
     const l = (navigator.language || (navigator.languages&&navigator.languages[0]) || 'en').toLowerCase();
-    return l.indexOf('ru')===0 ? 'ru' : 'en';
+    if(l.indexOf('ru')===0) return 'ru';
+    if(l.indexOf('es')===0) return 'es';
+    return 'en';
   }catch(e){ return 'en'; }
 }
-function curLang(){ return (state && state.lang==='en') ? 'en' : 'ru'; }
+function curLang(){ return (state && LANGS.indexOf(state.lang)>=0) ? state.lang : 'ru'; }
 
 /* t(key, params) — перевод с подстановкой {name}.
    Фолбэк: текущий язык → ru → сам ключ. Массивы (плюралы) возвращаются как есть. */
 function t(key, params){
   const lang = curLang();
   let v = I18N[lang] && I18N[lang][key];
+  if(v===undefined) v = I18N.en[key];   // недостающий ключ → английский, не русский
   if(v===undefined) v = I18N.ru[key];
   if(v===undefined) return key;
   if(Array.isArray(v)) return v;
@@ -1739,11 +2195,52 @@ function tr(key, params){ return t(key, params); }
 
 /* Месяцы — языкозависимые. Имена MONTHS_RU / MONTHS_RU_SHORT сохранены,
    чтобы не переписывать существующие вызовы в календаре и истории. */
-Object.defineProperty(window,'MONTHS_RU',{get:function(){ return curLang()==='en'?MONTHS_EN:_MONTHS_RU; }});
-Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ return curLang()==='en'?MONTHS_EN_SHORT:_MONTHS_RU_SHORT; }});
+Object.defineProperty(window,'MONTHS_RU',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN:(l==='es'?MONTHS_ES:_MONTHS_RU); }});
+Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN_SHORT:(l==='es'?MONTHS_ES_SHORT:_MONTHS_RU_SHORT); }});
+
+/* Подписи языков: код для чипа в шапке + полное самоназвание для списка.
+   Новый язык — дописать строку сюда и в LANGS. */
+const LANG_LABELS = {
+  ru:{code:'RU', name:'Русский'},
+  en:{code:'EN', name:'English'},
+  es:{code:'ES', name:'Español'}
+};
+
+// чип в шапке показывает текущий язык
+function renderLangChip(){
+  const el=document.getElementById('langChip');
+  if(!el) return;
+  const L=LANG_LABELS[curLang()];
+  el.textContent = L ? L.code : curLang().toUpperCase();
+}
+
+/* Меню языков. Позиционируем под чипом и прижимаем к правому краю,
+   чтобы при 9 языках список не уезжал за экран. */
+function toggleLangMenu(ev){
+  if(ev) ev.stopPropagation();
+  const menu=document.getElementById('langMenu');
+  const chip=document.getElementById('langChip');
+  if(!menu||!chip) return;
+  if(menu.classList.contains('show')){ closeLangMenu(); return; }
+  menu.innerHTML = LANGS.map(l=>{
+    const L=LANG_LABELS[l]||{name:l};
+    return '<button class="'+(curLang()===l?'on':'')+'" onclick="pickLang(\''+l+'\')">'+L.name+'</button>';
+  }).join('');
+  const r=chip.getBoundingClientRect();
+  menu.style.top = (r.bottom+6)+'px';
+  menu.style.right = Math.max(8, window.innerWidth-r.right)+'px';
+  menu.style.left = 'auto';
+  menu.classList.add('show');
+  setTimeout(()=>document.addEventListener('click', closeLangMenu, {once:true}), 0);
+}
+function closeLangMenu(){
+  const menu=document.getElementById('langMenu');
+  if(menu) menu.classList.remove('show');
+}
+function pickLang(l){ closeLangMenu(); setLang(l); }
 
 function setLang(l){
-  if(l!=='ru' && l!=='en') return;
+  if(LANGS.indexOf(l)<0) return;
   if(state.lang===l) return;
   state.lang = l;
   save();
@@ -1767,6 +2264,7 @@ function applyStaticI18n(){
   if(hb) hb.setAttribute('aria-label', t('a11y.back'));
   const gear=document.querySelector('.gear');
   if(gear) gear.setAttribute('aria-label', t('a11y.settings'));
+  renderLangChip();
   /* Заголовок экрана (h1). Раньше он присваивался ТОЛЬКО в switchScreen, поэтому
      при смене языка отставал: на экране висело «Today», пока навигация и дата
      были уже русскими, — язык заголовка менялся лишь при следующем переходе.
@@ -1855,7 +2353,7 @@ function load(){
 function migrate(){
   // i18n: старым пользователям проставляем язык по системе, ничего не теряя.
   // Данные (названия целей/задач/событий/категорий) НЕ трогаем.
-  if(state.lang!=='ru' && state.lang!=='en') state.lang = detectLang();
+  if(LANGS.indexOf(state.lang)<0) state.lang = detectLang();
   // гарантируем встроенные категории (locked) — добавляем недостающие, не трогаем пользовательские
   DEFAULT_CATS.forEach(dc=>{
     const ex = state.cats.find(c=>c.id===dc.id);
@@ -2422,7 +2920,7 @@ function confirmImport(backup){
   const nTree = (d.tree||[]).length;
   const nA = (d.achieved||[]).length;
   const when = backup.exportedAt
-    ? new Date(backup.exportedAt).toLocaleString(curLang()==='en'?'en-US':'ru-RU')
+    ? new Date(backup.exportedAt).toLocaleString({ru:'ru-RU',en:'en-US',es:'es-419'}[curLang()]||'en-US')
     : tr('bk.unknown');
   // сохраняем во временную глобальную переменную для applyImport
   window._pendingImport = backup;
@@ -2526,12 +3024,15 @@ function fmtDateHuman(s){
     // Thursday, July 24
     return WEEKDAYS_FULL_EN[dt.getDay()]+', '+MONTHS_EN[m-1]+' '+d;
   }
+  // jueves, 24 de julio
+  if(curLang()==='es') return WEEKDAYS_FULL_ES[dt.getDay()]+', '+d+' de '+MONTHS_ES_LOW[m-1];
   return WEEKDAYS_FULL_RU[dt.getDay()]+', '+d+' '+MONTHS_RU_GEN[m-1];
 }
 /* «5 января 2026» (RU, родительный) / «January 5, 2026» (EN) — шапка агенды календаря */
 function fmtDayMonthYear(s){
   const [y,m,d]=s.split('-').map(Number);
   if(curLang()==='en') return MONTHS_EN[m-1]+' '+d+', '+y;
+  if(curLang()==='es') return d+' de '+MONTHS_ES_LOW[m-1]+' de '+y;
   return d+' '+MONTHS_RU_GEN[m-1]+' '+y;
 }
 function dowIndex(s){ const [y,m,d]=s.split('-').map(Number); return DOW_MAP[new Date(y,m-1,d).getDay()]; }
@@ -2557,7 +3058,7 @@ function maxDeadline(fromStr){
    берём forms[0] для 1 и последний элемент для остальных — старые вызовы не падают. */
 function plural(n, forms){
   if(!Array.isArray(forms) || !forms.length) return '';
-  if(curLang()==='en'){
+  if(curLang()!=='ru'){   // en, es — две формы
     return Math.abs(n)===1 ? forms[0] : forms[forms.length-1];
   }
   n = Math.abs(n) % 100;
@@ -5672,6 +6173,7 @@ function renderThemeModal(){
       <div class="lang-btns">
         <button class="${curLang()==='ru'?'on':''}" onclick="setLang('ru')">Русский</button>
         <button class="${curLang()==='en'?'on':''}" onclick="setLang('en')">English</button>
+        <button class="${curLang()==='es'?'on':''}" onclick="setLang('es')">Español</button>
       </div>
     </div>
 
