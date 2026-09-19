@@ -23,8 +23,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # packages: '' — ОБЯЗАТЕЛЬНО. По умолчанию экшен ставит пакеты "tools
+      # platform-tools", но пакет tools Google из репозитория удалил, и шаг падает
+      # с "Failed to find package 'tools'". Именно на этом сборки встали 19.09.2026,
+      # хотя workflow не менялся с 02.09. Пустой список отключает установку; sdkmanager
+      # в PATH экшен всё равно прописывает, а нужные компоненты ставит шаг ниже.
+      # Альтернатива — перейти на setup-android@v4, где tools убран из дефолтов.
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
 
       - name: Install Android SDK platform 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
