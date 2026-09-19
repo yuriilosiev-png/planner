@@ -181,6 +181,10 @@ public class MainActivity extends Activity {
 
         webView.loadUrl(PAGES_URL);
 
+        // vC 11: первый запуск — включаем шторку сами, если уведомления разрешены.
+        // Стоит ПЕРЕД restore, чтобы сервис поднялся тем же вызовом.
+        applyDefaultNotifEnabled();
+
         // Этап 2: если тумблер уведомления включён — поднять сервис при старте.
         // Задачи берутся из SharedPreferences (кэш последнего updateNotificationTasks),
         // поэтому уведомление появляется сразу, не дожидаясь загрузки WebView.
@@ -238,6 +242,35 @@ public class MainActivity extends Activity {
     // ─────────────────────────────────────────────────────────────────
     // ЭТАП 2: запуск сервиса уведомления при старте приложения
     // ─────────────────────────────────────────────────────────────────
+    /** Шторка включена по умолчанию — но только если пользователь согласился
+     *  получать уведомления. Разрешение не дали (или отозвали) — тумблер
+     *  остаётся выключенным, иначе сервис стартовал бы в пустоту.
+     *  Применяется РОВНО ОДИН РАЗ: флаг KEY_DEFAULT_APPLIED. Без него мы
+     *  переоткрывали бы шторку тем, кто её осознанно выключил. */
+    private static final String KEY_DEFAULT_APPLIED = "notif_default_applied";
+
+    private void applyDefaultNotifEnabled() {
+        try {
+            SharedPreferences sp = getSharedPreferences(
+                NotificationService.PREFS, Context.MODE_PRIVATE);
+            if (sp.getBoolean(KEY_DEFAULT_APPLIED, false)) return;
+            boolean allowed = true;
+            if (Build.VERSION.SDK_INT >= 33) {
+                allowed = ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.POST_NOTIFICATIONS)
+                        == PackageManager.PERMISSION_GRANTED;
+            }
+            if (!allowed) return;   // спросим снова при следующем запуске
+            sp.edit()
+              .putBoolean(NotificationService.KEY_ENABLED, true)
+              .putBoolean(KEY_DEFAULT_APPLIED, true)
+              .apply();
+            NotificationService.start(this);
+        } catch (Exception e) {
+            Log.e(TAG, "applyDefaultNotifEnabled failed", e);
+        }
+    }
+
     private void restoreNotificationServiceIfEnabled() {
         try {
             SharedPreferences sp = getSharedPreferences(
@@ -367,6 +400,20 @@ public class MainActivity extends Activity {
                     }
                 }
             });
+        }
+
+        /** Техсводка по шторке для блока настроек (пять тапов по заголовку).
+         *  Без adb на устройстве иначе не отличить «список не дошёл до натива»
+         *  от «дошёл, но не сработало пробуждение». */
+        @JavascriptInterface
+        public String getNotifDebug() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return "no activity";
+            try {
+                return NotificationService.debugInfo(a);
+            } catch (Exception e) {
+                return "err: " + e.getMessage();
+            }
         }
 
         /** Состояние тумблера — чтобы JS отрисовал настройки в актуальном виде. */
@@ -679,6 +726,7 @@ public class MainActivity extends Activity {
             // Разрешение дали и тумблер включён — поднять сервис сразу,
             // не заставляя перезапускать приложение.
             if (granted) {
+                applyDefaultNotifEnabled();          // первый запуск — включаем шторку сами
                 restoreNotificationServiceIfEnabled();
             }
         }
