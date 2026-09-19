@@ -66,6 +66,16 @@
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Persistent notification listing the user's tasks for the current day" />
         </service>
+        <!-- vC 11: будильник шторки. Ресивер будится AlarmManager'ом на ближайшее
+             время задачи (или на полночь) и перерисовывает уведомление. Через
+             ресивер, а не через startForegroundService, потому что с Android 12
+             запуск FGS из фона запрещён, а неточный будильник в исключения не
+             входит. Разрешений не требует: setAndAllowWhileIdle, не setExact*.
+             exported=false — будим только сами себя. -->
+        <receiver
+            android:name=".NotifAlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <!-- FileProvider — обязателен для «Поделиться» файлом на Android 7+.
              Без него система бросает FileUriExposedException.
              authorities ОБЯЗАН совпадать с тем, что строит код:
