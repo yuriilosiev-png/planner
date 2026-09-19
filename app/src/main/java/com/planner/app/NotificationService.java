@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -79,6 +81,29 @@ public class NotificationService extends Service {
         }
     };
     private boolean tickRegistered = false;
+
+    /** Собственный минутный таймер сервиса (vC 11).
+     *  ACTION_TIME_TICK на MIUI и подобных прошивках может не доезжать, а
+     *  неточный будильник — откладываться. Пока foreground-сервис жив, этот
+     *  Handler тикает независимо от того, что там решила прошивка с доставкой
+     *  broadcast'ов. Три механизма перекрывают друг друга: таймер (сервис жив),
+     *  TIME_TICK/SCREEN_ON (мгновенная реакция), будильник (сервис убит). */
+    private static final long TICK_MS = 60000L;
+    private final Handler ticker = new Handler(Looper.getMainLooper());
+    private final Runnable tickTask = new Runnable() {
+        @Override
+        public void run() {
+            refresh(NotificationService.this);
+            ticker.postDelayed(this, TICK_MS);
+        }
+    };
+    private boolean tickerRunning = false;
+
+    // ── диагностика (читается из настроек приложения через AndroidBridge) ──
+    private static long dbgLastRefresh = 0L;
+    private static long dbgLastNotify  = 0L;
+    private static long dbgNextAlarm   = 0L;
+    private static String dbgLastSource = "-";
 
     /** Сохранить задачи из JS и обновить уведомление (если включено).
      *  Форматы, которые принимаем:
@@ -181,6 +206,7 @@ public class NotificationService extends Service {
         try {
             SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             if (!sp.getBoolean(KEY_ENABLED, false)) return;
+            dbgLastRefresh = System.currentTimeMillis();
             scheduleNext(ctx);
             // тик приходит раз в минуту — перерисовываем только когда список
             // реально изменился, иначе на MIUI уведомление дёргается впустую
@@ -190,6 +216,7 @@ public class NotificationService extends Service {
                     (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm == null) return;
             nm.notify(NOTIFICATION_ID, buildNotification(ctx));
+            dbgLastNotify = System.currentTimeMillis();
             lastSig = sig;
         } catch (Exception e) {
             Log.e(TAG, "refresh failed: " + e.getMessage());
@@ -226,11 +253,25 @@ public class NotificationService extends Service {
 
     @Override
     public void onDestroy() {
+        stopTicker();
         if (tickRegistered) {
             try { unregisterReceiver(tickReceiver); } catch (Exception ignored) {}
             tickRegistered = false;
         }
         super.onDestroy();
+    }
+
+    private void startTicker() {
+        if (tickerRunning) return;
+        tickerRunning = true;
+        // выравниваем по границе минуты, чтобы задача на 16:40 всплывала в 16:40:01
+        long delay = TICK_MS - (System.currentTimeMillis() % TICK_MS) + 1000L;
+        ticker.postDelayed(tickTask, delay);
+    }
+
+    private void stopTicker() {
+        ticker.removeCallbacks(tickTask);
+        tickerRunning = false;
     }
 
     private void registerTick() {
@@ -254,6 +295,7 @@ public class NotificationService extends Service {
         String action = intent != null ? intent.getAction() : ACTION_START;
 
         if (ACTION_STOP.equals(action)) {
+            stopTicker();
             cancelAlarm(this);
             stopForegroundCompat();
             stopSelf();
@@ -261,6 +303,7 @@ public class NotificationService extends Service {
         }
 
         registerTick();
+        startTicker();
 
         // Android требует startForeground в течение 5 сек после старта — делаем всегда первым
         Notification n = buildNotification(this);
@@ -415,6 +458,7 @@ public class NotificationService extends Service {
             } else {
                 am.set(AlarmManager.RTC_WAKEUP, when, pi);
             }
+            dbgNextAlarm = when;
         } catch (Exception e) {
             Log.e(TAG, "scheduleNext failed: " + e.getMessage());
         }
@@ -434,6 +478,7 @@ public class NotificationService extends Service {
 
         if (!rowsJson.isEmpty()) {
             String date = sp.getString(KEY_ROWS_DATE, "");
+            dbgLastSource = "tasksAll";
             if (!date.isEmpty() && !date.equals(todayIso())) return out;   // день сменился
             String now = nowHHMM();
             JSONArray rows = parseArray(rowsJson);
@@ -449,6 +494,7 @@ public class NotificationService extends Service {
             return out;
         }
 
+        dbgLastSource = "legacy";
         JSONArray legacy = parseArray(sp.getString(KEY_TASKS_JSON, ""));
         for (int i = 0; i < legacy.length(); i++) {
             JSONObject r = legacy.optJSONObject(i);
@@ -541,6 +587,38 @@ public class NotificationService extends Service {
         Notification n = b.build();
         n.bigContentView = rv;
         return n;
+    }
+
+    /** Одной строкой: что натив реально знает про шторку. Показывается в
+     *  настройках приложения по пяти тапам на заголовке блока. Нужна потому,
+     *  что без adb на устройстве отличить «список не дошёл» от «пробуждение
+     *  не сработало» нечем. */
+    public static String debugInfo(Context ctx) {
+        try {
+            SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            JSONArray rows = parseArray(sp.getString(KEY_ROWS_JSON, ""));
+            StringBuilder sb = new StringBuilder();
+            sb.append("src=").append(dbgLastSource)
+              .append(" rows=").append(rows.length())
+              .append(" vis=").append(visibleRows(sp).size())
+              .append(" date=").append(sp.getString(KEY_ROWS_DATE, "-"))
+              .append(" now=").append(nowHHMM())
+              .append(" alarm=").append(hhmm(dbgNextAlarm))
+              .append(" refresh=").append(hhmm(dbgLastRefresh))
+              .append(" notify=").append(hhmm(dbgLastNotify))
+              .append(" on=").append(sp.getBoolean(KEY_ENABLED, false) ? 1 : 0);
+            return sb.toString();
+        } catch (Exception e) {
+            return "debugInfo failed: " + e.getMessage();
+        }
+    }
+
+    private static String hhmm(long ms) {
+        if (ms <= 0) return "-";
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(ms);
+        return String.format(Locale.US, "%02d:%02d:%02d",
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
     }
 
     private static JSONArray parseArray(String json) {
