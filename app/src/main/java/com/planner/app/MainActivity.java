@@ -27,6 +27,7 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.provider.DocumentsContract;
 import android.webkit.WebViewClient;
 import android.webkit.CookieManager;
 import android.net.http.SslError;
@@ -147,6 +148,21 @@ public class MainActivity extends Activity {
             }
 
             @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                pageReady = true;
+                if (pendingImportUri != null) {
+                    final Uri u = pendingImportUri;
+                    pendingImportUri = null;
+                    // небольшая пауза: JS ещё доинициализирует обработчики
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() { readBackupUri(u); }
+                    }, 400);
+                }
+            }
+
+            @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (request != null && request.isForMainFrame() && !loadedOfflineFallback) {
@@ -181,6 +197,9 @@ public class MainActivity extends Activity {
 
         webView.loadUrl(PAGES_URL);
 
+        // файл мог прийти вместе с запуском («Поделиться» из Telegram, тап в Файлах)
+        handleIncomingFile(getIntent());
+
         // vC 11: первый запуск — включаем шторку сами, если уведомления разрешены.
         // Стоит ПЕРЕД restore, чтобы сервис поднялся тем же вызовом.
         applyDefaultNotifEnabled();
@@ -194,6 +213,46 @@ public class MainActivity extends Activity {
     // ─────────────────────────────────────────────────────────────────
     // Вызвать JS-функцию в WebView (натив → веб)
     // ─────────────────────────────────────────────────────────────────
+    /* Файл, пришедший из «Поделиться», пока страница ещё не загрузилась.
+       Интент прилетает раньше, чем WebView готов принять evaluateJavascript,
+       поэтому ссылку придерживаем и отдаём в onPageFinished. */
+    private Uri pendingImportUri = null;
+    private boolean pageReady = false;
+
+    /** Приложение уже запущено — файл приходит сюда (launchMode=singleTask). */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIncomingFile(intent);
+    }
+
+    /** Вытащить ссылку на файл из SEND или VIEW и передать в общий читатель. */
+    private void handleIncomingFile(Intent intent) {
+        if (intent == null) return;
+        String action = intent.getAction();
+        Uri uri = null;
+        try {
+            if (Intent.ACTION_SEND.equals(action)) {
+                uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            } else if (Intent.ACTION_VIEW.equals(action)) {
+                uri = intent.getData();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "handleIncomingFile failed", e);
+        }
+        if (uri == null) return;
+        // один и тот же интент не разбираем дважды при повороте/возврате
+        intent.setAction(null);
+        intent.setData(null);
+        intent.removeExtra(Intent.EXTRA_STREAM);
+        if (pageReady) {
+            readBackupUri(uri);
+        } else {
+            pendingImportUri = uri;
+        }
+    }
+
     private void callJs(final String js) {
         if (webView == null) return;
         webView.post(new Runnable() {
@@ -591,6 +650,17 @@ public class MainActivity extends Activity {
                 "application/json", "text/plain", "application/octet-stream", "*/*"
             });
             i.putExtra(Intent.EXTRA_LOCAL_ONLY, false); // разрешить облачные источники
+            // DocumentsUI запоминает последнюю папку и открывается в ней — у части
+            // пользователей это Google Диск, хотя копия лежит в «Загрузках».
+            // EXTRA_INITIAL_URI — подсказка, а не команда: провайдер вправе её
+            // проигнорировать, поэтому пункт меню ☰ в подсказках оставляем.
+            if (Build.VERSION.SDK_INT >= 26) {
+                try {
+                    i.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
+                        DocumentsContract.buildDocumentUri(
+                            "com.android.externalstorage.documents", "primary:Download"));
+                } catch (Exception ignored) {}
+            }
 
             Intent chooser = Intent.createChooser(i, "Откуда взять резервную копию?");
             startActivityForResult(chooser, REQ_PICK_BACKUP);
@@ -620,8 +690,15 @@ public class MainActivity extends Activity {
             callJs("window.onNativeImportResult && window.onNativeImportResult('cancel','','')");
             return;
         }
+        readBackupUri(data.getData());
+    }
+
+    /** Прочитать файл копии по ссылке и отдать его в JS.
+     *  Один путь и для выбора через пикер, и для «Поделиться» — чтобы проверки
+     *  формата и размера не разъехались между двумя реализациями. */
+    private void readBackupUri(Uri uri) {
         try {
-            Uri uri = data.getData();
+            if (uri == null) throw new Exception("empty uri");
             InputStream is = getContentResolver().openInputStream(uri);
             if (is == null) throw new Exception("openInputStream failed");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
