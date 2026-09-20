@@ -43,14 +43,37 @@
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:usesCleartextTraffic="false">
+        <!-- launchMode=singleTask: приложение одноэкранное, а с приходом SEND-интента
+             из Telegram или Диска стандартный режим создал бы второй экземпляр в чужой
+             задаче — два разных WebView на один localStorage. singleTask гарантирует
+             один экземпляр, входящий файл приходит в onNewIntent. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|keyboardHidden|navigation"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- «Поделиться» файлом копии прямо в Planner: в Telegram, на Диске и в
+                 Файлах приложение появится в списке получателей. Это единственный
+                 надёжный путь для Telegram — файл там лежит в облаке, а не в папке.
+                 text/plain НЕ добавляем: иначе Planner полезет в каждый шаринг текста. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/json" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+            <!-- Открытие файла тапом в файловом менеджере -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" android:mimeType="application/json" />
+                <data android:scheme="file" android:mimeType="application/json" />
             </intent-filter>
         </activity>
         <!-- Этап 2: foreground service постоянного уведомления.
