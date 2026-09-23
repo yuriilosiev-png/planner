@@ -15,6 +15,9 @@
 //   - versionCode=12, versionName="1.7.4" (голосовой ввод в текстовых полях:
 //     RecognizerIntent через AndroidBridge, <queries> в манифесте; мост
 //     getAppVersionCode/openStore для плашки «Доступно обновление»)
+//   - versionCode=13, versionName="1.7.4": та же 1.7.4, но код 12 уже занят в Play
+//     ранней загрузкой ААБ (Play не даёт использовать код повторно, даже если
+//     бандл убран из черновика). Плюс исправления хранилища.
 // 1.8 зарезервирован под миграцию на OnBackInvokedCallback (см. комментарий
 // enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.x.
 // Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
@@ -31,7 +34,7 @@ android {
         applicationId "com.losev.planner"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 12
+        versionCode 13
         versionName "1.7.4"
     }
     signingConfigs {
