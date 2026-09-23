@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -110,6 +111,10 @@ public class MainActivity extends Activity {
     private volatile boolean migratingLegacy = false;
     /** Прочитанные данные старого офлайн-хранилища — отдаём странице Pages. */
     private String legacyPayload = null;
+    /** После служебной страницы чтения история WebView хранит её адрес:
+     *  «назад» вернул бы на неё — пустой экран без данных. Чистим историю
+     *  сразу после загрузки Pages. */
+    private boolean clearHistoryOnPagesLoad = false;
 
     private static WeakReference<MainActivity> sInstance;
 
@@ -179,6 +184,10 @@ public class MainActivity extends Activity {
                 // страница разового чтения старого хранилища — это не приложение
                 if (url != null && url.startsWith("file:")) return;
                 pageReady = true;
+                if (clearHistoryOnPagesLoad) {
+                    clearHistoryOnPagesLoad = false;
+                    view.clearHistory();
+                }
                 if (legacyPayload != null) {
                     final String b64 = android.util.Base64.encodeToString(
                         legacyPayload.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
@@ -375,6 +384,7 @@ public class MainActivity extends Activity {
                 SharedPreferences sp = getSharedPreferences(MIG_PREFS, MODE_PRIVATE);
                 sp.edit().putInt(KEY_LEGACY_TRIES, sp.getInt(KEY_LEGACY_TRIES, 0) + 1).apply();
                 Log.w(TAG, "legacy store read timed out");
+                clearHistoryOnPagesLoad = true;
                 webView.loadUrl(PAGES_URL);
             }
         }, 4000);
@@ -388,6 +398,7 @@ public class MainActivity extends Activity {
         } else {
             legacyPayload = raw;               // отметку поставит JS после выбора
         }
+        clearHistoryOnPagesLoad = true;
         webView.loadUrl(PAGES_URL);
     }
 
@@ -1144,10 +1155,24 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        // на служебную страницу чтения (file://) «назад» не ведёт никогда —
+        // там приложение не запущено, человек увидел бы пустой экран
+        if (webView.canGoBack() && !previousIsFilePage()) {
             webView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private boolean previousIsFilePage() {
+        try {
+            WebBackForwardList list = webView.copyBackForwardList();
+            int i = list.getCurrentIndex() - 1;
+            if (i < 0) return false;
+            String u = list.getItemAtIndex(i).getUrl();
+            return u != null && u.startsWith("file:");
+        } catch (Exception e) {
+            return false;
         }
     }
 
