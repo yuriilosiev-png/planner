@@ -26,6 +26,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.provider.DocumentsContract;
@@ -48,6 +49,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -91,6 +95,21 @@ public class MainActivity extends Activity {
     private static final String ASSET_URL = "file:///android_asset/index.html";
 
     private volatile boolean loadedOfflineFallback = false;
+
+    /* ЕДИНОЕ ХРАНИЛИЩЕ (1.7.4). До 1.7.3 при неудачной загрузке Pages открывалась
+       file:///android_asset/index.html — другой источник (origin), а значит другое
+       хранилище localStorage. Всё, что человек делал без сети, жило отдельно и
+       «пропадало» при следующем запуске с сетью. Теперь главная страница всегда
+       открывается под адресом Pages: shouldInterceptRequest берёт её из сети,
+       а без сети отдаёт офлайн-копию из assets ПОД ТЕМ ЖЕ АДРЕСОМ. */
+    private static final String PAGES_HOST = "yuriilosiev-png.github.io";
+    private static final String MIG_PREFS = "planner_migration";
+    private static final String KEY_LEGACY_DONE = "legacy_offline_store_done";
+    private static final String KEY_LEGACY_TRIES = "legacy_offline_store_tries";
+    /** Идёт разовое чтение старого офлайн-хранилища (file://). */
+    private volatile boolean migratingLegacy = false;
+    /** Прочитанные данные старого офлайн-хранилища — отдаём странице Pages. */
+    private String legacyPayload = null;
 
     private static WeakReference<MainActivity> sInstance;
 
@@ -157,7 +176,22 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                // страница разового чтения старого хранилища — это не приложение
+                if (url != null && url.startsWith("file:")) return;
                 pageReady = true;
+                if (legacyPayload != null) {
+                    final String b64 = android.util.Base64.encodeToString(
+                        legacyPayload.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
+                    legacyPayload = null;
+                    // если одновременно пришёл файл из «Поделиться», окно импорта заменит
+                    // окно переноса — перенос не будет отмечен выполненным и повторится
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            callJs("window.onLegacyStore && window.onLegacyStore('" + b64 + "')");
+                        }
+                    }, 400);
+                }
                 if (pendingImportUri != null) {
                     final Uri u = pendingImportUri;
                     pendingImportUri = null;
@@ -172,17 +206,29 @@ public class MainActivity extends Activity {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                if (request != null && request.isForMainFrame() && !loadedOfflineFallback) {
+                // На file:// больше НЕ уходим — это другое хранилище (см. PAGES_HOST).
+                // Главную страницу отдаёт shouldInterceptRequest; если и он не смог,
+                // пробуем ещё раз тот же адрес — перехват отдаст офлайн-копию.
+                if (request != null && request.isForMainFrame()
+                        && isPagesIndex(request.getUrl()) && !loadedOfflineFallback) {
                     loadedOfflineFallback = true;
-                    Log.w(TAG, "Pages load failed, falling back to offline asset. code="
+                    Log.w(TAG, "Pages main frame error, retrying via intercept. code="
                         + (error != null ? error.getErrorCode() : "?"));
                     view.post(new Runnable() {
                         @Override
                         public void run() {
-                            view.loadUrl(ASSET_URL);
+                            view.loadUrl(PAGES_URL);
                         }
                     });
                 }
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (request == null || !request.isForMainFrame()) return null;
+                if (!"GET".equalsIgnoreCase(request.getMethod())) return null;
+                if (!isPagesIndex(request.getUrl())) return null;
+                return loadIndexNetworkFirst();
             }
         });
 
@@ -202,7 +248,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        webView.loadUrl(PAGES_URL);
+        startMainPage();
 
         // файл мог прийти вместе с запуском («Поделиться» из Telegram, тап в Файлах)
         handleIncomingFile(getIntent());
@@ -258,6 +304,96 @@ public class MainActivity extends Activity {
         } else {
             pendingImportUri = uri;
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // ЕДИНОЕ ХРАНИЛИЩЕ: главная страница всегда под адресом Pages
+    // ─────────────────────────────────────────────────────────────────
+    private boolean isPagesIndex(Uri u) {
+        if (u == null || !PAGES_HOST.equalsIgnoreCase(u.getHost())) return false;
+        String path = u.getPath();
+        return "/planner/index.html".equals(path) || "/planner/".equals(path) || "/planner".equals(path);
+    }
+
+    /** Сеть → свежий index.html с Pages; не вышло → офлайн-копия из assets.
+     *  В обоих случаях WebView считает, что страница пришла с Pages, —
+     *  хранилище localStorage одно. Вызывается на фоновом потоке WebView. */
+    private WebResourceResponse loadIndexNetworkFirst() {
+        if (isOnline()) {
+            HttpURLConnection c = null;
+            try {
+                c = (HttpURLConnection) new URL(PAGES_URL).openConnection();
+                c.setConnectTimeout(4000);
+                c.setReadTimeout(7000);
+                c.setUseCaches(false);
+                c.setRequestProperty("Cache-Control", "no-cache");
+                if (c.getResponseCode() == 200) {
+                    InputStream is = c.getInputStream();
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    byte[] buf = new byte[16384];
+                    int n;
+                    while ((n = is.read(buf)) != -1) bos.write(buf, 0, n);
+                    is.close();
+                    return new WebResourceResponse("text/html", "utf-8",
+                        new ByteArrayInputStream(bos.toByteArray()));
+                }
+                Log.w(TAG, "Pages HTTP " + c.getResponseCode() + ", serving offline copy");
+            } catch (Exception e) {
+                Log.w(TAG, "Pages fetch failed, serving offline copy", e);
+            } finally {
+                if (c != null) c.disconnect();
+            }
+        }
+        try {
+            return new WebResourceResponse("text/html", "utf-8", getAssets().open("index.html"));
+        } catch (Exception e) {
+            Log.e(TAG, "offline copy missing", e);
+            return null;
+        }
+    }
+
+    /* Разовый перенос из старого офлайн-хранилища (file://), куда до 1.7.4 попадали
+       данные при запуске без сети. Прочитать его можно только страницей с того же
+       источника: грузим офлайн-копию с меткой #legacy-export — скрипт в этом режиме
+       не запускает приложение, а только отдаёт localStorage в legacyStoreResult().
+       Дальше обычная загрузка Pages, данные передаются в window.onLegacyStore(),
+       там человек (если данные есть в обоих местах) выбирает, что оставить. */
+    private void startMainPage() {
+        SharedPreferences p = getSharedPreferences(MIG_PREFS, MODE_PRIVATE);
+        if (p.getBoolean(KEY_LEGACY_DONE, false) || p.getInt(KEY_LEGACY_TRIES, 0) >= 3) {
+            webView.loadUrl(PAGES_URL);
+            return;
+        }
+        migratingLegacy = true;
+        webView.loadUrl(ASSET_URL + "#legacy-export");
+        // страховка: если страница чтения не ответила — не держим человека на пустом экране
+        webView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!migratingLegacy) return;
+                migratingLegacy = false;
+                SharedPreferences sp = getSharedPreferences(MIG_PREFS, MODE_PRIVATE);
+                sp.edit().putInt(KEY_LEGACY_TRIES, sp.getInt(KEY_LEGACY_TRIES, 0) + 1).apply();
+                Log.w(TAG, "legacy store read timed out");
+                webView.loadUrl(PAGES_URL);
+            }
+        }, 4000);
+    }
+
+    void onLegacyStoreRead(String raw) {
+        if (!migratingLegacy) return;          // таймаут уже увёл на Pages
+        migratingLegacy = false;
+        if (raw == null || raw.trim().isEmpty()) {
+            markLegacyDone();                  // старое хранилище пустое — переносить нечего
+        } else {
+            legacyPayload = raw;               // отметку поставит JS после выбора
+        }
+        webView.loadUrl(PAGES_URL);
+    }
+
+    void markLegacyDone() {
+        getSharedPreferences(MIG_PREFS, MODE_PRIVATE).edit()
+            .putBoolean(KEY_LEGACY_DONE, true).apply();
     }
 
     private void callJs(final String js) {
@@ -598,6 +734,26 @@ public class MainActivity extends Activity {
         public int getAppVersionCode() {
             final MainActivity a = activityRef.get();
             return a == null ? 0 : a.appVersionCode();
+        }
+
+        /** Страница #legacy-export отдаёт содержимое старого офлайн-хранилища. */
+        @JavascriptInterface
+        public void legacyStoreResult(final String raw) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.onLegacyStoreRead(raw);
+                }
+            });
+        }
+
+        /** Перенос решён (перенесли или человек оставил текущие) — больше не спрашивать. */
+        @JavascriptInterface
+        public void legacyStoreDone() {
+            final MainActivity a = activityRef.get();
+            if (a != null) a.markLegacyDone();
         }
 
         /** Открыть страницу приложения в Google Play (кнопка «Обновить»). */
