@@ -3,6 +3,7 @@ package com.planner.app;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,10 @@ import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 
 import android.Manifest;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.speech.RecognizerIntent;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -46,6 +50,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Planner — нативная обёртка (WebView) для веб-планировщика.
@@ -75,6 +81,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "PlannerMain";
     private static final int REQ_POST_NOTIFICATIONS = 1001;
     private static final int REQ_PICK_BACKUP = 2001;
+    private static final int REQ_VOICE = 3001;
     private static final String CHANNEL_ID = "planner_tasks";
 
     private WebView webView;
@@ -558,6 +565,53 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
+        /** Есть ли на устройстве системный распознаватель речи.
+         *  JS спрашивает один раз при старте: нет распознавателя — микрофоны
+         *  в полях не рисуются вовсе (мёртвая кнопка хуже отсутствующей). */
+        @JavascriptInterface
+        public boolean hasVoiceInput() {
+            final MainActivity a = activityRef.get();
+            return a != null && a.isVoiceAvailable();
+        }
+
+        /** Системный голосовой ввод. langTag — BCP-47 из чипа языка
+         *  (ru-RU, en-US, es-419, pt-BR), а не системная локаль.
+         *  Результат придёт в window.onNativeVoiceResult(status, b64). */
+        @JavascriptInterface
+        public void startVoiceInput(final String langTag) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.doStartVoiceInput(langTag);
+                }
+            });
+        }
+
+        /** versionCode установленной сборки. index.html приходит с Pages свежим,
+         *  сравнивает это число со своим списком релизов и решает, показывать ли
+         *  плашку «Доступно обновление». В 1.7.3 и раньше метода нет — JS считает
+         *  такую сборку версией 11. */
+        @JavascriptInterface
+        public int getAppVersionCode() {
+            final MainActivity a = activityRef.get();
+            return a == null ? 0 : a.appVersionCode();
+        }
+
+        /** Открыть страницу приложения в Google Play (кнопка «Обновить»). */
+        @JavascriptInterface
+        public void openStore() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.doOpenStore();
+                }
+            });
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -685,12 +739,121 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_VOICE) {
+            handleVoiceResult(resultCode, data);
+            return;
+        }
         if (requestCode != REQ_PICK_BACKUP) return;
         if (resultCode != RESULT_OK || data == null || data.getData() == null) {
             callJs("window.onNativeImportResult && window.onNativeImportResult('cancel','','')");
             return;
         }
         readBackupUri(data.getData());
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // ГОЛОСОВОЙ ВВОД: RecognizerIntent → текст → JS
+    // Web Speech API в WebView не реализован (Blink отдаёт интерфейс, движка
+    // распознавания в WebView нет), поэтому идём через системный распознаватель.
+    // RECORD_AUDIO не нужен: пишет системное приложение, а не мы.
+    // На API 30+ queryIntentActivities видит распознаватель только при наличии
+    // <queries> с RECOGNIZE_SPEECH в манифесте — без него микрофоны пропадут у всех.
+    // ─────────────────────────────────────────────────────────────────
+    boolean isVoiceAvailable() {
+        try {
+            List<ResolveInfo> list = getPackageManager().queryIntentActivities(
+                new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+            return list != null && !list.isEmpty();
+        } catch (Exception e) {
+            Log.e(TAG, "isVoiceAvailable failed", e);
+            return false;
+        }
+    }
+
+    private void doStartVoiceInput(String langTag) {
+        try {
+            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            if (langTag != null && !langTag.trim().isEmpty()) {
+                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, langTag);
+                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, langTag);
+            }
+            // сначала локальный языковой пакет, в сеть — только если его нет
+            i.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+            i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            startActivityForResult(i, REQ_VOICE);
+        } catch (ActivityNotFoundException e) {
+            callJs("window.onNativeVoiceResult && window.onNativeVoiceResult('unavailable','')");
+        } catch (Exception e) {
+            Log.e(TAG, "startVoiceInput failed", e);
+            callJs("window.onNativeVoiceResult && window.onNativeVoiceResult('error','')");
+        }
+    }
+
+    private void handleVoiceResult(int resultCode, Intent data) {
+        String status;
+        String b64 = "";
+        if (resultCode == RESULT_OK) {
+            ArrayList<String> res = (data == null) ? null
+                : data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String text = (res == null || res.isEmpty()) ? null : res.get(0);
+            if (text != null && !text.trim().isEmpty()) {
+                status = "ok";
+                // base64 — чтобы кавычки и переносы не ломали строку JS
+                b64 = android.util.Base64.encodeToString(
+                    text.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
+            } else {
+                status = "nomatch";
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            status = "cancel";
+        } else if (resultCode == RecognizerIntent.RESULT_NETWORK_ERROR) {
+            status = "network";
+        } else if (resultCode == RecognizerIntent.RESULT_NO_MATCH) {
+            status = "nomatch";
+        } else {
+            status = "error";
+        }
+        callJs("window.onNativeVoiceResult && window.onNativeVoiceResult('"
+            + status + "','" + b64 + "')");
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // ОБНОВЛЕНИЕ: версия сборки и переход в Google Play
+    // WebView сам не открывает market:// (своего shouldOverrideUrlLoading у нас
+    // нет), поэтому ссылка из JS ведёт в никуда — только через этот мост.
+    // getPackageName() = applicationId (com.losev.planner), не namespace.
+    // ─────────────────────────────────────────────────────────────────
+    int appVersionCode() {
+        try {
+            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+            if (Build.VERSION.SDK_INT >= 28) return (int) pi.getLongVersionCode();
+            return pi.versionCode;
+        } catch (Exception e) {
+            Log.e(TAG, "appVersionCode failed", e);
+            return 0;
+        }
+    }
+
+    private void doOpenStore() {
+        final String id = getPackageName();
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + id));
+            i.setPackage("com.android.vending");   // сразу в Play, без выбора приложения
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            // Play нет (прошивка без сервисов Google) — открываем веб-страницу в браузере
+            try {
+                Intent w = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + id));
+                w.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(w);
+            } catch (Exception e2) {
+                Log.e(TAG, "openStore failed", e2);
+            }
+        }
     }
 
     /** Прочитать файл копии по ссылке и отдать его в JS.
