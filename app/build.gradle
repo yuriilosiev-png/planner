@@ -12,8 +12,11 @@
 //   - versionCode=11, versionName="1.7.3" (тайминг задач в шторке при закрытом
 //     приложении: фильтр по времени переехал в NotificationService, будильник
 //     NotifAlarmReceiver + ACTION_TIME_TICK, сброс списка при смене даты)
+//   - versionCode=12, versionName="1.7.4" (голосовой ввод в текстовых полях:
+//     RecognizerIntent через AndroidBridge, <queries> в манифесте; мост
+//     getAppVersionCode/openStore для плашки «Доступно обновление»)
 // 1.8 зарезервирован под миграцию на OnBackInvokedCallback (см. комментарий
-// enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.3.
+// enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.x.
 // Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
 // рабочем билде Options Analyst, чтобы гарантированно собралось тем же CI.
 apply plugin: 'com.android.application'
@@ -28,8 +31,8 @@ android {
         applicationId "com.losev.planner"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 11
-        versionName "1.7.3"
+        versionCode 12
+        versionName "1.7.4"
     }
     signingConfigs {
         release {
