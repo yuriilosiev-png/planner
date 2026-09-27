@@ -5129,7 +5129,7 @@ function legacyTake(){
    ПЕРВЫЙ ЗАПУСК: ПРИМЕР ИЛИ ШАБЛОНЫ (1.7.5)
    ============================================================
    Новый пользователь (в хранилище ещё пусто) видит выбор:
-   - «Посмотреть на примере» — загружаем demo/demo-<язык>.json с Pages:
+   - «Посмотреть на примере» — загружаем demo-<язык>.json (корень репо) с Pages:
      цели, дерево, события и ~месяц истории. Даты сдвигаем так, чтобы
      последний день примера стал сегодняшним, — график дисциплины и
      аналитика сразу живые. Пока идёт пример, сверху плашка «Это пример».
@@ -5167,7 +5167,7 @@ async function startDemo(){
   _demoLoading=true;
   let data=null;
   try{
-    const r=await fetch('demo/demo-'+curLang()+'.json',{cache:'no-store'});
+    const r=await fetch('demo-'+curLang()+'.json',{cache:'no-store'});   // примеры лежат в корне репо рядом с index.html
     if(r.ok){ const j=await r.json(); data=(j && j.data) ? j.data : j; }
   }catch(e){ data=null; }
   _demoLoading=false;
