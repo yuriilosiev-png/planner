@@ -5,6 +5,7 @@ on:
     paths:
       - 'app/**'
       - 'index.html'
+      - 'ic-launcher-*.png'
       - 'build.gradle'
       - 'gradle.properties'
       - 'settings.gradle'
@@ -73,6 +74,20 @@ jobs:
           cp icon-192.png app/src/main/res/mipmap-xhdpi/ic_launcher.png
           cp icon-512.png app/src/main/res/mipmap-xxhdpi/ic_launcher.png
           cp icon-512.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          # 1.7.5: адаптивная иконка (Android 8+). Слои лежат в корне репо —
+          # так их проще загружать через веб-интерфейс GitHub, без папок.
+          # Только xxxhdpi: на экранах пониже Android сам уменьшит.
+          mkdir -p app/src/main/res/mipmap-anydpi-v26
+          cp ic-launcher-bg.png app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png
+          cp ic-launcher-fg.png app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+          cat > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@mipmap/ic_launcher_background" />
+              <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+          </adaptive-icon>
+          EOF
+          echo "adaptive icon:"; cat app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
 
       # APK — для прямой установки на телефон (быстрый тест).
       - name: Build release APK
