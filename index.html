@@ -252,6 +252,18 @@ input,select,textarea{font-family:inherit;font-size:16px}
 .upd-ver{font-size:13px;font-weight:800;color:var(--accent);margin:10px 0 4px}
 .upd-list{margin:0 0 12px;padding-left:20px}
 .upd-list li{margin-bottom:6px;line-height:1.4}
+.demo-bar{position:sticky;top:-12px;z-index:5;margin:-12px -14px 10px;padding:9px 14px;display:flex;align-items:center;gap:10px;
+  background:var(--accent);color:#fff;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.demo-bar span{flex:1}
+.demo-bar button{background:#fff;color:var(--accent);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800}
+.wel-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.wel-btns button{padding:15px;border-radius:12px;font-size:15px;font-weight:700}
+.wel-btns .primary{background:var(--accent);color:#fff}
+.wel-btns .ghost{background:var(--surface2);border:1px solid var(--line)}
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
+.tpl-grid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-radius:14px;
+  background:var(--surface2);border:1px solid var(--line);font-size:14px;font-weight:700;line-height:1.25}
+.tpl-grid button .te{font-size:28px;line-height:1}
 .mig-card{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:8px;font-size:13.5px;line-height:1.45}
 .mig-card b{display:block;font-size:14.5px;margin-bottom:2px}
 .mig-card .mig-sub{color:var(--muted);font-size:12.5px}
@@ -777,6 +789,7 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 </div>
 
 <div class="content">
+  <div class="demo-bar" id="demoBar" style="display:none"></div>
   <!-- SCREEN 1: TODAY -->
   <div class="screen active" id="s-today"></div>
 
@@ -1349,6 +1362,24 @@ ru:{
   'mig.keep':'Оставить текущие',
   'mig.take':'Взять офлайн',
   'mig.moved':'Данные из офлайн-режима перенесены',
+  'wel.title':'С чего начнём?',
+  'wel.text':'Посмотрите, как выглядит приложение после месяца использования, или сразу начните со своей цели.',
+  'wel.demo':'Посмотреть на примере',
+  'wel.scratch':'Начать с нуля',
+  'wel.offline':'Для примера нужен интернет. Начните с нуля или попробуйте позже.',
+  'demo.bar':'🧪 Это пример',
+  'demo.start':'Начать своё',
+  'demo.confirmTitle':'Начать с чистого листа?',
+  'demo.confirmText':'Все данные примера будут удалены.',
+  'demo.confirmBtn':'Начать',
+  'tpl.title':'Выберите цель',
+  'tpl.text':'Шаблон заполнит форму — поправьте под себя и сохраните.',
+  'tpl.save':'Накопить','tpl.sport':'Спорт','tpl.lang':'Язык','tpl.read':'Чтение','tpl.habit':'Бросить привычку','tpl.own':'Своя цель',
+  'tpl.save.name':'Накопить на мечту','tpl.save.unit':'₽',
+  'tpl.sport.name':'Тренировки 3 раза в неделю','tpl.sport.items':'Разминка 10 мин|Отжимания 3×10|Приседания 3×15|Планка 1 мин',
+  'tpl.lang.name':'Английский 20 минут в день',
+  'tpl.read.name':'Прочитать 3000 страниц','tpl.read.unit':'стр.',
+  'tpl.habit.name':'30 дней без сахара',
   'bk.corrupt':'Файл повреждён',
   'bk.unreadable':'✕ Файл не удалось прочитать.',
   'bk.notBackupInfo':'✕ Это не копия планов — файл не читается.',
@@ -1793,6 +1824,24 @@ en:{
   'mig.keep':'Keep current',
   'mig.take':'Use offline',
   'mig.moved':'Offline data moved',
+  'wel.title':'How do you want to start?',
+  'wel.text':'See what the app looks like after a month of use, or start right away with your own goal.',
+  'wel.demo':'Explore an example',
+  'wel.scratch':'Start from scratch',
+  'wel.offline':'The example needs an internet connection. Start from scratch or try later.',
+  'demo.bar':'🧪 This is an example',
+  'demo.start':'Start my own',
+  'demo.confirmTitle':'Start with a clean slate?',
+  'demo.confirmText':'All example data will be deleted.',
+  'demo.confirmBtn':'Start',
+  'tpl.title':'Pick a goal',
+  'tpl.text':'A template fills in the form — adjust it and save.',
+  'tpl.save':'Save money','tpl.sport':'Workouts','tpl.lang':'Language','tpl.read':'Reading','tpl.habit':'Quit a habit','tpl.own':'My own goal',
+  'tpl.save.name':'Save for a dream','tpl.save.unit':'$',
+  'tpl.sport.name':'Workouts 3 times a week','tpl.sport.items':'Warm-up 10 min|Push-ups 3×10|Squats 3×15|Plank 1 min',
+  'tpl.lang.name':'Spanish 20 minutes a day',
+  'tpl.read.name':'Read 3,000 pages','tpl.read.unit':'pages',
+  'tpl.habit.name':'30 days without sugar',
   'bk.corrupt':'The file is damaged',
   'bk.unreadable':'✕ The file could not be read.',
   'bk.notBackupInfo':'✕ This is not a backup — the file cannot be read.',
@@ -2237,6 +2286,24 @@ es:{
   'mig.keep':'Conservar actuales',
   'mig.take':'Usar sin conexión',
   'mig.moved':'Datos del modo sin conexión transferidos',
+  'wel.title':'¿Cómo quieres empezar?',
+  'wel.text':'Mira cómo se ve la app tras un mes de uso o empieza ya con tu propia meta.',
+  'wel.demo':'Ver un ejemplo',
+  'wel.scratch':'Empezar desde cero',
+  'wel.offline':'El ejemplo necesita internet. Empieza desde cero o inténtalo más tarde.',
+  'demo.bar':'🧪 Esto es un ejemplo',
+  'demo.start':'Empezar lo mío',
+  'demo.confirmTitle':'¿Empezar desde cero?',
+  'demo.confirmText':'Se borrarán todos los datos del ejemplo.',
+  'demo.confirmBtn':'Empezar',
+  'tpl.title':'Elige una meta',
+  'tpl.text':'La plantilla completa el formulario: ajústala y guarda.',
+  'tpl.save':'Ahorrar','tpl.sport':'Deporte','tpl.lang':'Idioma','tpl.read':'Lectura','tpl.habit':'Dejar un hábito','tpl.own':'Meta propia',
+  'tpl.save.name':'Ahorrar para un sueño','tpl.save.unit':'$',
+  'tpl.sport.name':'Entrenar 3 veces por semana','tpl.sport.items':'Calentamiento 10 min|Flexiones 3x10|Sentadillas 3x15|Plancha 1 min',
+  'tpl.lang.name':'Inglés 20 minutos al día',
+  'tpl.read.name':'Leer 3000 páginas','tpl.read.unit':'páginas',
+  'tpl.habit.name':'30 días sin azúcar',
   'bk.corrupt':'El archivo está dañado',
   'bk.unreadable':'✕ No se pudo leer el archivo.',
   'bk.notBackupInfo':'✕ Esto no es una copia de seguridad: el archivo no se puede leer.',
@@ -2681,6 +2748,24 @@ pt:{
   'mig.keep':'Manter atuais',
   'mig.take':'Usar off-line',
   'mig.moved':'Dados do modo off-line transferidos',
+  'wel.title':'Como você quer começar?',
+  'wel.text':'Veja como o app fica depois de um mês de uso ou comece agora com a sua meta.',
+  'wel.demo':'Ver um exemplo',
+  'wel.scratch':'Começar do zero',
+  'wel.offline':'O exemplo precisa de internet. Comece do zero ou tente mais tarde.',
+  'demo.bar':'🧪 Isto é um exemplo',
+  'demo.start':'Começar o meu',
+  'demo.confirmTitle':'Começar do zero?',
+  'demo.confirmText':'Todos os dados do exemplo serão apagados.',
+  'demo.confirmBtn':'Começar',
+  'tpl.title':'Escolha uma meta',
+  'tpl.text':'O modelo preenche o formulário — ajuste e salve.',
+  'tpl.save':'Juntar dinheiro','tpl.sport':'Treino','tpl.lang':'Idioma','tpl.read':'Leitura','tpl.habit':'Largar um hábito','tpl.own':'Minha meta',
+  'tpl.save.name':'Juntar para um sonho','tpl.save.unit':'R$',
+  'tpl.sport.name':'Treinar 3 vezes por semana','tpl.sport.items':'Aquecimento 10 min|Flexão 3x10|Agachamento 3x15|Prancha 1 min',
+  'tpl.lang.name':'Inglês 20 minutos por dia',
+  'tpl.read.name':'Ler 3000 páginas','tpl.read.unit':'páginas',
+  'tpl.habit.name':'30 dias sem açúcar',
   'bk.corrupt':'O arquivo está danificado',
   'bk.unreadable':'✕ Não foi possível ler o arquivo.',
   'bk.notBackupInfo':'✕ Isto não é uma cópia de segurança: o arquivo não pode ser lido.',
@@ -4057,6 +4142,7 @@ function render(){
   renderCalendar();
   updateBadge();
   updateAppBadge();  updateNotificationTasks(); // Этап 2Б: кормим нативное уведомление
+  updateDemoBar();   // 1.7.5: плашка «Это пример»
 }
 
 function taskCardHTML(t){
@@ -4990,6 +5076,7 @@ function adoptState(obj){
   normalizeState();
   if(lang) state.lang = lang;
   const ok = save();
+  if(_welcomeOpen){ _welcomeOpen=false; closeModal(); }
   applyTheme(curScreen);
   render();
   return ok;
@@ -5039,6 +5126,142 @@ function legacyTake(){
 }
 
 /* ============================================================
+   ПЕРВЫЙ ЗАПУСК: ПРИМЕР ИЛИ ШАБЛОНЫ (1.7.5)
+   ============================================================
+   Новый пользователь (в хранилище ещё пусто) видит выбор:
+   - «Посмотреть на примере» — загружаем demo/demo-<язык>.json с Pages:
+     цели, дерево, события и ~месяц истории. Даты сдвигаем так, чтобы
+     последний день примера стал сегодняшним, — график дисциплины и
+     аналитика сразу живые. Пока идёт пример, сверху плашка «Это пример».
+   - «Начать с нуля» — шаблоны целей: шаблон заполняет форму цели,
+     человек правит и сохраняет обычной кнопкой (все проверки формы
+     остаются в силе).
+   Данные примера со своими не смешиваются: выход из примера стирает всё. */
+let _welcomeOpen=false;
+function openWelcome(){
+  if(state.demo || stateHasData(state)) return;   // данные уже появились (импорт, перенос)
+  _welcomeOpen=true;
+  showModal(`
+    <h2>${tr('wel.title')}</h2>
+    <div class="hint" style="margin-top:0">${tr('wel.text')}</div>
+    <div class="wel-btns">
+      <button class="primary" onclick="startDemo()">${tr('wel.demo')}</button>
+      <button class="ghost" onclick="_welcomeOpen=false;openTemplates()">${tr('wel.scratch')}</button>
+    </div>`);
+}
+function shiftDemoDates(obj, delta){
+  const walk=o=>{
+    if(Array.isArray(o)){ for(let i=0;i<o.length;i++) o[i]=walk(o[i]); return o; }
+    if(o && typeof o==='object'){ for(const k in o) o[k]=walk(o[k]); return o; }
+    if(typeof o==='string'){
+      if(/^\d{4}-\d{2}-\d{2}$/.test(o)) return addDays(o,delta);
+      if(/^\d{4}-\d{2}-\d{2}T/.test(o)) return addDays(o.slice(0,10),delta)+o.slice(10);
+    }
+    return o;
+  };
+  return walk(obj);
+}
+let _demoLoading=false;
+async function startDemo(){
+  if(_demoLoading) return;
+  _demoLoading=true;
+  let data=null;
+  try{
+    const r=await fetch('demo/demo-'+curLang()+'.json',{cache:'no-store'});
+    if(r.ok){ const j=await r.json(); data=(j && j.data) ? j.data : j; }
+  }catch(e){ data=null; }
+  _demoLoading=false;
+  if(!data || !Array.isArray(data.tasks)){ toast(tr('wel.offline')); return; }
+  const lang=curLang();
+  shiftDemoDates(data, daysBetween(data.lastGen||todayStr(), todayStr()));
+  state=data;
+  normalizeState();
+  state.lang=lang;
+  state.demo=true;
+  if(state.lastGen!==todayStr()) runDailyGen();
+  save();
+  _welcomeOpen=false;
+  closeModal();
+  applyTheme(curScreen);
+  render();
+}
+function updateDemoBar(){
+  const bar=document.getElementById('demoBar');
+  if(!bar) return;
+  if(state.demo){
+    bar.innerHTML=`<span>${tr('demo.bar')}</span><button onclick="askExitDemo()">${tr('demo.start')}</button>`;
+    bar.style.display='flex';
+  }else{
+    bar.style.display='none';
+  }
+}
+function askExitDemo(){
+  showModal(`
+    <h2>${tr('demo.confirmTitle')}</h2>
+    <div class="hint" style="margin-top:0">${tr('demo.confirmText')}</div>
+    <div class="modal-btns">
+      <button class="ghost" onclick="closeModal()">${tr('btn.cancel')}</button>
+      <button class="primary" onclick="exitDemo()">${tr('demo.confirmBtn')}</button>
+    </div>`);
+}
+function exitDemo(){
+  const lang=curLang();
+  state={cats:[],goals:[],tasks:[],events:[],achieved:[],tree:[],lastGen:null,themes:null,lang};
+  normalizeState();
+  state.lang=lang;
+  runDailyGen();
+  save();
+  applyTheme(curScreen);
+  switchScreen('today');
+  render();
+  openTemplates();
+}
+/* Шаблоны целей. kind: numeric | checklist | manual; days: 0=Пн … 6=Вс. */
+const GOAL_TEMPLATES={
+  save:  {emoji:'💰', kind:'numeric',   type:'material', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'20:00',
+          target:{ru:50000,en:1000,es:1000,pt:5000}},
+  sport: {emoji:'💪', kind:'checklist', type:'physical', days:[0,2,4], time:'07:00'},
+  lang:  {emoji:'🗣️', kind:'manual',    type:'learning', days:[0,1,2,3,4], time:'20:30'},
+  read:  {emoji:'📖', kind:'numeric',   type:'learning', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'21:30',
+          target:{ru:3000,en:3000,es:3000,pt:3000}},
+  habit: {emoji:'🚫', kind:'manual',    type:'physical', days:[0,1,2,3,4,5,6], deadlineDays:30, time:'21:00'},
+};
+function openTemplates(){
+  const b=k=>`<button onclick="openGoalTemplate('${k}')"><span class="te">${k==='own'?'✨':GOAL_TEMPLATES[k].emoji}</span>${tr('tpl.'+k)}</button>`;
+  showModal(`
+    <h2>${tr('tpl.title')}</h2>
+    <div class="hint" style="margin-top:0">${tr('tpl.text')}</div>
+    <div class="tpl-grid">${['save','sport','lang','read','habit','own'].map(b).join('')}</div>
+    <div class="modal-btns"><button class="ghost" onclick="closeModal()">${tr('btn.cancel')}</button></div>`);
+}
+function openGoalTemplate(k){
+  openGoalModal(null);                 // сброс черновика формы
+  const T=GOAL_TEMPLATES[k];
+  if(!T) return;                       // «Своя цель» — пустая форма
+  goalKind=T.kind; goalType=T.type;
+  gName=tr('tpl.'+k+'.name');
+  goalDays=T.days.slice();
+  gTime=T.time||'';
+  gShowNotif=true;
+  gCatTouched=false;
+  if(T.deadlineDays){ goalHasDeadline=true; goalDeadline=addDays(todayStr(),T.deadlineDays); }
+  if(T.kind==='checklist'){
+    const items=tr('tpl.'+k+'.items').split('|');
+    wpDraft={0:[],1:[],2:[],3:[],4:[],5:[],6:[]};
+    T.days.forEach(d=>{ wpDraft[d]=items.map(text=>({text,time:''})); });
+  }
+  renderGoalModal();
+  autoPickCat(goalType);
+  if(T.kind==='numeric'){
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v; };
+    set('g-start',0);
+    set('g-target',(T.target||{})[curLang()]||1000);
+    set('g-unit',tr('tpl.'+k+'.unit'));
+    try{ updatePreview(); }catch(e){}
+  }
+}
+
+/* ============================================================
    ПЛАШКА «ДОСТУПНО ОБНОВЛЕНИЕ» (1.7.4)
    ============================================================
    index.html приходит с Pages свежим, а APK у человека может быть старым.
@@ -5055,7 +5278,13 @@ function legacyTake(){
    (мост openStore появился в 1.7.4) — вместо кнопки текстовая подсказка.
    Браузер/PWA (нет AndroidBridge) — плашки нет. */
 const APP_RELEASES = [
-  { code:13, name:'1.7.4', live:false, notes:{
+  { code:14, name:'1.7.5', live:false, notes:{
+    ru:['Новая иконка','Первый запуск: пример с живым графиком дисциплины или готовые шаблоны целей'],
+    en:['New icon','First launch: an example with a live discipline chart, or ready-made goal templates'],
+    es:['Nuevo ícono','Primer inicio: un ejemplo con el gráfico de disciplina en vivo o plantillas de metas'],
+    pt:['Novo ícone','Primeiro uso: um exemplo com o gráfico de disciplina ao vivo ou modelos de metas prontos']
+  }},
+  { code:13, name:'1.7.4', live:true, notes:{
     ru:['Голосовой ввод: нажмите на микрофон в текстовом поле и продиктуйте цель, задачу, заметку или событие',
         'Исправлено: восстановленные и изменённые данные больше не пропадают при возврате в приложение и при запуске без интернета',
         'Дата резервной копии на португальском — в правильном формате'],
@@ -7386,6 +7615,7 @@ function legacyExport(){
 function init(){
   if(LEGACY_EXPORT){ legacyExport(); return; }
   load();
+  const firstRun = (_lastRaw===null);   // в хранилище ещё ничего не записано — новая установка
   // i18n: язык уже проставлен миграцией — применяем к статичной разметке
   document.documentElement.setAttribute('lang', curLang());
   applyStaticI18n();
@@ -7398,6 +7628,7 @@ function init(){
   startNotifTicker(); // Этап 2Б: живое обновление шторки пока приложение открыто
   startDiscTicker();  // живая свеча графика дисциплины (раз в минуту)
   voiceInit();        // 1.7.4: микрофоны в текстовых полях (если есть распознаватель)
+  if(firstRun) setTimeout(openWelcome, 350);   // 1.7.5: пример или шаблоны
 }
 init();
 
