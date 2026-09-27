@@ -1,79 +1,24 @@
-// app/build.gradle — настройки приложения Planner.
+// КОРНЕВОЙ build.gradle (в корне репозитория planner, рядом с settings.gradle).
+// Задаёт версию Android Gradle Plugin и репозитории для всех модулей.
+// НЕ путать с app/build.gradle — там настройки самого приложения.
 //
-// ОТЛИЧИЯ ОТ for-options (Options Analyst):
-//   - namespace = com.planner.app, applicationId = com.losev.planner (com.planner.app занят в Play)
-//   - убран plugin 'com.google.gms.google-services' (Firebase не используем)
-//   - убраны зависимости firebase-bom и firebase-messaging
-//   - versionCode=2, versionName="1.1" (нативный бэкап: шаринг/сохранение/импорт)
-//   - versionCode=8, versionName="1.7" (релиз в Google Play: i18n RU/EN, фикс модалки
-//     настроек, кнопка закрытия, свои категории; specialUse subtype переведён на английский)
-//   - versionCode=9, versionName="1.7.1" (target API 36 — требование Play, дедлайн
-//     31.08.2026; фикс наезда заголовка на дату в шапке; опт-аут predictive back)
-//   - versionCode=11, versionName="1.7.3" (тайминг задач в шторке при закрытом
-//     приложении: фильтр по времени переехал в NotificationService, будильник
-//     NotifAlarmReceiver + ACTION_TIME_TICK, сброс списка при смене даты)
-//   - versionCode=12, versionName="1.7.4" (голосовой ввод в текстовых полях:
-//     RecognizerIntent через AndroidBridge, <queries> в манифесте; мост
-//     getAppVersionCode/openStore для плашки «Доступно обновление»)
-//   - versionCode=13, versionName="1.7.4": та же 1.7.4, но код 12 уже занят в Play
-//     ранней загрузкой ААБ (Play не даёт использовать код повторно, даже если
-//     бандл убран из черновика). Плюс исправления хранилища.
-//   - versionCode=14, versionName="1.7.5": новая иконка (адаптивная, слои в
-//     res/mipmap-*), первый запуск — пример (demo/demo-<язык>.json) или шаблоны целей
-// 1.8 зарезервирован под миграцию на OnBackInvokedCallback (см. комментарий
-// enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.x.
-// Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
-// рабочем билде Options Analyst, чтобы гарантированно собралось тем же CI.
-apply plugin: 'com.android.application'
-
-android {
-    namespace "com.planner.app"
-    compileSdkVersion 36
-    defaultConfig {
-        // applicationId — идентификатор в Google Play, необратим после публикации.
-        // com.planner.app оказался занят чужим приложением. namespace ниже остаётся
-        // прежним (это Java-пакет, Play его не видит) — Java-файлы трогать не нужно.
-        applicationId "com.losev.planner"
-        minSdkVersion 24
-        targetSdkVersion 36
-        versionCode 14
-        versionName "1.7.5"
+// ОТЛИЧИЕ ОТ for-options: убран google-services classpath (Firebase не используем).
+// AGP 8.9.1 — минимум для compileSdk 36 (Android 16). Требует Gradle 8.11.1+ и JDK 17.
+// Подняли с 8.1.0 ради требования Play «target API 36 до 31.08.2026».
+// Версия слово в слово как в рабочем билде Options Analyst (тот же тулчейн = гарантия сборки).
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
     }
-    signingConfigs {
-        release {
-            // keystore и пароли приходят из env-переменных, которые задаёт workflow
-            // из GitHub Secrets. Имя файла по умолчанию — planner.jks.
-            storeFile file(System.getenv("KEYSTORE_PATH") ?: "planner.jks")
-            storePassword System.getenv("STORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
-        }
-        debug { minifyEnabled false }
-    }
-    sourceSets {
-        main { res.srcDirs = ['src/main/res'] }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.1'
     }
 }
 
-configurations {
-    all {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
-}
-
-dependencies {
-    // androidx.core нужен для ActivityCompat/ContextCompat (runtime-запрос
-    // POST_NOTIFICATIONS на Android 13+). Firebase-зависимости НЕ подключаем.
-    implementation 'androidx.core:core:1.10.1'
 }
