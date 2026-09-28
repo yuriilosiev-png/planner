@@ -10,7 +10,7 @@
 
    Версию CACHE всё равно меняем при релизе, чтобы очистить старый кэш иконок. */
 
-const CACHE = 'planner-v4-3c735fbf';
+const CACHE = 'planner-v4-97be1e10';
 const ASSETS = [
   './manifest.json',
   './icon-192.png',
