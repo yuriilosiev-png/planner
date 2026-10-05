@@ -1352,6 +1352,9 @@ ru:{
   'upd.later':'Позже',
   'upd.ok':'Понятно',
   'upd.manual':'Откройте Google Play, найдите это приложение и нажмите «Обновить».',
+  'upd.copy':'Скопировать ссылку',
+  'upd.copied':'Ссылка скопирована — вставьте её в браузере',
+  'upd.manualCopy':'Эта версия не умеет сама открывать Google Play. Нажмите «Скопировать ссылку» и откройте её в браузере — или найдите приложение в Google Play и нажмите «Обновить».',
   'save.fail':'Не удалось сохранить изменения на устройстве. Сделайте резервную копию в настройках.',
   'mig.title':'Найдены данные из офлайн-режима',
   'mig.text':'Раньше при запуске без интернета приложение хранило данные отдельно. Выберите, какой вариант оставить — второй будет недоступен.',
@@ -1814,6 +1817,9 @@ en:{
   'upd.later':'Later',
   'upd.ok':'Got it',
   'upd.manual':'Open Google Play, find this app and tap “Update”.',
+  'upd.copy':'Copy link',
+  'upd.copied':'Link copied — paste it into your browser',
+  'upd.manualCopy':'This version can’t open Google Play by itself. Tap “Copy link” and open it in your browser — or find this app in Google Play and tap “Update”.',
   'save.fail':'Couldn’t save your changes on this device. Make a backup in Settings.',
   'mig.title':'Data from offline mode found',
   'mig.text':'Earlier, when opened without internet, the app kept data separately. Choose which version to keep — the other one will no longer be available.',
@@ -2276,6 +2282,9 @@ es:{
   'upd.later':'Más tarde',
   'upd.ok':'Entendido',
   'upd.manual':'Abre Google Play, busca esta app y toca «Actualizar».',
+  'upd.copy':'Copiar enlace',
+  'upd.copied':'Enlace copiado: pégalo en tu navegador',
+  'upd.manualCopy':'Esta versión no puede abrir Google Play por sí sola. Toca «Copiar enlace» y ábrelo en tu navegador, o busca esta app en Google Play y toca «Actualizar».',
   'save.fail':'No se pudieron guardar los cambios en el dispositivo. Haz una copia de seguridad en Ajustes.',
   'mig.title':'Se encontraron datos del modo sin conexión',
   'mig.text':'Antes, al abrirse sin internet, la app guardaba los datos por separado. Elige qué versión conservar: la otra ya no estará disponible.',
@@ -2738,6 +2747,9 @@ pt:{
   'upd.later':'Mais tarde',
   'upd.ok':'Entendi',
   'upd.manual':'Abra o Google Play, procure este app e toque em «Atualizar».',
+  'upd.copy':'Copiar link',
+  'upd.copied':'Link copiado — cole no seu navegador',
+  'upd.manualCopy':'Esta versão não consegue abrir o Google Play sozinha. Toque em «Copiar link» e abra no navegador — ou procure este app no Google Play e toque em «Atualizar».',
   'save.fail':'Não foi possível salvar as alterações no aparelho. Faça uma cópia de segurança nos Ajustes.',
   'mig.title':'Encontramos dados do modo off-line',
   'mig.text':'Antes, ao abrir sem internet, o app guardava os dados separadamente. Escolha qual versão manter — a outra não ficará mais disponível.',
@@ -5350,13 +5362,35 @@ function openUpdateModal(){
     <h2>${tr('upd.title',{v:esc(rel[0].name)})}</h2>
     <div class="upd-what">${tr('upd.what')}</div>
     ${blocks}
-    ${canOpen ? '' : `<div class="upd-hint">${tr('upd.manual')}</div>`}
+    ${canOpen ? '' : `<div class="upd-hint">${tr('upd.manualCopy')}</div>`}
     <div class="modal-btns">
       <button class="ghost" onclick="snoozeUpdate();closeModal()">${tr('upd.later')}</button>
       ${canOpen
         ? `<button class="primary" onclick="openStoreForUpdate()">${tr('upd.btn')}</button>`
-        : `<button class="primary" onclick="closeModal()">${tr('upd.ok')}</button>`}
+        : `<button class="primary" onclick="copyStoreLink()">${tr('upd.copy')}</button>`}
     </div>`);
+}
+/* Сборки до 1.7.4 не умеют открывать Google Play: в мосте нет openStore, а сам
+   WebView ссылки market:// и intent:// не открывает, https-ссылка на Play
+   загрузилась бы прямо внутри приложения и увела бы с него. Поэтому для них —
+   копирование ссылки: человек вставляет её в браузер или в Telegram. */
+const STORE_URL='https://play.google.com/store/apps/details?id=com.losev.planner';
+function copyStoreLink(){
+  const done=()=>{ closeModal(); toast(tr('upd.copied')); };
+  const fallback=()=>{
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=STORE_URL; ta.setAttribute('readonly','');
+      ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,ta.value.length);
+      const ok=document.execCommand('copy'); ta.remove();
+      if(ok) done(); else toast(tr('upd.manual'));
+    }catch(e){ toast(tr('upd.manual')); }
+  };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(STORE_URL).then(done,fallback);
+    else fallback();
+  }catch(e){ fallback(); }
 }
 function openStoreForUpdate(){
   closeModal();
