@@ -340,7 +340,7 @@ input,select,textarea{font-family:inherit;font-size:16px}
 .cal-cell > *{position:absolute;left:0;right:0}
 .cal-cell > span:first-child{top:50%;transform:translateY(-60%);text-align:center}
 .cal-cell .cd-dots{bottom:14%;display:flex;gap:3px;height:6px;align-items:center;justify-content:center}
-.cal-cell.empty{background:transparent;border:none;cursor:default}
+.cal-cell.empty{background:transparent;border:none;cursor:default;padding:0 0 100% 0} /* сброс padding от общего .empty — иначе первая строка раздувается */
 .cal-cell.today{border-color:var(--accent);border-width:2px}
 .cal-cell.sel{background:var(--accent-dim);border-color:var(--accent)}
 .cal-cell .cd-dot{width:6px;height:6px;border-radius:50%}
