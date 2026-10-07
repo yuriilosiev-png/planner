@@ -865,7 +865,7 @@ const SWATCH_COLORS = ['#3ecf8e','#ffb648','#b98cff','#5b9dff','#ff7eb6','#ff5c5
 /* WEEKDAYS — языкозависимые короткие дни (index 0=Mon).
    Оставлено имя WEEKDAYS, чтобы не трогать 6 существующих мест использования:
    геттер отдаёт нужный массив по текущему языку. */
-Object.defineProperty(window,'WEEKDAYS',{get:function(){ const l=curLang(); return l==='en'?WEEKDAYS_EN:(l==='es'?WEEKDAYS_ES:(l==='pt'?WEEKDAYS_PT:WEEKDAYS_RU)); }});
+Object.defineProperty(window,'WEEKDAYS',{get:function(){ const l=curLang(); return l==='en'?WEEKDAYS_EN:(l==='es'?WEEKDAYS_ES:(l==='pt'?WEEKDAYS_PT:(l==='de'?WEEKDAYS_DE:WEEKDAYS_RU))); }});
 const DOW_MAP = [6,0,1,2,3,4,5]; // JS getDay()=0(Sun) -> our index
 /* GOAL_TYPES — id и emoji постоянны (это данные, лежат в g.type).
    label/ph — геттеры из словаря: язык меняется на лету, g.type НЕ трогаем. */
@@ -919,6 +919,11 @@ const MONTHS_ES_SHORT = ['ene','feb','mar','abr','may','jun','jul','ago','sep','
 const MONTHS_ES_LOW = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const WEEKDAYS_ES = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']; // index 0=Mon
 const WEEKDAYS_FULL_ES = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado']; // JS getDay()
+/* --- Немецкий --- */
+const MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const MONTHS_DE_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const WEEKDAYS_DE = ['Mo','Di','Mi','Do','Fr','Sa','So']; // index 0=Mon
+const WEEKDAYS_FULL_DE = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag']; // JS getDay()
 /* --- Португальский (Бразилия) --- */
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MONTHS_PT_SHORT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -2819,12 +2824,477 @@ pt:{
   'th.vivid':'Intenso',
   'th.reset':'Restaurar',
   'th.wasReset':'Restaurado'
+},
+de:{
+  'nav.today':'Heute',
+  'nav.goals':'Ziele',
+  'nav.undone':'Offen',
+  'nav.history':'Verlauf',
+  'nav.calendar':'Kalender',
+  'hint.swipe':'Du kannst jetzt nach links und rechts wischen, um die Bildschirme zu wechseln. Die Tasten unten funktionieren weiterhin.',
+  'title.today':'Heute',
+  'title.goals':'Ziele',
+  'title.undone':'Offen',
+  'title.history':'Verlauf',
+  'title.calendar':'Kalender',
+  'title.tree':'Zielbaum',
+  'today.empty':'Für heute ist nichts geplant.',
+  'today.emptyHint':'Lege ein Ziel an oder füge mit + eine Aufgabe hinzu',
+  'empty.ctaTask':'+ Aufgabe anlegen',
+  'empty.ctaGoal':'+ Ziel anlegen',
+  'empty.ctaBigGoal':'+ Großes Ziel anlegen',
+  'today.fromGoal':'◎ aus Ziel',
+  'today.manual':'✎ manuell',
+  'today.fromTree':'🌳 aus Baum',
+  'vis.badge':'👁 Vision',
+  'vis.title':'Vision des Ziels',
+  'vis.ph':'Beschreibe den Endpunkt: wie das erreichte Ziel aussieht, was um dich herum ist, wie es sich anfühlt…',
+  'vis.saved':'Vision gespeichert',
+  'tn.edVision':'👁 Vision des Ziels (optional)',
+  'today.noItems':'Keine Unterpunkte',
+  'today.skipToday':'⊘ Heute überspringen',
+  'today.statusManual':'Status manuell',
+  'today.st.green':'gelernt',
+  'today.st.yellow':'noch üben',
+  'today.st.pink':'wiederholen',
+  'act.done':'✓ Erledigt',
+  'act.edit':'✎ Bearbeiten',
+  'act.move':'→ Verschieben',
+  'act.skip':'⊘ Überspringen',
+  'act.delete':'🗑 Löschen',
+  'badge.inNotif':'🔔 in der Benachrichtigung',
+  'badge.notYet':'⏳ noch nicht',
+  'notif.title':'Aufgaben für heute',
+  'notif.empty':'Keine Aufgaben',
+  'notif.more':'und noch',
+  /* goals in the shade */
+  'notif.goal':'{n} — heute: {v}',
+  'notif.goalStatus':'{n} — heute: {v} · {s}',
+  'notif.goalPlain':'{n}',
+  'notif.goalMark':'{n} — {m}',
+  'lang.changed':'Sprache auf Deutsch umgestellt',
+  'pl.branch':['Zweig','Zweige'],
+  'pl.day':['Tag','Tage'],
+  'pl.year':['Jahr','Jahre'],
+  'pl.month':['Mon.','Mon.'],
+  'pl.task':['Aufgabe','Aufgaben'],
+  'pl.piece':['Punkt','Punkte'],
+  'pl.branchCreated':['Zweig angelegt','Zweige angelegt'],
+  'term.overdue':'überfällig',
+  'term.dueToday':'heute fällig',
+  'term.left':'noch {v}',
+  'cat.sport':'Sport',
+  'cat.fin':'Finanzen',
+  'cat.rest':'Erholung',
+  'cat.edu':'Lernen',
+  'cat.none':'Ohne Kategorie',
+  'gt.material':'Sache',
+  'gt.material.ph':'Auf ein Auto sparen',
+  'gt.physical':'Körper',
+  'gt.physical.ph':'10 km laufen',
+  'gt.learning':'Fähigkeit',
+  'gt.learning.ph':'Englisch lernen',
+  'gt.travel':'Reise',
+  'gt.travel.ph':'Nach Japan reisen',
+  'gm.titleNew':'Neues Ziel',
+  'gm.titleEdit':'Ziel bearbeiten',
+  'gm.name':'Name des Ziels',
+  'gm.namePh':'Name des Ziels',
+  'gm.time':'Uhrzeit in „Heute“',
+  'gm.timeHint':'(optional, für die Reihenfolge — wann es in der Leiste erscheint)',
+  'gm.cat':'Kategorie',
+  'gm.whatGoal':'Bereich des Ziels',
+  'gm.kind':'Art des Ziels',
+  'gm.kindLocked':'(nicht änderbar)',
+  'gm.kind.numeric':'Zahl',
+  'gm.kind.checklist':'Checkliste',
+  'gm.kind.manual':'Status',
+  'gm.vision':'Vision (optional)',
+  'gm.visionPh':'Warum dieses Ziel, wie es sein wird, was ich fühlen werde…',
+  'gm.showInNotif':'🔔 In der Benachrichtigung zeigen',
+  'gm.showInNotifHint':'Das Ziel erscheint in der Leiste neben den heutigen Aufgaben',
+  'gm.cancel':'Abbrechen',
+  'gm.save':'Speichern',
+  'gm.create':'Ziel anlegen',
+  'gm.deadline':'Frist',
+  'gm.deadlineLabel':'📅 Frist',
+  'gm.deadlineDate':'Fristdatum',
+  'gm.now':'Jetzt',
+  'gm.target':'Ziel',
+  'gm.unit':'Einheit (opt.)',
+  'gm.unitPh':'Wdh.',
+  'gm.days':'Aktive Tage',
+  'gm.daysShort':'Tage',
+  'gm.fact':'📍 Aktueller Stand (Ist)',
+  'gm.factPh':'wo du gerade stehst',
+  'gm.factHint':'Gib ein, was du heute tatsächlich erreicht hast. Die App vergleicht es mit dem Plan und zeigt, ob du vorne oder hinten liegst. Das Datum des Eintrags wird gespeichert.',
+  'gm.hintChecklist':'Lege für jeden Wochentag eine Liste von Punkten fest. An diesem Wochentag erscheinen sie in „Heute“ als Checkliste. Die Farbe des Tages wird automatisch berechnet: alle ✓ — 🟢, mehr als die Hälfte — 🟡, weniger — 🌸.',
+  'gm.hintManual':'Ein tägliches Ziel ohne Unterpunkte. In „Heute“ setzt du den Status selbst: 🟢 gelernt · 🟡 üben · 🌸 wiederholen. Praktisch für Sprachen, Lesen und Ähnliches.',
+  'gm.prevEqual':'📊 Start und Ziel sind gleich — die Tagesmenge bleibt konstant: <b>{v}</b> an jedem aktiven Tag.',
+  'gm.prevSteps':'📊 Aufteilung in Stufen: insgesamt {a} aktive Tage, {s} Stufen. Halte den Wert <b>{i} aktive Tage am Stück</b>, dann <b>{d}</b> — und so weiter bis zum Ziel. Start: {st}.',
+  'wp.itemPh':'Übung / Punkt',
+  'wp.timeTitle':'Uhrzeit (optional)',
+  'wp.dayOff':'frei',
+  'wp.tasksN':'{v} Punkte',
+  'wp.timedN':' · {v} mit Uhrzeit',
+  'wp.add':'＋ Punkt hinzufügen',
+  'gv.name':'Gib einen Namen ein',
+  'gv.deadline':'Wähle eine Frist',
+  'gv.deadlineOrOff':'Wähle ein Fristdatum oder schalte die Frist aus',
+  'gv.future':'Die Frist muss in der Zukunft liegen',
+  'gv.numbers':'Gib die Zahlen für „Jetzt“ und „Ziel“ ein',
+  'gv.oneDay':'Wähle mindestens einen Tag',
+  'gv.oneTask':'Füge mindestens einen Punkt für die Woche hinzu',
+  'gt.updated':'Ziel aktualisiert',
+  'gt.created':'Ziel angelegt',
+  'btn.cancel':'Abbrechen',
+  'btn.save':'Speichern',
+  'btn.add':'Hinzufügen',
+  'tm.titleNew':'Neue Aufgabe',
+  'tm.titleEdit':'Aufgabe bearbeiten',
+  'tm.text':'Text der Aufgabe',
+  'tm.textPh':'Zum Beispiel: Milch kaufen',
+  'tm.cat':'Kategorie',
+  'tm.date':'Datum',
+  'tm.vText':'Gib den Text der Aufgabe ein',
+  'tm.vDate':'Wähle ein Datum',
+  'tm.saved':'Gespeichert',
+  'tm.added':'Hinzugefügt',
+  'mv.title':'Aufgabe verschieben',
+  'mv.newDate':'Neues Datum',
+  'mv.btn':'Verschieben',
+  'mv.done':'Verschoben auf {v}',
+  'tt.done':'Erledigt ✓',
+  'tt.deleted':'Gelöscht',
+  'tt.skipped':'Übersprungen',
+  'tt.markedDone':'Als erledigt markiert ✓',
+  'tt.status':'Status: {v}',
+  'na.hasKids':'Dieses Ziel hat Unterzweige — Aktionen werden an den Endknoten festgelegt',
+  'na.title':'📋 Aktionen nach Tagen',
+  'na.hint':'„{v}“ ({n}). Lege für jeden Wochentag Punkte fest — sie erscheinen am passenden Tag in „Heute“. Die Farbe des Tages wird automatisch berechnet: alle ✓ — 🟢, mehr als die Hälfte — 🟡, weniger — 🌸.',
+  'na.revert':'↩ Wieder zum normalen Ziel machen',
+  'na.reverted':'Wieder ein normales Ziel',
+  'na.savedTitle':'✓ Gespeichert',
+  'na.savedHint':'Punkte gespeichert ({n} {u} pro Woche). Sie erscheinen am passenden Wochentag in „Heute“.',
+  'na.savedEmpty':'Die Liste ist leer — keine Punkte für die Woche. Der Knoten bleibt ohne Aktionen.',
+  'na.more':'Weiter bearbeiten',
+  'na.back':'Zurück zum Baum',
+  'ts.title':'Heutige Punkte aktualisieren?',
+  'ts.hint':'Die heutigen Punkte wurden schon angelegt — mit den alten Uhrzeiten. Ihre Uhrzeiten an den neuen Plan anpassen? Die Häkchen „erledigt“ bleiben erhalten.',
+  'ts.keep':'So lassen',
+  'ts.apply':'Uhrzeiten aktualisieren',
+  'ts.updated':'Uhrzeiten aktualisiert: {n} {u}',
+  'ts.none':'Keine Übereinstimmungen gefunden',
+  /* --- Stage 3a: goal tree --- */
+  'tn.empty':'Noch kein Zielbaum.<br>Tippe auf + und lege ein großes Ziel an.<br>Dann teile es in Unterziele und konkrete Aktionen.',
+  'tn.rootSec':'Hauptziele',
+  'tn.crumbRoot':'🌳 Baum',
+  'tn.childSec':'Unterziele und Aktionen',
+  'tn.notSplit':'Noch nicht aufgeteilt.<br>Teile es in Unterziele oder lege Systemaktionen fest.',
+  'tn.deadline':'Frist: {v}',
+  'tn.noDeadline':'Ohne Frist',
+  'tn.kindActions':'Systemaktionen',
+  'tn.kindGoal':'Ziel (teilbar)',
+  'tn.btnOpenActions':'📋 Aktionen öffnen',
+  'tn.btnSplit':'🌿 In Ziele aufteilen',
+  'tn.btnActions':'📋 Systemaktionen',
+  'tn.editTime':'⏰ Uhrzeit',
+  'tn.editDeadline':'📅 Frist',
+  'tn.editRename':'✎ Umbenennen',
+  'tn.editDelete':'🗑 Löschen',
+  /* single edit form for a tree node */
+  'tn.editOne':'✎ Bearbeiten',
+  'tn.edTitle':'Bearbeiten',
+  'tn.edHint':'{n} · {v}',
+  'tn.edName':'Name',
+  'tn.edTime':'Uhrzeit',
+  'tn.edTimeNone':'ohne Uhrzeit',
+  'tn.edDeadline':'Frist',
+  'tn.edDlNone':'nicht gesetzt',
+  'tn.edClear':'✕ entfernen',
+  'tn.edNotif':'🔔 In der Benachrichtigung zeigen',
+  'tn.edYes':'Ja',
+  'tn.edNo':'Nein',
+  'tn.edSaved':'Gespeichert',
+  'tn.chActions':'📋 Aktionen',
+  'tn.chGoal':'🌿 Ziel',
+  'tn.perWeek':'/Wo.',
+  'tn.chEmpty':'leer',
+  'tn.chNotSplit':'nicht aufgeteilt',
+  'tn.newRoot':'Neues Hauptziel',
+  'tn.newChild':'Neues Unterziel',
+  'tn.newRootHint':'Ein großes langfristiges Ziel — die Spitze des Baums. In Teile zerlegst du es später.',
+  'tn.newChildHint':'Ein Zweig des übergeordneten Ziels. Er lässt sich ebenfalls weiter aufteilen.',
+  'tn.name':'Titel',
+  'tn.phRoot':'Beruflich umsatteln',
+  'tn.phChild':'Eine Fähigkeit lernen',
+  'tn.timeTitle':'Uhrzeit in „Heute“',
+  'tn.optional':'(opt.)',
+  'tn.dlSwitch':'📅 Frist (opt.)',
+  'tn.btnCreate':'Anlegen',
+  'tn.created':'Ziel angelegt',
+  'tn.splitTitle':'In Unterziele aufteilen',
+  'tn.splitHint':'„{v}“ ({n}) → teile es in mehrere Unterziele. Jedes lässt sich weiter aufteilen oder in Aktionen verwandeln.',
+  'tn.splitPh':'Unterziel {i}',
+  'tn.splitAdd':'＋ Unterziel hinzufügen',
+  'tn.splitBtn':'Zweige anlegen',
+  'tn.splitEmpty':'Füge mindestens ein Unterziel hinzu',
+  'tn.renameTitle':'Umbenennen',
+  'tn.renamed':'Umbenannt',
+  'tn.dlTitle':'Frist des Unterziels',
+  'tn.dlClear':'Frist entfernen',
+  'tn.dlRemoved':'Frist entfernt',
+  'tn.vDate':'Wähle ein Datum',
+  'tn.timeHint':'{n} {v} — für die Reihenfolge in der Tagesliste',
+  'tn.timeField':'Uhrzeit (optional)',
+  'tn.timeClear':'Uhrzeit entfernen',
+  'tn.timeSaved':'Uhrzeit: {v}',
+  'tn.timeRemoved':'Uhrzeit entfernt',
+  'tn.delTitle':'Knoten löschen?',
+  'tn.delHint':'„{v}“ ({n}){d} wird endgültig gelöscht.',
+  'tn.delKids':' und alle untergeordneten Zweige ({c})',
+  'tn.delBtn':'Löschen',
+  /* --- Stage 3a: goal cards --- */
+  'gc.overdue':'⏰ Frist erreicht ({v})',
+  'gc.achieved':'✓ Erreicht',
+  'gc.extend':'📅 Verschieben',
+  'gc.today':'heute',
+  'gc.ago':'vor {n} {u}',
+  'gc.ahead':'Vorne um {v}',
+  'gc.on':'Genau im Plan',
+  'gc.behind':'Hinten um {v}',
+  'gc.pace':'Ist {f} ({a}) · Plan für heute {p}',
+  'gc.noFact':'Gib deinen aktuellen Stand ein, um das Tempo zu sehen',
+  'gc.checklist':'Checkliste nach Tagen · {n} {u} pro Woche',
+  'gc.days':'Tage: {v}',
+  'gc.todayLbl':'Heute:',
+  'gc.manual':'Status manuell (🟢/🟡/🌸)',
+  'gc.everyDay':'jeden Tag',
+  'gc.totalDays':'aktive Tage insgesamt: {n}',
+  'gc.emptyGoals':'Noch keine Ziele.<br>Tippe auf +, um ein Ziel hinzuzufügen.<br>Die App teilt es in tägliche Schritte auf.',
+  'gc.tabActive':'Aktiv',
+  'gc.tabLong':'Langfristig',
+  /* --- Stage 3a: delete / achieve / postpone a goal --- */
+  'gd.delTitle':'Ziel löschen?',
+  'gd.delHint':'Punkte, die schon in deinen Tagen stehen, bleiben erhalten. Künftige Schritte werden nicht mehr erzeugt.',
+  'gd.deleted':'Ziel gelöscht',
+  'gd.achieved':'Ziel erreicht 🏆',
+  'gd.extTitle':'Frist verschieben',
+  'gd.extHint':'Aktuelle Frist: {d} (abgelaufen). Wähle ein neues Datum — das Ziel läuft weiter.',
+  'gd.extLabel':'Neue Frist',
+  'gd.extBtn':'Verschieben',
+  'gd.extDone':'Frist verschoben auf {v}',
+  'gd.vFuture':'Das Datum muss in der Zukunft liegen',
+  /* --- Stage 3b: calendar and events --- */
+  'ev.monthEvents':'Termine in diesem Monat',
+  'ev.noneDay':'Keine Termine. Tippe auf „+“, um einen hinzuzufügen.',
+  'ev.noneMonth':'Keine Termine in diesem Monat.<br>Wähle einen Tag und tippe auf „+“.',
+  'ev.type.meeting':'Treffen',
+  'ev.type.event':'Termin',
+  'ev.type.birthday':'Geburtstag',
+  'ev.rep.once':'Einmalig',
+  'ev.rep.monthly':'Monatlich',
+  'ev.rep.yearly':'Jährlich',
+  'ev.titleNew':'Neuer Termin',
+  'ev.titleEdit':'Termin',
+  'ev.namePh':'Termin bei der Bank',
+  'ev.typeLabel':'Art',
+  'ev.repeatLabel':'Wiederholen',
+  'ev.alert':'🔔 Erinnerung',
+  'ev.alertTime':'Uhrzeit',
+  'ev.note':'Notiz (opt.)',
+  'ev.notePh':'Details zum Termin…',
+  'ev.del':'🗑 Termin löschen',
+  'ev.delConfirm':'Diesen Termin löschen?',
+  'ev.deleted':'Termin gelöscht',
+  'ev.created':'Termin angelegt',
+  'ev.banner':'Heute · {v}',
+  /* --- Stage 4a: Unfinished, history, categories, screen list --- */
+  'un.empty':'Nichts offen. Alles erledigt!',
+  'un.skipped':'⊘ übersprungen',
+  'hi.achievedSec':'🏆 Erreichte Ziele',
+  'hi.sameDay':'am selben Tag',
+  'hi.achievedOn':'erreicht {d} · in {v}',
+  'hi.empty':'Der Verlauf ist leer.<br>Erledigte Punkte und erreichte Ziele erscheinen hier.',
+  'hi.doneSec':'Erledigte Punkte',
+  'hi.restore':'↩ Abschließen',
+  /* --- discipline chart (History screen) --- */
+  'dc.title':'📈 Disziplin-Chart',
+  'dc.dayShort':'T',
+  'dc.pAll':'Alle',
+  'dc.days':'Tage',
+  'dc.level':'Niveau',
+  'dc.best':'Bester',
+  'dc.worst':'Schlechtester',
+  'dc.rate':'Disziplin',
+  'dc.empty':'Noch nichts zu zeigen — hake deine ersten Punkte ab.',
+  'an.title':'📊 Zielanalyse',
+  'an.hint':'Anteil der erledigten Punkte pro Ziel im gewählten Zeitraum. Grün — ab 70 %, gelb — ab 40 %, rot — darunter.',
+  'an.empty':'Keine abgeschlossenen Tage für deine Ziele in diesem Zeitraum. Probiere einen längeren.',
+  'ad.progress':'Fortschritt',
+  'ad.start':'Begonnen',
+  'ad.hadDeadline':'Frist war',
+  'ad.achieved':'Erreicht',
+  'ad.took':'Dauer',
+  'ad.restore':'↩ Zurück zu den aktiven Zielen',
+  'ad.close':'Schließen',
+  'ad.already':'Dieses Ziel ist bereits aktiv',
+  'ad.restored':'Wieder aktiv',
+  'cm.title':'Kategorien',
+  'cm.none':'Keine Kategorien',
+  'cm.new':'Neue Kategorie',
+  'cm.hint':'Wähle eine Farbe — die Kategorie übernimmt sie.',
+  'cm.done':'Fertig',
+  'cm.needOne':'Mindestens eine Kategorie ist nötig',
+  'cm.inUse':'Kategorie wird verwendet — Löschen nicht möglich',
+  'cm.addNew':'＋ Neue Kategorie…',
+  'cm.added':'Kategorie hinzugefügt ✓',
+  'sc.undone':'Offen',
+
+  /* --- Stage 4b: shared --- */
+  'err.generic':'Fehler: {v}',
+  'a11y.back':'Zurück',
+  'a11y.settings':'Einstellungen',
+  'pl.entry':['Eintrag','Einträge'],
+
+  /* --- Stage 4b: notification settings --- */
+  'ns.title':'🔔 Benachrichtigung mit Aufgabenliste',
+  'ns.hint':'Eine dauerhafte Benachrichtigung in der Leiste. Eine Aufgabe erscheint, wenn ihre Zeit kommt, und bleibt, bis du sie abhakst. Aufgaben ohne Uhrzeit bleiben den ganzen Tag. Eine Checkliste wird als eine Zeile gezeigt.',
+  'ns.toggle':'Benachrichtigung mit Aufgabenliste zeigen',
+  'ns.count':'Wie viele Aufgaben zeigen',
+  'ns.now':'Aufgaben für heute: <b>{v}</b>',
+  'ns.overflow':' · {m} in der Benachrichtigung, der Rest als „und noch {r}“',
+  'ns.miuiTitle':'⚠️ MIUI kann die Benachrichtigung beenden',
+  'ns.miuiHint':'Wenn die Benachrichtigung verschwindet, erlaube der App, im Hintergrund zu laufen.',
+  'ns.battery':'Energiesparen',
+  'ns.autostart':'Autostart',
+  'ns.on':'Benachrichtigung an',
+  'ns.off':'Benachrichtigung aus',
+  'ns.errSettings':'Einstellungen konnten nicht geöffnet werden',
+
+  /* --- Stage 4b: backup --- */
+  'bk.title':'💾 Sicherung deiner Pläne',
+  'bk.hint':'Alle Ziele, Aufgaben, der Kalender und der Verlauf werden in einer einzigen Datei gespeichert. Schick sie dir selbst (Telegram, Google Drive) oder lade sie aufs Handy. Auf einem neuen Gerät stellst du alles aus dieser Datei wieder her. <b>Mach immer eine Sicherung, bevor du die App deinstallierst!</b>',
+  'bk.share':'Sicherung teilen',
+  'bk.save':'Sicherung herunterladen',
+  'bk.restore':'Aus Sicherung wiederherstellen',
+  'bk.pickTarget':'Wähle, wo gespeichert werden soll (Telegram, Google Drive, Dateien…)',
+  'bk.saved':'Sicherung gespeichert ✓',
+  'bk.saveBtn':'Sicherung speichern',
+  'bk.chooseTitle':'Wo soll die Sicherung hin?',
+  'bk.chooseHint':'Eine Datei mit deinen Zielen, Aufgaben und dem Verlauf.',
+  'bk.optCloud':'☁️ Google Drive, Telegram, E-Mail…',
+  'bk.optCloudHint':'Es öffnet sich eine App-Liste — wähle, wohin die Datei gesendet wird.',
+  'bk.optDl':'⬇ Ordner „Downloads“ auf diesem Handy',
+  'bk.optDlHint':'Die Datei landet in „Downloads“. Sie bleibt nur auf diesem Gerät.',
+  'bk.savedInfo':'✓ Sicherung in „Downloads“: {f} — {v} {u}.',
+  'bk.restTitle':'Woher wiederherstellen?',
+  'bk.restHint':'Wähle, wo du die Sicherung gespeichert hast — ich sage dir, wo du suchen musst.',
+  'bk.srcDrive':'☁️ Google Drive',
+  'bk.srcDriveHint':'In der Dateiauswahl: Menü ☰ links → Google Drive.',
+  'bk.srcTg':'✈️ Telegram',
+  'bk.srcTgHint':'Am einfachsten: öffne die Datei in Telegram, tippe auf „Teilen“ und wähle Planner. Oder lade sie erst herunter, dann hier: ☰ → Downloads → Ordner Telegram.',
+  'bk.srcDl':'⬇ Ordner „Downloads“',
+  'bk.srcDlHint':'In der Dateiauswahl: Menü ☰ links → Downloads.',
+  'bk.tipDrive':'Schau unter ☰ → Google Drive',
+  'bk.tipTg':'Schau unter ☰ → Downloads → Telegram',
+  'bk.tipDl':'Schau unter ☰ → Downloads',
+  'bk.sentInfo':'✓ Sicherung gesendet — {v} {u}.',
+  'bk.saveFail':'Sicherung konnte nicht gespeichert werden',
+  'bk.errInfo':'✕ Fehler: {v}',
+  'bk.unknown':'unbekannt',
+  'bk.openFail':'Datei konnte nicht geöffnet werden',
+  'voice.btn':'Spracheingabe',
+  'voice.offline':'Keine Verbindung — bitte eintippen',
+  'voice.nomatch':'Nicht verstanden — versuch es noch einmal',
+  'voice.fail':'Spracheingabe fehlgeschlagen — bitte eintippen',
+  'voice.none':'Spracheingabe ist auf diesem Gerät nicht verfügbar',
+  'upd.banner':'Version {v} ist verfügbar',
+  'upd.bannerSub':'Tippe, um die Neuerungen zu sehen',
+  'upd.title':'Update {v}',
+  'upd.what':'Neu',
+  'upd.btn':'Bei Google Play aktualisieren',
+  'upd.later':'Später',
+  'upd.ok':'Verstanden',
+  'upd.manual':'Öffne Google Play, suche diese App und tippe auf „Aktualisieren“.',
+  'upd.copy':'Link kopieren',
+  'upd.copied':'Link kopiert — füge ihn im Browser ein',
+  'upd.manualCopy':'Diese Version kann Google Play nicht selbst öffnen. Tippe auf „Link kopieren“ und öffne ihn im Browser — oder suche die App in Google Play und tippe auf „Aktualisieren“.',
+  'save.fail':'Deine Änderungen konnten auf dem Gerät nicht gespeichert werden. Mach in den Einstellungen eine Sicherung.',
+  'mig.title':'Daten aus dem Offline-Modus gefunden',
+  'mig.text':'Früher hat die App ohne Internet die Daten getrennt gespeichert. Wähle, welche Version du behältst — die andere ist danach nicht mehr verfügbar.',
+  'mig.current':'Aktuell',
+  'mig.offline':'Aus dem Offline-Modus',
+  'mig.stats':'Ziele: {g} · Aufgaben: {t} · Termine: {e}',
+  'mig.last':'Zuletzt geöffnet: {v}',
+  'mig.keep':'Aktuelle behalten',
+  'mig.take':'Offline-Daten nehmen',
+  'mig.moved':'Offline-Daten übernommen',
+  'wel.title':'Wie möchtest du starten?',
+  'wel.text':'Sieh dir an, wie die App nach einem Monat Nutzung aussieht, oder starte gleich mit deinem eigenen Ziel.',
+  'wel.demo':'Beispiel ansehen',
+  'wel.scratch':'Bei null anfangen',
+  'wel.offline':'Für das Beispiel ist eine Internetverbindung nötig. Fang bei null an oder versuch es später.',
+  'demo.bar':'🧪 Das ist ein Beispiel',
+  'demo.start':'Eigenes starten',
+  'demo.confirmTitle':'Mit leerem Blatt beginnen?',
+  'demo.confirmText':'Alle Beispieldaten werden gelöscht.',
+  'demo.confirmBtn':'Starten',
+  'tpl.title':'Wähle ein Ziel',
+  'tpl.text':'Die Vorlage füllt das Formular aus — pass es an und speichere.',
+  'tpl.save':'Sparen','tpl.sport':'Training','tpl.lang':'Sprache','tpl.read':'Lesen','tpl.habit':'Gewohnheit ablegen','tpl.own':'Eigenes Ziel',
+  'tpl.save.name':'Auf einen Traum sparen','tpl.save.unit':'€',
+  'tpl.sport.name':'Training 3-mal pro Woche','tpl.sport.items':'Aufwärmen 10 Min.|Liegestütze 3×10|Kniebeugen 3×15|Plank 1 Min.',
+  'tpl.lang.name':'Englisch 20 Minuten am Tag',
+  'tpl.read.name':'3.000 Seiten lesen','tpl.read.unit':'Seiten',
+  'tpl.habit.name':'30 Tage ohne Zucker',
+  'bk.corrupt':'Die Datei ist beschädigt',
+  'bk.unreadable':'✕ Die Datei konnte nicht gelesen werden.',
+  'bk.notBackupInfo':'✕ Das ist keine Sicherung — die Datei kann nicht gelesen werden.',
+  'bk.notBackup':'Das ist keine Sicherung',
+  'bk.wrongFile':'✕ Falsche Datei. Du brauchst planner-backup-*.json aus dieser App.',
+  'bk.created':'✓ Datei erstellt ({v} {u}). Schau im Ordner „Downloads“ nach.',
+  'bk.downloaded':'Datei in „Downloads“ gespeichert ✓',
+  'bk.exportErr':'Export fehlgeschlagen',
+  'bk.createFail':'✕ Datei konnte nicht erstellt werden: {v}',
+  'bk.notJson':'Die Datei ist beschädigt (kein JSON)',
+  'bk.notJsonInfo':'✕ Die Datei kann nicht gelesen werden — sie ist keine Planner-Sicherung.',
+  'bk.notPlanner':'Das ist keine Planner-Sicherung',
+  'bk.wrongFileShort':'✕ Falsche Datei. Du brauchst planner-backup-*.json.',
+  'bk.readFail':'Datei konnte nicht gelesen werden',
+  'bk.confirmTitle':'Pläne aus Sicherung wiederherstellen?',
+  'bk.madeAt':'Sicherung erstellt: {v}',
+  'bk.contains':'Enthält: <b>{g}</b> Ziele, <b>{t}</b> Aufgaben, <b>{e}</b> Termine, <b>{n}</b> Knoten im Baum, <b>{a}</b> erreichte Ziele.',
+  'bk.warn':'⚠️ Alles, was gerade in der App ist, wird durch die Daten aus der Sicherung ersetzt. Das lässt sich nicht rückgängig machen — wenn dir die aktuellen Pläne wichtig sind, speichere sie vorher als eigene Sicherung.',
+  'bk.replace':'Ersetzen und wiederherstellen',
+  'bk.noData':'Nichts zu importieren',
+  'bk.restored':'Daten wiederhergestellt ✓',
+  'bk.restoreErr':'Wiederherstellung fehlgeschlagen',
+  'bk.applyErr':'✕ Konnte nicht übernommen werden: {v}',
+
+  /* --- Stage 4b: theme modal --- */
+  'th.title':'⚙️ Bildschirmhintergrund',
+  'th.hint':'Eine eigene Farbe für jeden Bildschirm. Im Modus „Farbverlauf“ stellst du Ober- und Unterseite getrennt ein. Der Text passt sich automatisch an.',
+  'th.solid':'Einfarbig',
+  'th.gradient':'Farbverlauf',
+  'th.top':'⬆ Oben',
+  'th.bottom':'⬇ Unten',
+  'th.sideTop':'Oberseite',
+  'th.sideBottom':'Unterseite',
+  'th.sideBg':'Hintergrund',
+  'th.preview':'Beispielkarte',
+  'th.color':'Farbe',
+  'th.sat':'Sättigung',
+  'th.white':'Weiß',
+  'th.vivid':'Kräftig',
+  'th.reset':'Zurücksetzen',
+  'th.wasReset':'Zurückgesetzt'
 }
 };
 
 /* Поддерживаемые языки. Добавить новый = дописать код сюда,
    положить блок в I18N и добавить кнопку в селектор (renderThemeModal). */
-const LANGS = ['ru','en','es','pt'];
+const LANGS = ['ru','en','es','pt','de'];
 
 // язык системы при первом запуске: ru → ru, es → es, pt → pt, остальное → en
 function detectLang(){
@@ -2833,6 +3303,7 @@ function detectLang(){
     if(l.indexOf('ru')===0) return 'ru';
     if(l.indexOf('es')===0) return 'es';
     if(l.indexOf('pt')===0) return 'pt';   // pt-BR и pt-PT — словарь один, бразильский
+    if(l.indexOf('de')===0) return 'de';   // de-DE, de-AT, de-CH
     return 'en';
   }catch(e){ return 'en'; }
 }
@@ -2861,8 +3332,8 @@ function tr(key, params){ return t(key, params); }
 
 /* Месяцы — языкозависимые. Имена MONTHS_RU / MONTHS_RU_SHORT сохранены,
    чтобы не переписывать существующие вызовы в календаре и истории. */
-Object.defineProperty(window,'MONTHS_RU',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN:(l==='es'?MONTHS_ES:(l==='pt'?MONTHS_PT:_MONTHS_RU)); }});
-Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN_SHORT:(l==='es'?MONTHS_ES_SHORT:(l==='pt'?MONTHS_PT_SHORT:_MONTHS_RU_SHORT)); }});
+Object.defineProperty(window,'MONTHS_RU',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN:(l==='es'?MONTHS_ES:(l==='pt'?MONTHS_PT:(l==='de'?MONTHS_DE:_MONTHS_RU))); }});
+Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN_SHORT:(l==='es'?MONTHS_ES_SHORT:(l==='pt'?MONTHS_PT_SHORT:(l==='de'?MONTHS_DE_SHORT:_MONTHS_RU_SHORT))); }});
 
 /* Подписи языков: код для чипа в шапке + полное самоназвание для списка.
    Новый язык — дописать строку сюда и в LANGS. */
@@ -2870,7 +3341,8 @@ const LANG_LABELS = {
   ru:{code:'RU', name:'Русский'},
   en:{code:'EN', name:'English'},
   es:{code:'ES', name:'Español'},
-  pt:{code:'PT', name:'Português'}
+  pt:{code:'PT', name:'Português'},
+  de:{code:'DE', name:'Deutsch'}
 };
 
 // чип в шапке показывает текущий язык
@@ -3710,7 +4182,7 @@ function confirmImport(backup){
   const nTree = (d.tree||[]).length;
   const nA = (d.achieved||[]).length;
   const when = backup.exportedAt
-    ? new Date(backup.exportedAt).toLocaleString({ru:'ru-RU',en:'en-US',es:'es-419',pt:'pt-BR'}[curLang()]||'en-US')
+    ? new Date(backup.exportedAt).toLocaleString({ru:'ru-RU',en:'en-US',es:'es-419',pt:'pt-BR',de:'de-DE'}[curLang()]||'en-US')
     : tr('bk.unknown');
   // сохраняем во временную глобальную переменную для applyImport
   window._pendingImport = backup;
@@ -3818,6 +4290,8 @@ function fmtDateHuman(s){
   if(curLang()==='es') return WEEKDAYS_FULL_ES[dt.getDay()]+', '+d+' de '+MONTHS_ES_LOW[m-1];
   // sexta-feira, 24 de julho
   if(curLang()==='pt') return WEEKDAYS_FULL_PT[dt.getDay()]+', '+d+' de '+MONTHS_PT_LOW[m-1];
+  // Donnerstag, 24. Juli
+  if(curLang()==='de') return WEEKDAYS_FULL_DE[dt.getDay()]+', '+d+'. '+MONTHS_DE[m-1];
   return WEEKDAYS_FULL_RU[dt.getDay()]+', '+d+' '+MONTHS_RU_GEN[m-1];
 }
 /* «5 января 2026» (RU, родительный) / «January 5, 2026» (EN) — шапка агенды календаря */
@@ -3826,6 +4300,7 @@ function fmtDayMonthYear(s){
   if(curLang()==='en') return MONTHS_EN[m-1]+' '+d+', '+y;
   if(curLang()==='es') return d+' de '+MONTHS_ES_LOW[m-1]+' de '+y;
   if(curLang()==='pt') return d+' de '+MONTHS_PT_LOW[m-1]+' de '+y;
+  if(curLang()==='de') return d+'. '+MONTHS_DE[m-1]+' '+y;
   return d+' '+MONTHS_RU_GEN[m-1]+' '+y;
 }
 function dowIndex(s){ const [y,m,d]=s.split('-').map(Number); return DOW_MAP[new Date(y,m-1,d).getDay()]; }
@@ -5231,11 +5706,11 @@ function exitDemo(){
 /* Шаблоны целей. kind: numeric | checklist | manual; days: 0=Пн … 6=Вс. */
 const GOAL_TEMPLATES={
   save:  {emoji:'💰', kind:'numeric',   type:'material', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'20:00',
-          target:{ru:50000,en:1000,es:1000,pt:5000}},
+          target:{ru:50000,en:1000,es:1000,pt:5000,de:1000}},
   sport: {emoji:'💪', kind:'checklist', type:'physical', days:[0,2,4], time:'07:00'},
   lang:  {emoji:'🗣️', kind:'manual',    type:'learning', days:[0,1,2,3,4], time:'20:30'},
   read:  {emoji:'📖', kind:'numeric',   type:'learning', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'21:30',
-          target:{ru:3000,en:3000,es:3000,pt:3000}},
+          target:{ru:3000,en:3000,es:3000,pt:3000,de:3000}},
   habit: {emoji:'🚫', kind:'manual',    type:'physical', days:[0,1,2,3,4,5,6], deadlineDays:30, time:'21:00'},
 };
 function openTemplates(){
@@ -5291,10 +5766,11 @@ function openGoalTemplate(k){
    Браузер/PWA (нет AndroidBridge) — плашки нет. */
 const APP_RELEASES = [
   { code:15, name:'1.7.6', live:false, notes:{
-    ru:['Уведомление со списком задач читается на любом фоне шторки — светлом и тёмном','Рамки у галочек заметнее'],
-    en:['The task notification is readable on any shade background, light or dark','Checkboxes have clearer borders'],
-    es:['La notificación de tareas se lee bien con cualquier fondo, claro u oscuro','Casillas con bordes más visibles'],
-    pt:['A notificação de tarefas fica legível em qualquer fundo, claro ou escuro','Caixas de seleção com bordas mais visíveis']
+    ru:['Немецкий язык','Уведомление со списком задач читается на любом фоне шторки — светлом и тёмном','Рамки у галочек заметнее'],
+    de:['Deutsch als App-Sprache','Die Benachrichtigung mit Aufgaben ist auf jedem Hintergrund lesbar, hell oder dunkel','Kästchen mit deutlicheren Rändern'],
+    en:['German language','The task notification is readable on any shade background, light or dark','Checkboxes have clearer borders'],
+    es:['Idioma alemán','La notificación de tareas se lee bien con cualquier fondo, claro u oscuro','Casillas con bordes más visibles'],
+    pt:['Idioma alemão','A notificação de tarefas fica legível em qualquer fundo, claro ou escuro','Caixas de seleção com bordas mais visíveis']
   }},
   { code:14, name:'1.7.5', live:true, notes:{
     ru:['Новая иконка','Первый запуск: пример с живым графиком дисциплины или готовые шаблоны целей'],
@@ -7508,7 +7984,7 @@ let toastTimer=null;
    g-unit и newcat исключены намеренно — там 2-3 символа. */
 const VOICE_SEL = '#g-name,#g-vision,#tk-title,#vis-text,#tn-title,#tne-name,#tne-vision,'
   + '#tr-title,#ev-title,#ev-note,input[oninput^="splitEdit("],input[oninput^="wpEdit("]';
-const VOICE_LANG_TAG = {ru:'ru-RU', en:'en-US', es:'es-419', pt:'pt-BR'};
+const VOICE_LANG_TAG = {ru:'ru-RU', en:'en-US', es:'es-419', pt:'pt-BR', de:'de-DE'};
 const VOICE_MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
   + 'stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/>'
   + '<path d="M5.5 10.5a6.5 6.5 0 0 0 13 0"/><line x1="12" y1="17" x2="12" y2="21.5"/></svg>';
