@@ -1360,6 +1360,10 @@ ru:{
   'upd.copy':'Скопировать ссылку',
   'upd.copied':'Ссылка скопирована — вставьте её в браузере',
   'upd.manualCopy':'Эта версия не умеет сама открывать Google Play. Нажмите «Скопировать ссылку» и откройте её в браузере — или найдите приложение в Google Play и нажмите «Обновить».',
+  'rate.title':'Оставьте отзыв',
+  'rate.text':'Если пользуетесь приложением — оцените его в Google Play. Отзыв помогает другим его найти, а мне — понять, что улучшить.',
+  'rate.btn':'Оценить в Google Play',
+  'rate.later':'Позже',
   'save.fail':'Не удалось сохранить изменения на устройстве. Сделайте резервную копию в настройках.',
   'mig.title':'Найдены данные из офлайн-режима',
   'mig.text':'Раньше при запуске без интернета приложение хранило данные отдельно. Выберите, какой вариант оставить — второй будет недоступен.',
@@ -1825,6 +1829,10 @@ en:{
   'upd.copy':'Copy link',
   'upd.copied':'Link copied — paste it into your browser',
   'upd.manualCopy':'This version can’t open Google Play by itself. Tap “Copy link” and open it in your browser — or find this app in Google Play and tap “Update”.',
+  'rate.title':'Leave a review',
+  'rate.text':'If you use the app, please rate it on Google Play. A review helps others find it and helps me see what to improve.',
+  'rate.btn':'Rate on Google Play',
+  'rate.later':'Later',
   'save.fail':'Couldn’t save your changes on this device. Make a backup in Settings.',
   'mig.title':'Data from offline mode found',
   'mig.text':'Earlier, when opened without internet, the app kept data separately. Choose which version to keep — the other one will no longer be available.',
@@ -2290,6 +2298,10 @@ es:{
   'upd.copy':'Copiar enlace',
   'upd.copied':'Enlace copiado: pégalo en tu navegador',
   'upd.manualCopy':'Esta versión no puede abrir Google Play por sí sola. Toca «Copiar enlace» y ábrelo en tu navegador, o busca esta app en Google Play y toca «Actualizar».',
+  'rate.title':'Deja una reseña',
+  'rate.text':'Si usas la app, califícala en Google Play. Una reseña ayuda a que otros la encuentren y me ayuda a saber qué mejorar.',
+  'rate.btn':'Calificar en Google Play',
+  'rate.later':'Más tarde',
   'save.fail':'No se pudieron guardar los cambios en el dispositivo. Haz una copia de seguridad en Ajustes.',
   'mig.title':'Se encontraron datos del modo sin conexión',
   'mig.text':'Antes, al abrirse sin internet, la app guardaba los datos por separado. Elige qué versión conservar: la otra ya no estará disponible.',
@@ -2755,6 +2767,10 @@ pt:{
   'upd.copy':'Copiar link',
   'upd.copied':'Link copiado — cole no seu navegador',
   'upd.manualCopy':'Esta versão não consegue abrir o Google Play sozinha. Toque em «Copiar link» e abra no navegador — ou procure este app no Google Play e toque em «Atualizar».',
+  'rate.title':'Deixe uma avaliação',
+  'rate.text':'Se você usa o app, avalie-o no Google Play. Uma avaliação ajuda outras pessoas a encontrá-lo e me ajuda a saber o que melhorar.',
+  'rate.btn':'Avaliar no Google Play',
+  'rate.later':'Mais tarde',
   'save.fail':'Não foi possível salvar as alterações no aparelho. Faça uma cópia de segurança nos Ajustes.',
   'mig.title':'Encontramos dados do modo off-line',
   'mig.text':'Antes, ao abrir sem internet, o app guardava os dados separadamente. Escolha qual versão manter — a outra não ficará mais disponível.',
@@ -3220,6 +3236,10 @@ de:{
   'upd.copy':'Link kopieren',
   'upd.copied':'Link kopiert — füge ihn im Browser ein',
   'upd.manualCopy':'Diese Version kann Google Play nicht selbst öffnen. Tippe auf „Link kopieren“ und öffne ihn im Browser — oder suche die App in Google Play und tippe auf „Aktualisieren“.',
+  'rate.title':'Bewertung abgeben',
+  'rate.text':'Wenn du die App nutzt, bewerte sie bei Google Play. Eine Bewertung hilft anderen, sie zu finden, und mir zu sehen, was ich verbessern kann.',
+  'rate.btn':'Bei Google Play bewerten',
+  'rate.later':'Später',
   'save.fail':'Deine Änderungen konnten auf dem Gerät nicht gespeichert werden. Mach in den Einstellungen eine Sicherung.',
   'mig.title':'Daten aus dem Offline-Modus gefunden',
   'mig.text':'Früher hat die App ohne Internet die Daten getrennt gespeichert. Wähle, welche Version du behältst — die andere ist danach nicht mehr verfügbar.',
@@ -5887,6 +5907,65 @@ function snoozeUpdate(){
   renderToday();
 }
 
+/* ---------- Просьба оценить в Google Play ----------
+   На 3-м открытии приложения — окно с кнопкой в Play (мост openStore, 1.7.4+).
+   «Позже» — спросим ещё раз на 10-м открытии, и всё: больше двух раз не просим.
+   «Оценить» — больше не просим никогда.
+   Открытие = запуск или возврат в приложение не раньше чем через 30 минут
+   после прошлого засчитанного открытия (иначе переключение туда-сюда
+   накрутило бы счётчик за минуту).
+   Правила Play: не спрашиваем «нравится ли» и не зовём в Play только
+   довольных, ничего не обещаем за отзыв — просто одна нейтральная просьба.
+   Счётчик — в отдельном ключе localStorage, не в state: в резервную копию
+   не попадает и при восстановлении копии не сбрасывается.
+   Браузер/PWA и сборки 1.7.3 (нет openStore) — окна нет. */
+const RATE_KEY   = 'planner_rate';
+const RATE_FIRST = 3;
+const RATE_AGAIN = 10;
+const RATE_GAP   = 30*60*1000;
+function rateCanOpenStore(){
+  return typeof AndroidBridge!=='undefined' && typeof AndroidBridge.openStore==='function';
+}
+function rateLoad(){
+  const d={opens:0, asks:0, done:false, last:0};
+  try{ return Object.assign(d, JSON.parse(localStorage.getItem(RATE_KEY)||'null')||{}); }catch(e){ return d; }
+}
+function rateSave(r){ try{ localStorage.setItem(RATE_KEY, JSON.stringify(r)); }catch(e){} }
+function rateCountOpen(){
+  if(!rateCanOpenStore()) return;
+  const r=rateLoad();
+  if(r.done) return;
+  const now=Date.now();
+  if(r.last && now-r.last<RATE_GAP) return;
+  r.opens++; r.last=now;
+  rateSave(r);
+  const due=(r.asks===0 && r.opens>=RATE_FIRST) || (r.asks===1 && r.opens>=RATE_AGAIN);
+  if(due) setTimeout(rateAsk, 1500);
+}
+function rateAsk(){
+  if(document.hidden) return;
+  // открыто другое окно (первый запуск, «Что нового», редактор) — не перебиваем,
+  // спросим на следующем открытии: счётчик уже дорос до порога
+  if(document.getElementById('modalBg').classList.contains('show')) return;
+  const r=rateLoad();
+  if(r.done) return;
+  r.asks++;
+  if(r.asks>=2) r.done=true;
+  rateSave(r);
+  showModal(`
+    <h2>⭐ ${tr('rate.title')}</h2>
+    <div class="upd-what" style="line-height:1.5">${tr('rate.text')}</div>
+    <div class="modal-btns">
+      <button class="ghost" onclick="closeModal()">${tr('rate.later')}</button>
+      <button class="primary" onclick="rateGo()">${tr('rate.btn')}</button>
+    </div>`);
+}
+function rateGo(){
+  const r=rateLoad(); r.done=true; rateSave(r);
+  closeModal();
+  try{ AndroidBridge.openStore(); }catch(e){}
+}
+
 /* ---------- Event reminder banners on Today ---------- */
 // события, для которых сегодня пора показать баннер (alert включён и наступило время)
 function dueEventBanners(){
@@ -8145,6 +8224,7 @@ function init(){
   startDiscTicker();  // живая свеча графика дисциплины (раз в минуту)
   voiceInit();        // 1.7.4: микрофоны в текстовых полях (если есть распознаватель)
   if(firstRun) setTimeout(openWelcome, 350);   // 1.7.5: пример или шаблоны
+  rateCountOpen();    // просьба оценить в Google Play (3-е открытие)
 }
 init();
 
@@ -8170,6 +8250,7 @@ document.addEventListener('visibilitychange',()=>{
     if(syncFromStorage()){ closeModal(); applyTheme(curScreen); }   // сначала сверка — до любой записи
     if(state.lastGen!==todayStr()){ runDailyGen(); }
     render(); // обновить баннеры событий (время могло наступить) и бэйдж
+    rateCountOpen();
   }
 });
 
