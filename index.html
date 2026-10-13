@@ -865,7 +865,7 @@ const SWATCH_COLORS = ['#3ecf8e','#ffb648','#b98cff','#5b9dff','#ff7eb6','#ff5c5
 /* WEEKDAYS — языкозависимые короткие дни (index 0=Mon).
    Оставлено имя WEEKDAYS, чтобы не трогать 6 существующих мест использования:
    геттер отдаёт нужный массив по текущему языку. */
-Object.defineProperty(window,'WEEKDAYS',{get:function(){ const l=curLang(); return l==='en'?WEEKDAYS_EN:(l==='es'?WEEKDAYS_ES:(l==='pt'?WEEKDAYS_PT:(l==='de'?WEEKDAYS_DE:WEEKDAYS_RU))); }});
+Object.defineProperty(window,'WEEKDAYS',{get:function(){ const l=curLang(); return l==='en'?WEEKDAYS_EN:(l==='es'?WEEKDAYS_ES:(l==='pt'?WEEKDAYS_PT:(l==='de'?WEEKDAYS_DE:(l==='fr'?WEEKDAYS_FR:WEEKDAYS_RU)))); }});
 const DOW_MAP = [6,0,1,2,3,4,5]; // JS getDay()=0(Sun) -> our index
 /* GOAL_TYPES — id и emoji постоянны (это данные, лежат в g.type).
    label/ph — геттеры из словаря: язык меняется на лету, g.type НЕ трогаем. */
@@ -924,6 +924,13 @@ const MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','Augus
 const MONTHS_DE_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const WEEKDAYS_DE = ['Mo','Di','Mi','Do','Fr','Sa','So']; // index 0=Mon
 const WEEKDAYS_FULL_DE = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag']; // JS getDay()
+/* --- Французский --- */
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MONTHS_FR_SHORT = ['janv','févr','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
+// в датах «7 octobre» месяц со строчной
+const MONTHS_FR_LOW = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const WEEKDAYS_FR = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim']; // index 0=Mon
+const WEEKDAYS_FULL_FR = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi']; // JS getDay()
 /* --- Португальский (Бразилия) --- */
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MONTHS_PT_SHORT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -3309,12 +3316,481 @@ de:{
   'th.vivid':'Kräftig',
   'th.reset':'Zurücksetzen',
   'th.wasReset':'Zurückgesetzt'
+},
+fr:{
+  'nav.today':'Aujourd’hui',
+  'nav.goals':'Objectifs',
+  'nav.undone':'En attente',
+  'nav.history':'Historique',
+  'nav.calendar':'Calendrier',
+  'hint.swipe':'Tu peux maintenant glisser à gauche et à droite pour changer d’écran. Les boutons du bas fonctionnent toujours.',
+  'title.today':'Aujourd’hui',
+  'title.goals':'Objectifs',
+  'title.undone':'En attente',
+  'title.history':'Historique',
+  'title.calendar':'Calendrier',
+  'title.tree':'Arbre d’objectifs',
+  'today.empty':'Rien de prévu aujourd’hui.',
+  'today.emptyHint':'Crée un objectif ou ajoute une tâche avec +',
+  'empty.ctaTask':'+ Créer une tâche',
+  'empty.ctaGoal':'+ Créer un objectif',
+  'empty.ctaBigGoal':'+ Créer un grand objectif',
+  'today.fromGoal':'◎ d’un objectif',
+  'today.manual':'✎ manuelle',
+  'today.fromTree':'🌳 de l’arbre',
+  'vis.badge':'👁 Vision',
+  'vis.title':'Vision de l’objectif',
+  'vis.ph':'Décris le point d’arrivée : à quoi ressemble l’objectif atteint, ce qui t’entoure, ce que tu ressens…',
+  'vis.saved':'Vision enregistrée',
+  'tn.edVision':'👁 Vision de l’objectif (facultatif)',
+  'today.noItems':'Aucun sous-point',
+  'today.skipToday':'⊘ Passer aujourd’hui',
+  'today.statusManual':'Statut manuel',
+  'today.st.green':'acquis',
+  'today.st.yellow':'à pratiquer',
+  'today.st.pink':'à revoir',
+  'act.done':'✓ Fait',
+  'act.edit':'✎ Modifier',
+  'act.move':'→ Déplacer',
+  'act.skip':'⊘ Passer',
+  'act.delete':'🗑 Supprimer',
+  'badge.inNotif':'🔔 dans la notification',
+  'badge.notYet':'⏳ pas encore',
+  'notif.title':'Tâches du jour',
+  'notif.empty':'Aucune tâche',
+  'notif.more':'et encore',
+  /* goals in the shade */
+  'notif.goal':'{n} — aujourd’hui : {v}',
+  'notif.goalStatus':'{n} — aujourd’hui : {v} · {s}',
+  'notif.goalPlain':'{n}',
+  'notif.goalMark':'{n} — {m}',
+  'lang.changed':'Langue passée en français',
+  'pl.branch':['branche','branches'],
+  'pl.day':['jour','jours'],
+  'pl.year':['an','ans'],
+  'pl.month':['mois','mois'],
+  'pl.task':['tâche','tâches'],
+  'pl.piece':['point','points'],
+  'pl.branchCreated':['branche créée','branches créées'],
+  'term.overdue':'en retard',
+  'term.dueToday':'échéance aujourd’hui',
+  'term.left':'encore {v}',
+  'cat.sport':'Sport',
+  'cat.fin':'Finances',
+  'cat.rest':'Loisirs',
+  'cat.edu':'Études',
+  'cat.none':'Sans catégorie',
+  'gt.material':'Matériel',
+  'gt.material.ph':'Économiser pour une voiture',
+  'gt.physical':'Corps',
+  'gt.physical.ph':'Courir 10 km',
+  'gt.learning':'Compétence',
+  'gt.learning.ph':'Apprendre l’anglais',
+  'gt.travel':'Voyage',
+  'gt.travel.ph':'Partir au Japon',
+  'gm.titleNew':'Nouvel objectif',
+  'gm.titleEdit':'Modifier l’objectif',
+  'gm.name':'Nom de l’objectif',
+  'gm.namePh':'Nom de l’objectif',
+  'gm.time':'Heure dans « Aujourd’hui »',
+  'gm.timeHint':'(facultatif, pour l’ordre — quand il apparaît dans la notification)',
+  'gm.cat':'Catégorie',
+  'gm.whatGoal':'Domaine de l’objectif',
+  'gm.kind':'Type d’objectif',
+  'gm.kindLocked':'(non modifiable)',
+  'gm.kind.numeric':'Nombre',
+  'gm.kind.checklist':'Liste',
+  'gm.kind.manual':'Statut',
+  'gm.vision':'Vision (facultatif)',
+  'gm.visionPh':'Pourquoi cet objectif, à quoi ça ressemblera, ce que je ressentirai…',
+  'gm.showInNotif':'🔔 Afficher dans la notification',
+  'gm.showInNotifHint':'L’objectif apparaît dans la notification avec les tâches du jour',
+  'gm.cancel':'Annuler',
+  'gm.save':'Enregistrer',
+  'gm.create':'Créer l’objectif',
+  'gm.deadline':'Échéance',
+  'gm.deadlineLabel':'📅 Échéance',
+  'gm.deadlineDate':'Date d’échéance',
+  'gm.now':'Actuel',
+  'gm.target':'Cible',
+  'gm.unit':'Unité (facult.)',
+  'gm.unitPh':'fois',
+  'gm.days':'Jours actifs',
+  'gm.daysShort':'Jours',
+  'gm.fact':'📍 Situation actuelle (réel)',
+  'gm.factPh':'où tu en es',
+  'gm.factHint':'Indique ce que tu as réellement atteint aujourd’hui. L’appli le compare au plan et montre si tu es en avance ou en retard. La date de la saisie est enregistrée.',
+  'gm.hintChecklist':'Définis une liste de points pour chaque jour de la semaine. Ce jour-là, ils apparaissent dans « Aujourd’hui » sous forme de liste. La couleur du jour est calculée automatiquement : tous ✓ — 🟢, plus de la moitié — 🟡, moins — 🌸.',
+  'gm.hintManual':'Un objectif quotidien sans sous-points. Dans « Aujourd’hui », tu choisis toi-même le statut : 🟢 acquis · 🟡 à pratiquer · 🌸 à revoir. Pratique pour les langues, la lecture, etc.',
+  'gm.prevEqual':'📊 Départ et cible sont égaux — la quantité quotidienne reste la même : <b>{v}</b> chaque jour actif.',
+  'gm.prevSteps':'📊 Découpage en paliers : {a} jours actifs au total, {s} paliers. Garde la valeur <b>{i} jours actifs d’affilée</b>, puis <b>{d}</b> — et ainsi de suite jusqu’à la cible. Départ : {st}.',
+  'wp.itemPh':'Exercice / point',
+  'wp.timeTitle':'Heure (facultatif)',
+  'wp.dayOff':'repos',
+  'wp.tasksN':'{v} points',
+  'wp.timedN':' · {v} avec heure',
+  'wp.add':'＋ Ajouter un point',
+  'gv.name':'Saisis un nom',
+  'gv.deadline':'Choisis une échéance',
+  'gv.deadlineOrOff':'Choisis une date d’échéance ou désactive l’échéance',
+  'gv.future':'L’échéance doit être dans le futur',
+  'gv.numbers':'Saisis les valeurs « Actuel » et « Cible »',
+  'gv.oneDay':'Choisis au moins un jour',
+  'gv.oneTask':'Ajoute au moins un point pour la semaine',
+  'gt.updated':'Objectif mis à jour',
+  'gt.created':'Objectif créé',
+  'btn.cancel':'Annuler',
+  'btn.save':'Enregistrer',
+  'btn.add':'Ajouter',
+  'tm.titleNew':'Nouvelle tâche',
+  'tm.titleEdit':'Modifier la tâche',
+  'tm.text':'Texte de la tâche',
+  'tm.textPh':'Par exemple : acheter du lait',
+  'tm.cat':'Catégorie',
+  'tm.date':'Date',
+  'tm.vText':'Saisis le texte de la tâche',
+  'tm.vDate':'Choisis une date',
+  'tm.saved':'Enregistré',
+  'tm.added':'Ajouté',
+  'mv.title':'Déplacer la tâche',
+  'mv.newDate':'Nouvelle date',
+  'mv.btn':'Déplacer',
+  'mv.done':'Déplacé au {v}',
+  'tt.done':'Fait ✓',
+  'tt.deleted':'Supprimé',
+  'tt.skipped':'Passé',
+  'tt.markedDone':'Marqué comme fait ✓',
+  'tt.status':'Statut : {v}',
+  'na.hasKids':'Cet objectif a des sous-branches — les actions se définissent sur les nœuds finaux',
+  'na.title':'📋 Actions par jour',
+  'na.hint':'« {v} » ({n}). Définis des points pour chaque jour de la semaine — ils apparaîtront le bon jour dans « Aujourd’hui ». La couleur du jour est calculée automatiquement : tous ✓ — 🟢, plus de la moitié — 🟡, moins — 🌸.',
+  'na.revert':'↩ Revenir à un objectif normal',
+  'na.reverted':'Redevenu un objectif normal',
+  'na.savedTitle':'✓ Enregistré',
+  'na.savedHint':'Points enregistrés ({n} {u} par semaine). Ils apparaîtront le bon jour dans « Aujourd’hui ».',
+  'na.savedEmpty':'La liste est vide — aucun point pour la semaine. Le nœud reste sans actions.',
+  'na.more':'Continuer à modifier',
+  'na.back':'Retour à l’arbre',
+  'ts.title':'Mettre à jour les points du jour ?',
+  'ts.hint':'Les points du jour ont déjà été créés — avec les anciennes heures. Adapter leurs heures au nouveau plan ? Les coches « fait » sont conservées.',
+  'ts.keep':'Laisser ainsi',
+  'ts.apply':'Mettre à jour les heures',
+  'ts.updated':'Heures mises à jour : {n} {u}',
+  'ts.none':'Aucune correspondance trouvée',
+  /* --- Stage 3a: goal tree --- */
+  'tn.empty':'Pas encore d’arbre d’objectifs.<br>Appuie sur + et crée un grand objectif.<br>Ensuite, divise-le en sous-objectifs et en actions concrètes.',
+  'tn.rootSec':'Objectifs principaux',
+  'tn.crumbRoot':'🌳 Arbre',
+  'tn.childSec':'Sous-objectifs et actions',
+  'tn.notSplit':'Pas encore divisé.<br>Divise-le en sous-objectifs ou définis des actions-système.',
+  'tn.deadline':'Échéance : {v}',
+  'tn.noDeadline':'Sans échéance',
+  'tn.kindActions':'Actions-système',
+  'tn.kindGoal':'Objectif (divisible)',
+  'tn.btnOpenActions':'📋 Ouvrir les actions',
+  'tn.btnSplit':'🌿 Diviser en objectifs',
+  'tn.btnActions':'📋 Actions-système',
+  'tn.editTime':'⏰ Heure',
+  'tn.editDeadline':'📅 Échéance',
+  'tn.editRename':'✎ Renommer',
+  'tn.editDelete':'🗑 Supprimer',
+  /* single edit form for a tree node */
+  'tn.editOne':'✎ Modifier',
+  'tn.edTitle':'Modifier',
+  'tn.edHint':'{n} · {v}',
+  'tn.edName':'Nom',
+  'tn.edTime':'Heure',
+  'tn.edTimeNone':'sans heure',
+  'tn.edDeadline':'Échéance',
+  'tn.edDlNone':'non définie',
+  'tn.edClear':'✕ retirer',
+  'tn.edNotif':'🔔 Afficher dans la notification',
+  'tn.edYes':'Oui',
+  'tn.edNo':'Non',
+  'tn.edSaved':'Enregistré',
+  'tn.chActions':'📋 Actions',
+  'tn.chGoal':'🌿 Objectif',
+  'tn.perWeek':'/sem.',
+  'tn.chEmpty':'vide',
+  'tn.chNotSplit':'non divisé',
+  'tn.newRoot':'Nouvel objectif principal',
+  'tn.newChild':'Nouveau sous-objectif',
+  'tn.newRootHint':'Un grand objectif à long terme — le sommet de l’arbre. Tu le diviseras en parties plus tard.',
+  'tn.newChildHint':'Une branche de l’objectif parent. Elle peut aussi être divisée.',
+  'tn.name':'Titre',
+  'tn.phRoot':'Changer de métier',
+  'tn.phChild':'Apprendre une compétence',
+  'tn.timeTitle':'Heure dans « Aujourd’hui »',
+  'tn.optional':'(facult.)',
+  'tn.dlSwitch':'📅 Échéance (facult.)',
+  'tn.btnCreate':'Créer',
+  'tn.created':'Objectif créé',
+  'tn.splitTitle':'Diviser en sous-objectifs',
+  'tn.splitHint':'« {v} » ({n}) → divise-le en plusieurs sous-objectifs. Chacun peut être divisé à son tour ou transformé en actions.',
+  'tn.splitPh':'Sous-objectif {i}',
+  'tn.splitAdd':'＋ Ajouter un sous-objectif',
+  'tn.splitBtn':'Créer les branches',
+  'tn.splitEmpty':'Ajoute au moins un sous-objectif',
+  'tn.renameTitle':'Renommer',
+  'tn.renamed':'Renommé',
+  'tn.dlTitle':'Échéance du sous-objectif',
+  'tn.dlClear':'Retirer l’échéance',
+  'tn.dlRemoved':'Échéance retirée',
+  'tn.vDate':'Choisis une date',
+  'tn.timeHint':'{n} {v} — pour l’ordre dans la liste du jour',
+  'tn.timeField':'Heure (facultatif)',
+  'tn.timeClear':'Retirer l’heure',
+  'tn.timeSaved':'Heure : {v}',
+  'tn.timeRemoved':'Heure retirée',
+  'tn.delTitle':'Supprimer le nœud ?',
+  'tn.delHint':'« {v} » ({n}){d} sera supprimé définitivement.',
+  'tn.delKids':' et toutes les branches enfants ({c})',
+  'tn.delBtn':'Supprimer',
+  /* --- Stage 3a: goal cards --- */
+  'gc.overdue':'⏰ Échéance atteinte ({v})',
+  'gc.achieved':'✓ Atteint',
+  'gc.extend':'📅 Reporter',
+  'gc.today':'aujourd’hui',
+  'gc.ago':'il y a {n} {u}',
+  'gc.ahead':'En avance de {v}',
+  'gc.on':'Pile dans le plan',
+  'gc.behind':'En retard de {v}',
+  'gc.pace':'Réel {f} ({a}) · Plan du jour {p}',
+  'gc.noFact':'Indique ta situation actuelle pour voir ton rythme',
+  'gc.checklist':'Liste par jours · {n} {u} par semaine',
+  'gc.days':'Jours : {v}',
+  'gc.todayLbl':'Aujourd’hui :',
+  'gc.manual':'Statut manuel (🟢/🟡/🌸)',
+  'gc.everyDay':'tous les jours',
+  'gc.totalDays':'jours actifs au total : {n}',
+  'gc.emptyGoals':'Pas encore d’objectifs.<br>Appuie sur + pour en ajouter un.<br>L’appli le divisera en étapes quotidiennes.',
+  'gc.tabActive':'Actifs',
+  'gc.tabLong':'Long terme',
+  /* --- Stage 3a: delete / achieve / postpone a goal --- */
+  'gd.delTitle':'Supprimer l’objectif ?',
+  'gd.delHint':'Les points déjà présents dans tes journées sont conservés. Les étapes futures ne seront plus créées.',
+  'gd.deleted':'Objectif supprimé',
+  'gd.achieved':'Objectif atteint 🏆',
+  'gd.extTitle':'Reporter l’échéance',
+  'gd.extHint':'Échéance actuelle : {d} (dépassée). Choisis une nouvelle date — l’objectif continue.',
+  'gd.extLabel':'Nouvelle échéance',
+  'gd.extBtn':'Reporter',
+  'gd.extDone':'Échéance reportée au {v}',
+  'gd.vFuture':'La date doit être dans le futur',
+  /* --- Stage 3b: calendar and events --- */
+  'ev.monthEvents':'Événements du mois',
+  'ev.noneDay':'Aucun événement. Appuie sur « + » pour en ajouter un.',
+  'ev.noneMonth':'Aucun événement ce mois-ci.<br>Choisis un jour et appuie sur « + ».',
+  'ev.type.meeting':'Rencontre',
+  'ev.type.event':'Rendez-vous',
+  'ev.type.birthday':'Anniversaire',
+  'ev.rep.once':'Une fois',
+  'ev.rep.monthly':'Chaque mois',
+  'ev.rep.yearly':'Chaque année',
+  'ev.titleNew':'Nouvel événement',
+  'ev.titleEdit':'Événement',
+  'ev.namePh':'Rendez-vous à la banque',
+  'ev.typeLabel':'Type',
+  'ev.repeatLabel':'Répéter',
+  'ev.alert':'🔔 Rappel',
+  'ev.alertTime':'Heure',
+  'ev.note':'Note (facult.)',
+  'ev.notePh':'Détails de l’événement…',
+  'ev.del':'🗑 Supprimer l’événement',
+  'ev.delConfirm':'Supprimer cet événement ?',
+  'ev.deleted':'Événement supprimé',
+  'ev.created':'Événement créé',
+  'ev.banner':'Aujourd’hui · {v}',
+  /* --- Stage 4a: Unfinished, history, categories, screen list --- */
+  'un.empty':'Rien en attente. Tout est fait !',
+  'un.skipped':'⊘ passé',
+  'hi.achievedSec':'🏆 Objectifs atteints',
+  'hi.sameDay':'moins d’un jour',
+  'hi.achievedOn':'atteint le {d} · en {v}',
+  'hi.empty':'L’historique est vide.<br>Les points faits et les objectifs atteints apparaîtront ici.',
+  'hi.doneSec':'Points faits',
+  'hi.restore':'↩ Terminer',
+  /* --- discipline chart (History screen) --- */
+  'dc.title':'📈 Graphique de discipline',
+  'dc.dayShort':'j',
+  'dc.pAll':'Tout',
+  'dc.days':'Jours',
+  'dc.level':'Niveau',
+  'dc.best':'Meilleur',
+  'dc.worst':'Pire',
+  'dc.rate':'Discipline',
+  'dc.empty':'Rien à afficher pour l’instant — coche tes premiers points.',
+  'an.title':'📊 Analyse des objectifs',
+  'an.hint':'Part des points faits par objectif sur la période choisie. Vert — à partir de 70 %, jaune — à partir de 40 %, rouge — en dessous.',
+  'an.empty':'Aucun jour terminé pour tes objectifs sur cette période. Essaie une période plus longue.',
+  'ad.progress':'Progression',
+  'ad.start':'Commencé',
+  'ad.hadDeadline':'Échéance prévue',
+  'ad.achieved':'Atteint',
+  'ad.took':'Durée',
+  'ad.restore':'↩ Remettre dans les objectifs actifs',
+  'ad.close':'Fermer',
+  'ad.already':'Cet objectif est déjà actif',
+  'ad.restored':'De nouveau actif',
+  'cm.title':'Catégories',
+  'cm.none':'Aucune catégorie',
+  'cm.new':'Nouvelle catégorie',
+  'cm.hint':'Choisis une couleur — la catégorie la prendra.',
+  'cm.done':'Terminé',
+  'cm.needOne':'Il faut au moins une catégorie',
+  'cm.inUse':'Catégorie utilisée — impossible de la supprimer',
+  'cm.addNew':'＋ Nouvelle catégorie…',
+  'cm.added':'Catégorie ajoutée ✓',
+  'sc.undone':'En attente',
+
+  /* --- Stage 4b: shared --- */
+  'err.generic':'Erreur : {v}',
+  'a11y.back':'Retour',
+  'a11y.settings':'Réglages',
+  'pl.entry':['entrée','entrées'],
+
+  /* --- Stage 4b: notification settings --- */
+  'ns.title':'🔔 Notification avec la liste des tâches',
+  'ns.hint':'Une notification permanente dans la barre. Une tâche apparaît à son heure et reste jusqu’à ce que tu la coches. Les tâches sans heure restent toute la journée. Une liste s’affiche sur une seule ligne.',
+  'ns.toggle':'Afficher la notification avec la liste des tâches',
+  'ns.count':'Combien de tâches afficher',
+  'ns.now':'Tâches du jour : <b>{v}</b>',
+  'ns.overflow':' · {m} dans la notification, le reste en « et encore {r} »',
+  'ns.miuiTitle':'⚠️ MIUI peut fermer la notification',
+  'ns.miuiHint':'Si la notification disparaît, autorise l’appli à fonctionner en arrière-plan.',
+  'ns.battery':'Économie d’énergie',
+  'ns.autostart':'Démarrage auto',
+  'ns.on':'Notification activée',
+  'ns.off':'Notification désactivée',
+  'ns.errSettings':'Impossible d’ouvrir les réglages',
+
+  /* --- Stage 4b: backup --- */
+  'bk.title':'💾 Sauvegarde de tes plans',
+  'bk.hint':'Tous les objectifs, tâches, le calendrier et l’historique sont enregistrés dans un seul fichier. Envoie-le-toi (Telegram, Google Drive) ou télécharge-le sur le téléphone. Sur un nouvel appareil, tu restaures tout depuis ce fichier. <b>Fais toujours une sauvegarde avant de désinstaller l’appli !</b>',
+  'bk.share':'Partager la sauvegarde',
+  'bk.save':'Télécharger la sauvegarde',
+  'bk.restore':'Restaurer depuis une sauvegarde',
+  'bk.pickTarget':'Choisis où enregistrer (Telegram, Google Drive, Fichiers…)',
+  'bk.saved':'Sauvegarde enregistrée ✓',
+  'bk.saveBtn':'Enregistrer une sauvegarde',
+  'bk.chooseTitle':'Où enregistrer la sauvegarde ?',
+  'bk.chooseHint':'Un fichier avec tes objectifs, tâches et historique.',
+  'bk.optCloud':'☁️ Google Drive, Telegram, e-mail…',
+  'bk.optCloudHint':'Une liste d’applis s’ouvre — choisis où envoyer le fichier.',
+  'bk.optDl':'⬇ Dossier « Téléchargements » de ce téléphone',
+  'bk.optDlHint':'Le fichier va dans « Téléchargements ». Il reste uniquement sur cet appareil.',
+  'bk.savedInfo':'✓ Sauvegarde dans « Téléchargements » : {f} — {v} {u}.',
+  'bk.restTitle':'Restaurer depuis où ?',
+  'bk.restHint':'Choisis où tu as enregistré la sauvegarde — je te dirai où chercher.',
+  'bk.srcDrive':'☁️ Google Drive',
+  'bk.srcDriveHint':'Dans le sélecteur de fichiers : menu ☰ à gauche → Google Drive.',
+  'bk.srcTg':'✈️ Telegram',
+  'bk.srcTgHint':'Le plus simple : ouvre le fichier dans Telegram, appuie sur « Partager » et choisis Planner. Ou télécharge-le d’abord, puis ici : ☰ → Téléchargements → dossier Telegram.',
+  'bk.srcDl':'⬇ Dossier « Téléchargements »',
+  'bk.srcDlHint':'Dans le sélecteur de fichiers : menu ☰ à gauche → Téléchargements.',
+  'bk.tipDrive':'Regarde dans ☰ → Google Drive',
+  'bk.tipTg':'Regarde dans ☰ → Téléchargements → Telegram',
+  'bk.tipDl':'Regarde dans ☰ → Téléchargements',
+  'bk.sentInfo':'✓ Sauvegarde envoyée — {v} {u}.',
+  'bk.saveFail':'Impossible d’enregistrer la sauvegarde',
+  'bk.errInfo':'✕ Erreur : {v}',
+  'bk.unknown':'inconnu',
+  'bk.openFail':'Impossible d’ouvrir le fichier',
+  'voice.btn':'Saisie vocale',
+  'voice.offline':'Pas de connexion — saisis le texte au clavier',
+  'voice.nomatch':'Pas compris — réessaie',
+  'voice.fail':'La saisie vocale a échoué — saisis le texte au clavier',
+  'voice.none':'La saisie vocale n’est pas disponible sur cet appareil',
+  'upd.banner':'Version {v} disponible',
+  'upd.bannerSub':'Appuie pour voir les nouveautés',
+  'upd.title':'Mise à jour {v}',
+  'upd.what':'Nouveautés',
+  'upd.btn':'Mettre à jour sur Google Play',
+  'upd.later':'Plus tard',
+  'upd.ok':'Compris',
+  'upd.manual':'Ouvre Google Play, trouve cette appli et appuie sur « Mettre à jour ».',
+  'upd.copy':'Copier le lien',
+  'upd.copied':'Lien copié — colle-le dans ton navigateur',
+  'upd.manualCopy':'Cette version ne peut pas ouvrir Google Play elle-même. Appuie sur « Copier le lien » et ouvre-le dans ton navigateur — ou trouve l’appli dans Google Play et appuie sur « Mettre à jour ».',
+  'rate.title':'Laisse un avis',
+  'rate.text':'Si tu utilises l’appli, donne-lui une note sur Google Play. Un avis aide d’autres personnes à la trouver et m’aide à voir ce qu’il faut améliorer.',
+  'rate.btn':'Noter sur Google Play',
+  'rate.later':'Plus tard',
+  'save.fail':'Impossible d’enregistrer tes modifications sur l’appareil. Fais une sauvegarde dans les réglages.',
+  'mig.title':'Données du mode hors ligne trouvées',
+  'mig.text':'Avant, sans Internet, l’appli enregistrait les données à part. Choisis la version à garder — l’autre ne sera plus disponible.',
+  'mig.current':'Actuelle',
+  'mig.offline':'Du mode hors ligne',
+  'mig.stats':'Objectifs : {g} · Tâches : {t} · Événements : {e}',
+  'mig.last':'Dernière ouverture : {v}',
+  'mig.keep':'Garder l’actuelle',
+  'mig.take':'Prendre les données hors ligne',
+  'mig.moved':'Données hors ligne récupérées',
+  'wel.title':'Comment veux-tu commencer ?',
+  'wel.text':'Regarde à quoi ressemble l’appli après un mois d’utilisation, ou commence tout de suite avec ton propre objectif.',
+  'wel.demo':'Voir un exemple',
+  'wel.scratch':'Partir de zéro',
+  'wel.offline':'L’exemple nécessite une connexion Internet. Pars de zéro ou réessaie plus tard.',
+  'demo.bar':'🧪 Ceci est un exemple',
+  'demo.start':'Commencer le mien',
+  'demo.confirmTitle':'Repartir d’une page blanche ?',
+  'demo.confirmText':'Toutes les données d’exemple seront supprimées.',
+  'demo.confirmBtn':'Commencer',
+  'tpl.title':'Choisis un objectif',
+  'tpl.text':'Le modèle remplit le formulaire — ajuste-le et enregistre.',
+  'tpl.save':'Épargner','tpl.sport':'Entraînement','tpl.lang':'Langue','tpl.read':'Lecture','tpl.habit':'Perdre une habitude','tpl.own':'Mon objectif',
+  'tpl.save.name':'Économiser pour un rêve','tpl.save.unit':'€',
+  'tpl.sport.name':'Entraînement 3 fois par semaine','tpl.sport.items':'Échauffement 10 min|Pompes 3×10|Squats 3×15|Gainage 1 min',
+  'tpl.lang.name':'Anglais 20 minutes par jour',
+  'tpl.read.name':'Lire 3 000 pages','tpl.read.unit':'pages',
+  'tpl.habit.name':'30 jours sans sucre',
+  'bk.corrupt':'Le fichier est endommagé',
+  'bk.unreadable':'✕ Impossible de lire le fichier.',
+  'bk.notBackupInfo':'✕ Ce n’est pas une sauvegarde — le fichier est illisible.',
+  'bk.notBackup':'Ce n’est pas une sauvegarde',
+  'bk.wrongFile':'✕ Mauvais fichier. Il faut planner-backup-*.json de cette appli.',
+  'bk.created':'✓ Fichier créé ({v} {u}). Regarde dans le dossier « Téléchargements ».',
+  'bk.downloaded':'Fichier enregistré dans « Téléchargements » ✓',
+  'bk.exportErr':'Échec de l’export',
+  'bk.createFail':'✕ Impossible de créer le fichier : {v}',
+  'bk.notJson':'Le fichier est endommagé (pas du JSON)',
+  'bk.notJsonInfo':'✕ Le fichier est illisible — ce n’est pas une sauvegarde Planner.',
+  'bk.notPlanner':'Ce n’est pas une sauvegarde Planner',
+  'bk.wrongFileShort':'✕ Mauvais fichier. Il faut planner-backup-*.json.',
+  'bk.readFail':'Impossible de lire le fichier',
+  'bk.confirmTitle':'Restaurer les plans depuis la sauvegarde ?',
+  'bk.madeAt':'Sauvegarde créée : {v}',
+  'bk.contains':'Contient : <b>{g}</b> objectifs, <b>{t}</b> tâches, <b>{e}</b> événements, <b>{n}</b> nœuds dans l’arbre, <b>{a}</b> objectifs atteints.',
+  'bk.warn':'⚠️ Tout ce qui se trouve actuellement dans l’appli sera remplacé par les données de la sauvegarde. C’est irréversible — si tes plans actuels comptent, enregistre-les d’abord dans ta propre sauvegarde.',
+  'bk.replace':'Remplacer et restaurer',
+  'bk.noData':'Rien à importer',
+  'bk.restored':'Données restaurées ✓',
+  'bk.restoreErr':'Échec de la restauration',
+  'bk.applyErr':'✕ Impossible d’appliquer : {v}',
+
+  /* --- Stage 4b: theme modal --- */
+  'th.title':'⚙️ Fond d’écran',
+  'th.hint':'Une couleur pour chaque écran. En mode « Dégradé », tu règles le haut et le bas séparément. Le texte s’adapte automatiquement.',
+  'th.solid':'Uni',
+  'th.gradient':'Dégradé',
+  'th.top':'⬆ Haut',
+  'th.bottom':'⬇ Bas',
+  'th.sideTop':'haut',
+  'th.sideBottom':'bas',
+  'th.sideBg':'fond',
+  'th.preview':'Carte d’exemple',
+  'th.color':'Couleur',
+  'th.sat':'Saturation',
+  'th.white':'Blanc',
+  'th.vivid':'Vif',
+  'th.reset':'Réinitialiser',
+  'th.wasReset':'Réinitialisé'
 }
 };
 
 /* Поддерживаемые языки. Добавить новый = дописать код сюда,
    положить блок в I18N и добавить кнопку в селектор (renderThemeModal). */
-const LANGS = ['ru','en','es','pt','de'];
+const LANGS = ['ru','en','es','pt','de','fr'];
 
 // язык системы при первом запуске: ru → ru, es → es, pt → pt, остальное → en
 function detectLang(){
@@ -3324,6 +3800,7 @@ function detectLang(){
     if(l.indexOf('es')===0) return 'es';
     if(l.indexOf('pt')===0) return 'pt';   // pt-BR и pt-PT — словарь один, бразильский
     if(l.indexOf('de')===0) return 'de';   // de-DE, de-AT, de-CH
+    if(l.indexOf('fr')===0) return 'fr';   // fr-FR, fr-CA, fr-BE, fr-CH
     return 'en';
   }catch(e){ return 'en'; }
 }
@@ -3352,8 +3829,8 @@ function tr(key, params){ return t(key, params); }
 
 /* Месяцы — языкозависимые. Имена MONTHS_RU / MONTHS_RU_SHORT сохранены,
    чтобы не переписывать существующие вызовы в календаре и истории. */
-Object.defineProperty(window,'MONTHS_RU',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN:(l==='es'?MONTHS_ES:(l==='pt'?MONTHS_PT:(l==='de'?MONTHS_DE:_MONTHS_RU))); }});
-Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN_SHORT:(l==='es'?MONTHS_ES_SHORT:(l==='pt'?MONTHS_PT_SHORT:(l==='de'?MONTHS_DE_SHORT:_MONTHS_RU_SHORT))); }});
+Object.defineProperty(window,'MONTHS_RU',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN:(l==='es'?MONTHS_ES:(l==='pt'?MONTHS_PT:(l==='de'?MONTHS_DE:(l==='fr'?MONTHS_FR:_MONTHS_RU)))); }});
+Object.defineProperty(window,'MONTHS_RU_SHORT',{get:function(){ const l=curLang(); return l==='en'?MONTHS_EN_SHORT:(l==='es'?MONTHS_ES_SHORT:(l==='pt'?MONTHS_PT_SHORT:(l==='de'?MONTHS_DE_SHORT:(l==='fr'?MONTHS_FR_SHORT:_MONTHS_RU_SHORT)))); }});
 
 /* Подписи языков: код для чипа в шапке + полное самоназвание для списка.
    Новый язык — дописать строку сюда и в LANGS. */
@@ -3362,7 +3839,8 @@ const LANG_LABELS = {
   en:{code:'EN', name:'English'},
   es:{code:'ES', name:'Español'},
   pt:{code:'PT', name:'Português'},
-  de:{code:'DE', name:'Deutsch'}
+  de:{code:'DE', name:'Deutsch'},
+  fr:{code:'FR', name:'Français'}
 };
 
 // чип в шапке показывает текущий язык
@@ -4202,7 +4680,7 @@ function confirmImport(backup){
   const nTree = (d.tree||[]).length;
   const nA = (d.achieved||[]).length;
   const when = backup.exportedAt
-    ? new Date(backup.exportedAt).toLocaleString({ru:'ru-RU',en:'en-US',es:'es-419',pt:'pt-BR',de:'de-DE'}[curLang()]||'en-US')
+    ? new Date(backup.exportedAt).toLocaleString({ru:'ru-RU',en:'en-US',es:'es-419',pt:'pt-BR',de:'de-DE',fr:'fr-FR'}[curLang()]||'en-US')
     : tr('bk.unknown');
   // сохраняем во временную глобальную переменную для applyImport
   window._pendingImport = backup;
@@ -4312,6 +4790,8 @@ function fmtDateHuman(s){
   if(curLang()==='pt') return WEEKDAYS_FULL_PT[dt.getDay()]+', '+d+' de '+MONTHS_PT_LOW[m-1];
   // Donnerstag, 24. Juli
   if(curLang()==='de') return WEEKDAYS_FULL_DE[dt.getDay()]+', '+d+'. '+MONTHS_DE[m-1];
+  // Mer. 7 octobre — день недели сокращён: «Aujourd’hui» длинное, полная дата в шапку не влезает
+  if(curLang()==='fr') return WEEKDAYS_FR[DOW_MAP[dt.getDay()]]+'. '+d+' '+MONTHS_FR_LOW[m-1];
   return WEEKDAYS_FULL_RU[dt.getDay()]+', '+d+' '+MONTHS_RU_GEN[m-1];
 }
 /* «5 января 2026» (RU, родительный) / «January 5, 2026» (EN) — шапка агенды календаря */
@@ -4321,6 +4801,7 @@ function fmtDayMonthYear(s){
   if(curLang()==='es') return d+' de '+MONTHS_ES_LOW[m-1]+' de '+y;
   if(curLang()==='pt') return d+' de '+MONTHS_PT_LOW[m-1]+' de '+y;
   if(curLang()==='de') return d+'. '+MONTHS_DE[m-1]+' '+y;
+  if(curLang()==='fr') return d+' '+MONTHS_FR_LOW[m-1]+' '+y;
   return d+' '+MONTHS_RU_GEN[m-1]+' '+y;
 }
 function dowIndex(s){ const [y,m,d]=s.split('-').map(Number); return DOW_MAP[new Date(y,m-1,d).getDay()]; }
@@ -4346,6 +4827,9 @@ function maxDeadline(fromStr){
    берём forms[0] для 1 и последний элемент для остальных — старые вызовы не падают. */
 function plural(n, forms){
   if(!Array.isArray(forms) || !forms.length) return '';
+  if(curLang()==='fr'){   // fr: 0 и 1 — единственное число («0 jour», «1 jour»)
+    return Math.abs(n)<2 ? forms[0] : forms[forms.length-1];
+  }
   if(curLang()!=='ru'){   // en, es — две формы
     return Math.abs(n)===1 ? forms[0] : forms[forms.length-1];
   }
@@ -5726,11 +6210,11 @@ function exitDemo(){
 /* Шаблоны целей. kind: numeric | checklist | manual; days: 0=Пн … 6=Вс. */
 const GOAL_TEMPLATES={
   save:  {emoji:'💰', kind:'numeric',   type:'material', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'20:00',
-          target:{ru:50000,en:1000,es:1000,pt:5000,de:1000}},
+          target:{ru:50000,en:1000,es:1000,pt:5000,de:1000,fr:1000}},
   sport: {emoji:'💪', kind:'checklist', type:'physical', days:[0,2,4], time:'07:00'},
   lang:  {emoji:'🗣️', kind:'manual',    type:'learning', days:[0,1,2,3,4], time:'20:30'},
   read:  {emoji:'📖', kind:'numeric',   type:'learning', days:[0,1,2,3,4,5,6], deadlineDays:180, time:'21:30',
-          target:{ru:3000,en:3000,es:3000,pt:3000,de:3000}},
+          target:{ru:3000,en:3000,es:3000,pt:3000,de:3000,fr:3000}},
   habit: {emoji:'🚫', kind:'manual',    type:'physical', days:[0,1,2,3,4,5,6], deadlineDays:30, time:'21:00'},
 };
 function openTemplates(){
@@ -5788,6 +6272,7 @@ const APP_RELEASES = [
   { code:15, name:'1.7.6', live:true, notes:{
     ru:['Немецкий язык','Уведомление со списком задач читается на любом фоне шторки — светлом и тёмном','Рамки у галочек заметнее'],
     de:['Deutsch als App-Sprache','Die Benachrichtigung mit Aufgaben ist auf jedem Hintergrund lesbar, hell oder dunkel','Kästchen mit deutlicheren Rändern'],
+    fr:['L’allemand comme langue de l’appli','La notification des tâches est lisible sur n’importe quel fond, clair ou foncé','Cases à cocher aux bordures plus nettes'],
     en:['German language','The task notification is readable on any shade background, light or dark','Checkboxes have clearer borders'],
     es:['Idioma alemán','La notificación de tareas se lee bien con cualquier fondo, claro u oscuro','Casillas con bordes más visibles'],
     pt:['Idioma alemão','A notificação de tarefas fica legível em qualquer fundo, claro ou escuro','Caixas de seleção com bordas mais visíveis']
@@ -8063,7 +8548,7 @@ let toastTimer=null;
    g-unit и newcat исключены намеренно — там 2-3 символа. */
 const VOICE_SEL = '#g-name,#g-vision,#tk-title,#vis-text,#tn-title,#tne-name,#tne-vision,'
   + '#tr-title,#ev-title,#ev-note,input[oninput^="splitEdit("],input[oninput^="wpEdit("]';
-const VOICE_LANG_TAG = {ru:'ru-RU', en:'en-US', es:'es-419', pt:'pt-BR', de:'de-DE'};
+const VOICE_LANG_TAG = {ru:'ru-RU', en:'en-US', es:'es-419', pt:'pt-BR', de:'de-DE', fr:'fr-FR'};
 const VOICE_MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
   + 'stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/>'
   + '<path d="M5.5 10.5a6.5 6.5 0 0 0 13 0"/><line x1="12" y1="17" x2="12" y2="21.5"/></svg>';
