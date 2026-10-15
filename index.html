@@ -1367,7 +1367,8 @@ ru:{
   'upd.copy':'Скопировать ссылку',
   'upd.copied':'Ссылка скопирована — вставьте её в браузере',
   'upd.manualCopy':'Эта версия не умеет сама открывать Google Play. Нажмите «Скопировать ссылку» и откройте её в браузере — или найдите приложение в Google Play и нажмите «Обновить».',
-  'rate.title':'Оставьте отзыв',
+  'rate.titleDay':'🎉 Все задачи на сегодня выполнены',
+  'rate.titleGoal':'🏆 Цель достигнута!',
   'rate.text':'Если пользуетесь приложением — оцените его в Google Play. Отзыв помогает другим его найти, а мне — понять, что улучшить.',
   'rate.btn':'Оценить в Google Play',
   'rate.later':'Позже',
@@ -1836,7 +1837,8 @@ en:{
   'upd.copy':'Copy link',
   'upd.copied':'Link copied — paste it into your browser',
   'upd.manualCopy':'This version can’t open Google Play by itself. Tap “Copy link” and open it in your browser — or find this app in Google Play and tap “Update”.',
-  'rate.title':'Leave a review',
+  'rate.titleDay':'🎉 All of today’s tasks are done',
+  'rate.titleGoal':'🏆 Goal achieved!',
   'rate.text':'If you use the app, please rate it on Google Play. A review helps others find it and helps me see what to improve.',
   'rate.btn':'Rate on Google Play',
   'rate.later':'Later',
@@ -2305,7 +2307,8 @@ es:{
   'upd.copy':'Copiar enlace',
   'upd.copied':'Enlace copiado: pégalo en tu navegador',
   'upd.manualCopy':'Esta versión no puede abrir Google Play por sí sola. Toca «Copiar enlace» y ábrelo en tu navegador, o busca esta app en Google Play y toca «Actualizar».',
-  'rate.title':'Deja una reseña',
+  'rate.titleDay':'🎉 Completaste todas las tareas de hoy',
+  'rate.titleGoal':'🏆 ¡Meta alcanzada!',
   'rate.text':'Si usas la app, califícala en Google Play. Una reseña ayuda a que otros la encuentren y me ayuda a saber qué mejorar.',
   'rate.btn':'Calificar en Google Play',
   'rate.later':'Más tarde',
@@ -2774,7 +2777,8 @@ pt:{
   'upd.copy':'Copiar link',
   'upd.copied':'Link copiado — cole no seu navegador',
   'upd.manualCopy':'Esta versão não consegue abrir o Google Play sozinha. Toque em «Copiar link» e abra no navegador — ou procure este app no Google Play e toque em «Atualizar».',
-  'rate.title':'Deixe uma avaliação',
+  'rate.titleDay':'🎉 Todas as tarefas de hoje concluídas',
+  'rate.titleGoal':'🏆 Meta alcançada!',
   'rate.text':'Se você usa o app, avalie-o no Google Play. Uma avaliação ajuda outras pessoas a encontrá-lo e me ajuda a saber o que melhorar.',
   'rate.btn':'Avaliar no Google Play',
   'rate.later':'Mais tarde',
@@ -3243,7 +3247,8 @@ de:{
   'upd.copy':'Link kopieren',
   'upd.copied':'Link kopiert — füge ihn im Browser ein',
   'upd.manualCopy':'Diese Version kann Google Play nicht selbst öffnen. Tippe auf „Link kopieren“ und öffne ihn im Browser — oder suche die App in Google Play und tippe auf „Aktualisieren“.',
-  'rate.title':'Bewertung abgeben',
+  'rate.titleDay':'🎉 Alle Aufgaben für heute erledigt',
+  'rate.titleGoal':'🏆 Ziel erreicht!',
   'rate.text':'Wenn du die App nutzt, bewerte sie bei Google Play. Eine Bewertung hilft anderen, sie zu finden, und mir zu sehen, was ich verbessern kann.',
   'rate.btn':'Bei Google Play bewerten',
   'rate.later':'Später',
@@ -3712,7 +3717,8 @@ fr:{
   'upd.copy':'Copier le lien',
   'upd.copied':'Lien copié — colle-le dans ton navigateur',
   'upd.manualCopy':'Cette version ne peut pas ouvrir Google Play elle-même. Appuie sur « Copier le lien » et ouvre-le dans ton navigateur — ou trouve l’appli dans Google Play et appuie sur « Mettre à jour ».',
-  'rate.title':'Laisse un avis',
+  'rate.titleDay':'🎉 Toutes les tâches du jour sont faites',
+  'rate.titleGoal':'🏆 Objectif atteint !',
   'rate.text':'Si tu utilises l’appli, donne-lui une note sur Google Play. Un avis aide d’autres personnes à la trouver et m’aide à voir ce qu’il faut améliorer.',
   'rate.btn':'Noter sur Google Play',
   'rate.later':'Plus tard',
@@ -6393,52 +6399,66 @@ function snoozeUpdate(){
 }
 
 /* ---------- Просьба оценить в Google Play ----------
-   На 3-м открытии приложения — окно с кнопкой в Play (мост openStore, 1.7.4+).
-   «Позже» — спросим ещё раз на 10-м открытии, и всё: больше двух раз не просим.
-   «Оценить» — больше не просим никогда.
-   Открытие = запуск или возврат в приложение не раньше чем через 30 минут
-   после прошлого засчитанного открытия (иначе переключение туда-сюда
-   накрутило бы счётчик за минуту).
-   Правила Play: не спрашиваем «нравится ли» и не зовём в Play только
-   довольных, ничего не обещаем за отзыв — просто одна нейтральная просьба.
-   Счётчик — в отдельном ключе localStorage, не в state: в резервную копию
-   не попадает и при восстановлении копии не сбрасывается.
-   Браузер/PWA и сборки 1.7.3 (нет openStore) — окна нет. */
-const RATE_KEY   = 'planner_rate';
-const RATE_FIRST = 3;
-const RATE_AGAIN = 10;
-const RATE_GAP   = 30*60*1000;
+   Окно показывается в момент успеха, а не «на N-м открытии»:
+     • закрыты все задачи на сегодня — если приложением пользуются ≥3 разных дней;
+     • достигнута цель.
+   Заголовок поздравляет с событием, текст просьбы нейтральный: в Play зовём
+   всех одинаково, ничего не обещаем за отзыв и не спрашиваем «нравится ли»
+   (правила Google Play про отзывы). Меняется только момент показа.
+   Показов максимум 2. «Позже» (или закрыли окно) — следующий не раньше чем
+   через 7 дней. «Оценить» — больше не просим никогда.
+   В примере (state.demo) не спрашиваем: это не настоящий успех.
+   Счётчик дней — в отдельном ключе localStorage, не в state: в копию не
+   попадает. Браузер/PWA и сборки 1.7.3 (нет openStore) — окна нет. */
+const RATE_KEY      = 'planner_rate';
+const RATE_MIN_DAYS = 3;
+const RATE_SNOOZE   = 7*864e5;
 function rateCanOpenStore(){
   return typeof AndroidBridge!=='undefined' && typeof AndroidBridge.openStore==='function';
 }
 function rateLoad(){
-  const d={opens:0, asks:0, done:false, last:0};
+  const d={days:0, lastDay:'', asks:0, done:false, nextAt:0};
   try{ return Object.assign(d, JSON.parse(localStorage.getItem(RATE_KEY)||'null')||{}); }catch(e){ return d; }
 }
 function rateSave(r){ try{ localStorage.setItem(RATE_KEY, JSON.stringify(r)); }catch(e){} }
+// при запуске и возврате в приложение: считаем разные дни использования
 function rateCountOpen(){
   if(!rateCanOpenStore()) return;
   const r=rateLoad();
   if(r.done) return;
-  const now=Date.now();
-  if(r.last && now-r.last<RATE_GAP) return;
-  r.opens++; r.last=now;
+  const today=todayStr();
+  if(r.lastDay===today) return;
+  r.days=(r.days||0)+1; r.lastDay=today;
   rateSave(r);
-  const due=(r.asks===0 && r.opens>=RATE_FIRST) || (r.asks===1 && r.opens>=RATE_AGAIN);
-  if(due) setTimeout(rateAsk, 1500);
 }
-function rateAsk(){
+// все задачи на сегодня закрыты (пропущенные не считаются закрытыми)
+function rateDayClosed(){
+  const today=todayStr();
+  const list=(state.tasks||[]).filter(t=>t.date===today);
+  return list.length>0 && list.every(t=>t.done && !t.skipped);
+}
+// вызывается после отметки задачи / достижения цели; kind: 'day' | 'goal'
+function rateOnSuccess(kind){
+  if(!rateCanOpenStore() || state.demo) return;
+  const r=rateLoad();
+  if(r.done || r.asks>=2 || Date.now()<(r.nextAt||0)) return;
+  if(kind==='day' && ((r.days||0)<RATE_MIN_DAYS || !rateDayClosed())) return;
+  setTimeout(()=>rateAsk(kind), 2300);   // после того как тост «Готово» (1,8 с) погаснет
+}
+function rateAsk(kind){
   if(document.hidden) return;
-  // открыто другое окно (первый запуск, «Что нового», редактор) — не перебиваем,
-  // спросим на следующем открытии: счётчик уже дорос до порога
+  // открыто другое окно — не перебиваем, спросим на следующем успехе
   if(document.getElementById('modalBg').classList.contains('show')) return;
   const r=rateLoad();
-  if(r.done) return;
+  if(r.done || r.asks>=2) return;
+  const tt=document.getElementById('toast'); if(tt) tt.classList.remove('show');
   r.asks++;
+  r.nextAt=Date.now()+RATE_SNOOZE;   // «Позже» или закрыли окно — через неделю
   if(r.asks>=2) r.done=true;
   rateSave(r);
+  const head = kind==='goal' ? tr('rate.titleGoal') : tr('rate.titleDay');
   showModal(`
-    <h2>⭐ ${tr('rate.title')}</h2>
+    <h2>${head}</h2>
     <div class="upd-what" style="line-height:1.5">${tr('rate.text')}</div>
     <div class="modal-btns">
       <button class="ghost" onclick="closeModal()">${tr('rate.later')}</button>
@@ -7282,6 +7302,7 @@ function toggleItem(taskId,itemId,e){
   save();
   // не схлопываем карточку — обновляем только нужные части через render
   render();
+  if(t.done) rateOnSuccess('day');
 }
 function setManualStatus(taskId,key,e){
   if(e) e.stopPropagation();
@@ -7290,7 +7311,7 @@ function setManualStatus(taskId,key,e){
   t.status = t.status===key ? null : key;
   t.done = !!t.status; // любой выбранный статус = задача отработана за день
   save(); render();
-  if(t.status) toast(tr('tt.status',{v:statusGlyph(t.status)}));
+  if(t.status){ toast(tr('tt.status',{v:statusGlyph(t.status)})); rateOnSuccess('day'); }
 }
 function taskTap(id,e){
   if(e) e.stopPropagation();
@@ -7315,6 +7336,7 @@ function markDone(id){
   t.doneAt = new Date().toISOString();
   selectedTaskId = null;
   save(); render(); toast(tr('tt.done'));
+  rateOnSuccess('day');
 }
 function actDone(id,e){ e.stopPropagation(); markDone(id); }
 function actDelete(id,e){
@@ -8213,6 +8235,7 @@ function achieveGoal(id){
   });
   state.goals=state.goals.filter(x=>x.id!==id);
   save(); render(); toast(tr('gd.achieved'));
+  rateOnSuccess('goal');
 }
 function extendGoal(id){
   const g=state.goals.find(x=>x.id===id);
@@ -8709,7 +8732,7 @@ function init(){
   startDiscTicker();  // живая свеча графика дисциплины (раз в минуту)
   voiceInit();        // 1.7.4: микрофоны в текстовых полях (если есть распознаватель)
   if(firstRun) setTimeout(openWelcome, 350);   // 1.7.5: пример или шаблоны
-  rateCountOpen();    // просьба оценить в Google Play (3-е открытие)
+  rateCountOpen();    // считаем дни использования для просьбы об оценке
 }
 init();
 
