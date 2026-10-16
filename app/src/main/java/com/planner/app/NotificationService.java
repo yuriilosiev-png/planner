@@ -69,6 +69,11 @@ public class NotificationService extends Service {
             R.id.row_0_title, R.id.row_1_title, R.id.row_2_title,
             R.id.row_3_title, R.id.row_4_title
     };
+    // 1.7.7: кнопка «выполнено» в строке (DoneReceiver)
+    private static final int[] ROW_CHECK_IDS = {
+            R.id.row_0_check, R.id.row_1_check, R.id.row_2_check,
+            R.id.row_3_check, R.id.row_4_check
+    };
 
     /** Минутный тик + включение экрана + сдвиг часов/даты. Регистрируется в
      *  onCreate, живёт пока жив сервис. ACTION_TIME_TICK нельзя объявить в
@@ -118,6 +123,8 @@ public class NotificationService extends Service {
         String tasksJson = json;
         String rowsJson = null, rowsDate = null;
         String lTitle = null, lEmpty = null, lMore = null;
+        String widgetJson = null;            // 1.7.7: снимок для виджета «Сегодня»
+        String wTitle = null, wCount = null, wDone = null, wStale = null;
         try {
             String trimmed = json == null ? "" : json.trim();
             if (trimmed.startsWith("{")) {
@@ -134,7 +141,13 @@ public class NotificationService extends Service {
                     lTitle = lb.optString("title", null);
                     lEmpty = lb.optString("empty", null);
                     lMore  = lb.optString("more",  null);
+                    wTitle = lb.optString("wTitle", null);
+                    wCount = lb.optString("wCount", null);
+                    wDone  = lb.optString("wDone",  null);
+                    wStale = lb.optString("wStale", null);
                 }
+                JSONObject wj = root.optJSONObject("widget");
+                if (wj != null) widgetJson = wj.toString();
             }
         } catch (Exception e) {
             Log.e(TAG, "updateTasks parse failed: " + e.getMessage());
@@ -154,7 +167,19 @@ public class NotificationService extends Service {
         if (lTitle != null && !lTitle.isEmpty()) ed.putString(KEY_L_TITLE, lTitle);
         if (lEmpty != null && !lEmpty.isEmpty()) ed.putString(KEY_L_EMPTY, lEmpty);
         if (lMore  != null && !lMore.isEmpty())  ed.putString(KEY_L_MORE,  lMore);
+        // 1.7.7: виджет перерисовываем, только если его данные реально изменились —
+        // страница шлёт список на каждый render, это часто
+        boolean widgetChanged = false;
+        if (widgetJson != null && !widgetJson.equals(sp.getString(TodayWidget.KEY_WIDGET_JSON, ""))) {
+            ed.putString(TodayWidget.KEY_WIDGET_JSON, widgetJson);
+            widgetChanged = true;
+        }
+        widgetChanged |= putIfChanged(sp, ed, TodayWidget.KEY_L_WTITLE, wTitle);
+        widgetChanged |= putIfChanged(sp, ed, TodayWidget.KEY_L_WCOUNT, wCount);
+        widgetChanged |= putIfChanged(sp, ed, TodayWidget.KEY_L_WDONE,  wDone);
+        widgetChanged |= putIfChanged(sp, ed, TodayWidget.KEY_L_WSTALE, wStale);
         ed.apply();
+        if (widgetChanged) TodayWidget.updateAll(ctx);
 
         lastSig = null;   // список пришёл извне — перерисовать безусловно
 
@@ -163,6 +188,19 @@ public class NotificationService extends Service {
         Intent i = new Intent(ctx, NotificationService.class);
         i.setAction(ACTION_UPDATE);
         startSvc(ctx, i);
+    }
+
+    private static boolean putIfChanged(SharedPreferences sp, SharedPreferences.Editor ed,
+                                        String key, String val) {
+        if (val == null || val.isEmpty() || val.equals(sp.getString(key, ""))) return false;
+        ed.putString(key, val);
+        return true;
+    }
+
+    /** 1.7.7: перерисовать шторку безусловно (после отметки из DoneReceiver). */
+    public static void redraw(Context ctx) {
+        lastSig = null;
+        refresh(ctx);
     }
 
     public static void start(Context ctx) {
@@ -203,6 +241,8 @@ public class NotificationService extends Service {
      *  уже висящее уведомление foreground-сервиса; запускать сервис из фона
      *  нельзя (Android 12+), поэтому здесь только notify + перевод будильника. */
     public static void refresh(Context ctx) {
+        // 1.7.7: виджету нужна смена даты даже при выключенной шторке
+        try { TodayWidget.checkDay(ctx); } catch (Exception ignored) {}
         try {
             SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             if (!sp.getBoolean(KEY_ENABLED, false)) return;
@@ -234,7 +274,9 @@ public class NotificationService extends Service {
           .append(sp.getString(KEY_L_MORE, "")).append('|');
         for (JSONObject r : visibleRows(sp)) {
             sb.append(r.optString("time", "")).append('\u0001')
-              .append(r.optString("title", "")).append('\u0002');
+              .append(r.optString("title", "")).append('\u0001')
+              .append(r.optString("id", "")).append(r.optBoolean("tap", false) ? '+' : '-')
+              .append('\u0002');
         }
         return sb.toString();
     }
@@ -549,6 +591,17 @@ public class NotificationService extends Service {
                     rv.setTextViewText(ROW_TIME_IDS[i], time);
                 }
                 rv.setTextViewText(ROW_TITLE_IDS[i], title);
+
+                // 1.7.7: «выполнено» — только у строк задач с tap=true
+                String id = t != null ? t.optString("id", "") : "";
+                boolean tap = t != null && t.optBoolean("tap", false) && !id.isEmpty();
+                if (tap) {
+                    rv.setViewVisibility(ROW_CHECK_IDS[i], View.VISIBLE);
+                    rv.setOnClickPendingIntent(ROW_CHECK_IDS[i],
+                            DoneReceiver.pendingFor(ctx, id, 3100 + i));
+                } else {
+                    rv.setViewVisibility(ROW_CHECK_IDS[i], View.GONE);
+                }
             } else {
                 rv.setViewVisibility(ROW_IDS[i], View.GONE);
             }
