@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1.7.7: строка виджета «Сегодня»: время · задача · прогресс чек-листа · ☐ -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/row_time"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/widget_accent"
+        android:maxLines="1"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/row_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="@color/widget_text"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/row_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textSize="12sp"
+        android:textColor="@color/widget_text_secondary"
+        android:maxLines="1"
+        android:text="" />
+
+    <!-- кнопка «выполнено»: 40×40 dp — удобно попасть пальцем -->
+    <ImageView
+        android:id="@+id/row_check"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="9dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/widget_check"
+        android:contentDescription="✓" />
+</LinearLayout>
