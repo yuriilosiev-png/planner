@@ -22,6 +22,8 @@
 //     res/mipmap-*), первый запуск — пример (demo/demo-<язык>.json) или шаблоны целей
 //   - versionCode=15, versionName="1.7.6": уведомление со списком задач на системных
 //     цветах текста — читается на любой шторке (MIUI не рисовал свой синий фон)
+//   - versionCode=16, versionName="1.7.7": виджет «Сегодня» на главном экране и
+//     кнопка «выполнено» в строках шторки (DoneReceiver, TodayWidget, TodayWidgetService).
 // 1.8 зарезервирован под миграцию на OnBackInvokedCallback (см. комментарий
 // enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.x.
 // Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
@@ -38,8 +40,8 @@ android {
         applicationId "com.losev.planner"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 15
-        versionName "1.7.6"
+        versionCode 16
+        versionName "1.7.7"
     }
     signingConfigs {
         release {
