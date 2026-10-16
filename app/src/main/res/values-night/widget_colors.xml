@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1.7.7: цвета виджета «Сегодня», тёмная тема телефона -->
+<resources>
+    <color name="widget_bg">#E6202124</color>
+    <color name="widget_text">#F1F3F4</color>
+    <color name="widget_text_secondary">#B4B8BD</color>
+    <color name="widget_accent">#8AB4F8</color>
+    <color name="widget_check">#C4C7CC</color>
+</resources>
