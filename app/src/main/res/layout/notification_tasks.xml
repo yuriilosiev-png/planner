@@ -76,6 +76,20 @@
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:text="" />
+
+        <!-- 1.7.7: «выполнено» прямо из шторки (только простые задачи; натив
+             показывает кнопку, если JS прислал tap=true). Символ, а не картинка:
+             цвет берётся из системного стиля и читается на светлой и тёмной шторке. -->
+        <TextView
+            android:id="@+id/row_0_check"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:text="☐" />
     </LinearLayout>
 
     <!-- Строка 1 -->
@@ -108,6 +122,20 @@
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:text="" />
+
+        <!-- 1.7.7: «выполнено» прямо из шторки (только простые задачи; натив
+             показывает кнопку, если JS прислал tap=true). Символ, а не картинка:
+             цвет берётся из системного стиля и читается на светлой и тёмной шторке. -->
+        <TextView
+            android:id="@+id/row_1_check"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:text="☐" />
     </LinearLayout>
 
     <!-- Строка 2 -->
@@ -140,6 +168,20 @@
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:text="" />
+
+        <!-- 1.7.7: «выполнено» прямо из шторки (только простые задачи; натив
+             показывает кнопку, если JS прислал tap=true). Символ, а не картинка:
+             цвет берётся из системного стиля и читается на светлой и тёмной шторке. -->
+        <TextView
+            android:id="@+id/row_2_check"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:text="☐" />
     </LinearLayout>
 
     <!-- Строка 3 -->
@@ -172,6 +214,20 @@
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:text="" />
+
+        <!-- 1.7.7: «выполнено» прямо из шторки (только простые задачи; натив
+             показывает кнопку, если JS прислал tap=true). Символ, а не картинка:
+             цвет берётся из системного стиля и читается на светлой и тёмной шторке. -->
+        <TextView
+            android:id="@+id/row_3_check"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:text="☐" />
     </LinearLayout>
 
     <!-- Строка 4 -->
@@ -204,6 +260,20 @@
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:text="" />
+
+        <!-- 1.7.7: «выполнено» прямо из шторки (только простые задачи; натив
+             показывает кнопку, если JS прислал tap=true). Символ, а не картинка:
+             цвет берётся из системного стиля и читается на светлой и тёмной шторке. -->
+        <TextView
+            android:id="@+id/row_4_check"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:text="☐" />
     </LinearLayout>
 
     </LinearLayout>
