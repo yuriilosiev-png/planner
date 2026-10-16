@@ -550,6 +550,8 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 
 
 /* Deadline / term row on goal card */
+.g-streak{font-size:13px;font-weight:700;margin-top:8px;color:var(--txt);cursor:pointer}
+.g-streak.zero{color:var(--muted);font-weight:600}
 .g-term{font-size:13px;color:var(--muted);margin-top:9px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-weight:600}
 .g-term .gt-ic{font-size:13px}
 .g-term .gt-date{color:var(--txt);font-weight:600}
@@ -621,6 +623,7 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 .dc-canvas-box{width:100%;position:relative}
 .dc-canvas-box canvas{display:block;width:100%}
 .dc-sum{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.dc-share{display:block;margin:12px auto 2px;padding:9px 18px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--accent);font-weight:700;font-size:14px;cursor:pointer}
 .dc-cell{display:flex;flex-direction:column;gap:1px;min-width:56px}
 .dc-cell .dc-k{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
 .dc-cell .dc-v{font-size:15px;font-weight:800}
@@ -1372,6 +1375,21 @@ ru:{
   'rate.text':'Если пользуетесь приложением — оцените его в Google Play. Отзыв помогает другим его найти, а мне — понять, что улучшить.',
   'rate.btn':'Оценить в Google Play',
   'rate.later':'Позже',
+  'wd.count':'{d} из {t}',
+  'wd.allDone':'Всё на сегодня сделано 🎉',
+  'wd.stale':'Откройте приложение, чтобы обновить список',
+  'pl.week':['неделя','недели','недель'],
+  'st.streak':'🔥 {n} {u} подряд',
+  'st.week':'эта неделя {x}/{y}',
+  'st.weekFirst':'Эта неделя: {x}/{y} · для серии нужно {k}',
+  'st.hint':'Неделя засчитывается, если выполнено не меньше 80% запланированных дней. Один пропуск серию не обнуляет.',
+  'dc.streak':'Серия',
+  'dc.weeksShort':'нед.',
+  'sh.btn':'Поделиться графиком',
+  'sh.title':'Моя дисциплина за 30 дней',
+  'sh.footer':'Цели → задачи на каждый день',
+  'sh.text':'Мой график дисциплины в Planner: {url}',
+  'sh.fail':'Не удалось поделиться',
   'save.fail':'Не удалось сохранить изменения на устройстве. Сделайте резервную копию в настройках.',
   'mig.title':'Найдены данные из офлайн-режима',
   'mig.text':'Раньше при запуске без интернета приложение хранило данные отдельно. Выберите, какой вариант оставить — второй будет недоступен.',
@@ -1842,6 +1860,21 @@ en:{
   'rate.text':'If you use the app, please rate it on Google Play. A review helps others find it and helps me see what to improve.',
   'rate.btn':'Rate on Google Play',
   'rate.later':'Later',
+  'wd.count':'{d} of {t}',
+  'wd.allDone':'All done for today 🎉',
+  'wd.stale':'Open the app to load today’s list',
+  'pl.week':['week','weeks'],
+  'st.streak':'🔥 {n} {u} in a row',
+  'st.week':'this week {x}/{y}',
+  'st.weekFirst':'This week: {x}/{y} · {k} needed for a streak',
+  'st.hint':'A week counts if you complete at least 80% of the planned days. One missed day doesn’t break the streak.',
+  'dc.streak':'Streak',
+  'dc.weeksShort':'wk',
+  'sh.btn':'Share chart',
+  'sh.title':'My discipline over 30 days',
+  'sh.footer':'Goals → daily tasks',
+  'sh.text':'My discipline chart in Goal Planner: {url}',
+  'sh.fail':'Couldn’t share',
   'save.fail':'Couldn’t save your changes on this device. Make a backup in Settings.',
   'mig.title':'Data from offline mode found',
   'mig.text':'Earlier, when opened without internet, the app kept data separately. Choose which version to keep — the other one will no longer be available.',
@@ -2312,6 +2345,21 @@ es:{
   'rate.text':'Si usas la app, califícala en Google Play. Una reseña ayuda a que otros la encuentren y me ayuda a saber qué mejorar.',
   'rate.btn':'Calificar en Google Play',
   'rate.later':'Más tarde',
+  'wd.count':'{d} de {t}',
+  'wd.allDone':'¡Todo listo por hoy! 🎉',
+  'wd.stale':'Abre la app para cargar la lista de hoy',
+  'pl.week':['semana','semanas'],
+  'st.streak':'🔥 {n} {u} seguidas',
+  'st.week':'esta semana {x}/{y}',
+  'st.weekFirst':'Esta semana: {x}/{y} · para la racha hacen falta {k}',
+  'st.hint':'Una semana cuenta si completas al menos el 80% de los días planificados. Un día perdido no rompe la racha.',
+  'dc.streak':'Racha',
+  'dc.weeksShort':'sem.',
+  'sh.btn':'Compartir gráfico',
+  'sh.title':'Mi disciplina en 30 días',
+  'sh.footer':'Metas → tareas diarias',
+  'sh.text':'Mi gráfico de disciplina en el planificador: {url}',
+  'sh.fail':'No se pudo compartir',
   'save.fail':'No se pudieron guardar los cambios en el dispositivo. Haz una copia de seguridad en Ajustes.',
   'mig.title':'Se encontraron datos del modo sin conexión',
   'mig.text':'Antes, al abrirse sin internet, la app guardaba los datos por separado. Elige qué versión conservar: la otra ya no estará disponible.',
@@ -2782,6 +2830,21 @@ pt:{
   'rate.text':'Se você usa o app, avalie-o no Google Play. Uma avaliação ajuda outras pessoas a encontrá-lo e me ajuda a saber o que melhorar.',
   'rate.btn':'Avaliar no Google Play',
   'rate.later':'Mais tarde',
+  'wd.count':'{d} de {t}',
+  'wd.allDone':'Tudo feito por hoje 🎉',
+  'wd.stale':'Abra o app para carregar a lista de hoje',
+  'pl.week':['semana','semanas'],
+  'st.streak':'🔥 {n} {u} seguidas',
+  'st.week':'esta semana {x}/{y}',
+  'st.weekFirst':'Esta semana: {x}/{y} · para a sequência faltam {k}',
+  'st.hint':'Uma semana conta se você concluir pelo menos 80% dos dias planejados. Um dia perdido não quebra a sequência.',
+  'dc.streak':'Sequência',
+  'dc.weeksShort':'sem.',
+  'sh.btn':'Compartilhar gráfico',
+  'sh.title':'Minha disciplina em 30 dias',
+  'sh.footer':'Metas → tarefas diárias',
+  'sh.text':'Meu gráfico de disciplina no planejador: {url}',
+  'sh.fail':'Não foi possível compartilhar',
   'save.fail':'Não foi possível salvar as alterações no aparelho. Faça uma cópia de segurança nos Ajustes.',
   'mig.title':'Encontramos dados do modo off-line',
   'mig.text':'Antes, ao abrir sem internet, o app guardava os dados separadamente. Escolha qual versão manter — a outra não ficará mais disponível.',
@@ -3252,6 +3315,21 @@ de:{
   'rate.text':'Wenn du die App nutzt, bewerte sie bei Google Play. Eine Bewertung hilft anderen, sie zu finden, und mir zu sehen, was ich verbessern kann.',
   'rate.btn':'Bei Google Play bewerten',
   'rate.later':'Später',
+  'wd.count':'{d} von {t}',
+  'wd.allDone':'Alles erledigt für heute 🎉',
+  'wd.stale':'Öffne die App, um die heutige Liste zu laden',
+  'pl.week':['Woche','Wochen'],
+  'st.streak':'🔥 {n} {u} in Folge',
+  'st.week':'diese Woche {x}/{y}',
+  'st.weekFirst':'Diese Woche: {x}/{y} · für eine Serie nötig: {k}',
+  'st.hint':'Eine Woche zählt, wenn du mindestens 80 % der geplanten Tage schaffst. Ein verpasster Tag beendet die Serie nicht.',
+  'dc.streak':'Serie',
+  'dc.weeksShort':'Wo.',
+  'sh.btn':'Chart teilen',
+  'sh.title':'Meine Disziplin in 30 Tagen',
+  'sh.footer':'Ziele → tägliche Aufgaben',
+  'sh.text':'Mein Disziplin-Chart im Zielplaner: {url}',
+  'sh.fail':'Teilen fehlgeschlagen',
   'save.fail':'Deine Änderungen konnten auf dem Gerät nicht gespeichert werden. Mach in den Einstellungen eine Sicherung.',
   'mig.title':'Daten aus dem Offline-Modus gefunden',
   'mig.text':'Früher hat die App ohne Internet die Daten getrennt gespeichert. Wähle, welche Version du behältst — die andere ist danach nicht mehr verfügbar.',
@@ -3722,6 +3800,21 @@ fr:{
   'rate.text':'Si tu utilises l’appli, donne-lui une note sur Google Play. Un avis aide d’autres personnes à la trouver et m’aide à voir ce qu’il faut améliorer.',
   'rate.btn':'Noter sur Google Play',
   'rate.later':'Plus tard',
+  'wd.count':'{d} sur {t}',
+  'wd.allDone':'Tout est fait pour aujourd’hui 🎉',
+  'wd.stale':'Ouvre l’appli pour charger la liste du jour',
+  'pl.week':['semaine','semaines'],
+  'st.streak':'🔥 {n} {u} d’affilée',
+  'st.week':'cette semaine {x}/{y}',
+  'st.weekFirst':'Cette semaine : {x}/{y} · {k} pour lancer une série',
+  'st.hint':'Une semaine compte si tu fais au moins 80 % des jours prévus. Un jour manqué ne casse pas la série.',
+  'dc.streak':'Série',
+  'dc.weeksShort':'sem.',
+  'sh.btn':'Partager le graphique',
+  'sh.title':'Ma discipline sur 30 jours',
+  'sh.footer':'Objectifs → tâches du jour',
+  'sh.text':'Mon graphique de discipline dans le planificateur\u00a0: {url}',
+  'sh.fail':'Impossible de partager',
   'save.fail':'Impossible d’enregistrer tes modifications sur l’appareil. Fais une sauvegarde dans les réglages.',
   'mig.title':'Données du mode hors ligne trouvées',
   'mig.text':'Avant, sans Internet, l’appli enregistrait les données à part. Choisis la version à garder — l’autre ne sera plus disponible.',
@@ -4260,7 +4353,10 @@ function buildNotificationPayloadAll(){
   const rows = notifTodayTasks().map(t=>{
     const f = taskNotifShowFrom(t);
     if(f===null) return null;
-    return {time:f, title:(t.title||'').trim(), from:f, until:'', goalId:t.goalId||null};
+    // 1.7.7: id + tap — натив рисует кнопку «выполнено» (только простые задачи;
+    // чек-листу и статусной задаче нужен выбор пунктов/статуса в приложении)
+    return {time:f, title:(t.title||'').trim(), from:f, until:'', goalId:t.goalId||null,
+            id:t.id, tap:notifTapable(t)};
   }).filter(Boolean).sort(compareTasksByTime);
 
   // для каждой цели — самое раннее from её задач ('' перебивает любое время)
@@ -4285,7 +4381,47 @@ function buildNotificationPayloadAll(){
     if(line) goals.push({time:'', title:line, from:'', until:until});
   });
 
-  return rows.map(r=>({time:r.time, title:r.title, from:r.from, until:r.until})).concat(goals);
+  return rows.map(r=>({time:r.time, title:r.title, from:r.from, until:r.until, id:r.id, tap:r.tap})).concat(goals);
+}
+// 1.7.7: какие задачи можно отметить одним тапом из шторки/виджета
+function notifTapable(t){
+  return !!t && !t.done && t.kind!=='checklist' && t.kind!=='manual';
+}
+/* 1.7.7: снимок для виджета «Сегодня»: все задачи дня (без пропущенных),
+   невыполненные — списком по времени, плюс «выполнено N из M». */
+function buildWidgetPayload(){
+  const today = todayStr();
+  const all = state.tasks.filter(t=>t.date===today && !t.skipped);
+  const done = all.filter(t=>t.done).length;
+  const rows = all.filter(t=>!t.done).map(t=>{
+    let sub = '';
+    if(t.kind==='checklist' && Array.isArray(t.items) && t.items.length){
+      sub = t.items.filter(i=>i.done).length + '/' + t.items.length;
+    }
+    return {id:t.id, time:t.time||'', title:(t.title||'').trim(), tap:notifTapable(t), sub:sub};
+  }).sort(compareTasksByTime);
+  return {date:today, done:done, total:all.length, rows:rows};
+}
+/* 1.7.7: применить отметки «выполнено», сделанные в шторке или виджете.
+   Натив копит их в очереди, пока страница не заберёт (takePendingDone).
+   silent=true — из init: render ещё впереди. */
+function applyNativeDone(silent){
+  if(typeof AndroidBridge==='undefined' || typeof AndroidBridge.takePendingDone!=='function') return;
+  let list=[];
+  try{ list = JSON.parse(AndroidBridge.takePendingDone()||'[]'); }catch(e){ return; }
+  if(!Array.isArray(list) || !list.length) return;
+  let changed = 0;
+  list.forEach(p=>{
+    const t = p && state.tasks.find(x=>x.id===p.id);
+    if(!t || t.done || !notifTapable(t)) return;
+    t.done = true;
+    t.skipped = false;
+    t.doneAt = new Date(p.at || Date.now()).toISOString();
+    changed++;
+  });
+  if(!changed) return;
+  save();
+  if(!silent){ render(); rateOnSuccess('day'); }
 }
 
 // единая точка сборки: задачи + цели. Цели идут ПОСЛЕ задач, поэтому
@@ -4315,10 +4451,15 @@ function updateNotificationTasks(){
       tasks: buildNotificationPayload(),
       tasksAll: buildNotificationPayloadAll(),
       date: todayStr(),
+      widget: buildWidgetPayload(),   // 1.7.7: виджет «Сегодня»; старый натив поле игнорирует
       labels: {
         title: t('notif.title'),
         empty: t('notif.empty'),
-        more:  t('notif.more')
+        more:  t('notif.more'),
+        wTitle: t('title.today'),
+        wCount: t('wd.count'),
+        wDone:  t('wd.allDone'),
+        wStale: t('wd.stale')
       }
     }));
   }catch(e){}
@@ -5004,6 +5145,83 @@ function statusGlyph(s){ return STATUS_EMOJI[s] || ''; }
    Текущая целевая величина на дату = линейная интерполяция
    по количеству активных дней, прошедших с начала.
 */
+/* ---------- Серии недель ----------
+   Считаем недели (пн–вс), а не дни подряд: неделя засчитана, если выполнено
+   ≥80% запланированных дней. Один пропуск (болезнь, поездка) серию не
+   обнуляет — в этом отличие от «N дней подряд» у других трекеров.
+   План цели берём из её расписания (активные дни недели в пределах
+   «создана … дедлайн»), а не из созданных задач: задачи создаются только в те
+   дни, когда приложение открывали, и неделя с одним открытием иначе выглядела
+   бы идеальной. Выполненным днём считается задача done; у чек-листа — и 🟡
+   (больше половины пунктов), у статусной — любой выставленный статус.
+   Текущая неделя прибавляется к серии, как только набрала свои 80%; пока не
+   набрала — серию не рвёт (неделя ещё идёт). */
+const STREAK_RATE = 0.8;
+function weekStartOf(d){ return addDays(d, -dowIndex(d)); }
+function streakNeed(plan){ return Math.ceil(plan*STREAK_RATE - 1e-9); }
+function goalActiveDows(g){
+  if(g.kind==='checklist'){
+    const wp=g.weeklyPlan||{};
+    return [0,1,2,3,4,5,6].filter(i=>wp[i]&&wp[i].length);
+  }
+  return (g.days&&g.days.length) ? g.days : [0,1,2,3,4,5,6];
+}
+function dayCountsDone(t){ return !t.skipped && (t.done || t.status==='yellow'); }
+function goalWeek(g, ws){
+  const dows=goalActiveDows(g), from=g.createdDate||ws, end=g.deadline||'9999-12-31';
+  let plan=0;
+  for(let i=0;i<7;i++){
+    const d=addDays(ws,i);
+    if(d<from || d>end) continue;
+    if(dows.includes(i)) plan++;
+  }
+  const we=addDays(ws,6);
+  const days=new Set();
+  state.tasks.forEach(t=>{ if(t.goalId===g.id && t.date>=ws && t.date<=we && dayCountsDone(t)) days.add(t.date); });
+  return {plan, done:Math.min(days.size, plan)};
+}
+function goalStreak(g){
+  const ws0=weekStartOf(todayStr());
+  const cur=goalWeek(g, ws0);
+  const created=g.createdDate||ws0;
+  let n=0, ws=addDays(ws0,-7);
+  for(let k=0;k<520 && addDays(ws,6)>=created;k++){
+    const w=goalWeek(g, ws);
+    if(w.plan>0){ if(w.done>=streakNeed(w.plan)) n++; else break; }
+    ws=addDays(ws,-7);
+  }
+  if(cur.plan>0 && cur.done>=streakNeed(cur.plan)) n++;
+  return {n, cur};
+}
+// общая серия (История): все задачи недели; сегодняшние невыполненные ещё в работе
+function overallWeek(ws){
+  const today=todayStr(), we=addDays(ws,6);
+  const list=state.tasks.filter(t=>t.date>=ws && t.date<=we && t.date<=today
+    && !(t.date===today && !t.done && !t.skipped && t.status!=='yellow'));
+  return {plan:list.length, done:list.filter(dayCountsDone).length};
+}
+function overallStreak(){
+  const ws0=weekStartOf(todayStr());
+  const cur=overallWeek(ws0);
+  let n=0, ws=addDays(ws0,-7);
+  for(let k=0;k<520;k++){
+    const w=overallWeek(ws);
+    if(w.plan===0 || w.done<streakNeed(w.plan)) break;   // неделя без задач — приложением не пользовались
+    n++; ws=addDays(ws,-7);
+  }
+  if(cur.plan>0 && cur.done>=streakNeed(cur.plan)) n++;
+  return n;
+}
+function goalStreakHTML(g){
+  const st=goalStreak(g);
+  if(!st.cur.plan && !st.n) return '';
+  const wk=st.cur.plan ? tr('st.week',{x:st.cur.done, y:st.cur.plan}) : '';
+  const html = st.n>0
+    ? tr('st.streak',{n:st.n, u:plural(st.n,tp('pl.week'))}) + (wk?(' · '+wk):'')
+    : tr('st.weekFirst',{x:st.cur.done, y:st.cur.plan, k:streakNeed(st.cur.plan)});
+  return `<div class="g-streak${st.n>0?'':' zero'}" onclick="toast(tr('st.hint'))">${html}</div>`;
+}
+
 function activeDaysCount(fromDate, toDate, days){
   if(daysBetween(fromDate,toDate) < 0) return 0;
   let cnt=0, cur=fromDate;
@@ -6275,6 +6493,14 @@ function openGoalTemplate(k){
    (мост openStore появился в 1.7.4) — вместо кнопки текстовая подсказка.
    Браузер/PWA (нет AndroidBridge) — плашки нет. */
 const APP_RELEASES = [
+  { code:16, name:'1.7.7', live:false, notes:{
+    ru:['Виджет «Сегодня» на главный экран: задачи дня и отметка прямо с рабочего стола','Отмечайте задачи прямо в шторке — кнопкой ☐ в строке','Серии недель 🔥: неделя засчитывается при 80% выполненного плана — один пропуск не обнуляет серию','Поделиться графиком дисциплины за 30 дней — картинкой в Telegram или соцсети'],
+    en:['“Today” home screen widget: your tasks for the day, checked off right from the home screen','Check off tasks right in the notification with the ☐ button','Weekly streaks 🔥: a week counts at 80% of the plan, so one missed day doesn’t break it','Share your 30-day discipline chart as a picture'],
+    es:['Widget «Hoy» para la pantalla de inicio: tus tareas del día y marcarlas desde ahí','Marca tareas directamente en la notificación con el botón ☐','Rachas semanales 🔥: una semana cuenta con el 80% del plan, un día perdido no la rompe','Comparte tu gráfico de disciplina de 30 días como imagen'],
+    pt:['Widget «Hoje» na tela inicial: suas tarefas do dia e marcar direto de lá','Marque tarefas direto na notificação com o botão ☐','Sequências semanais 🔥: uma semana conta com 80% do plano, um dia perdido não a quebra','Compartilhe seu gráfico de disciplina de 30 dias como imagem'],
+    de:['Widget „Heute“ für den Startbildschirm: Aufgaben des Tages direkt dort abhaken','Aufgaben direkt in der Benachrichtigung abhaken – mit dem ☐-Knopf','Wochenserien 🔥: eine Woche zählt ab 80 % des Plans – ein verpasster Tag beendet sie nicht','Teile dein Disziplin-Chart der letzten 30 Tage als Bild'],
+    fr:['Widget « Aujourd’hui » pour l’écran d’accueil : les tâches du jour, à cocher directement','Coche tes tâches directement dans la notification avec le bouton ☐','Séries de semaines 🔥 : une semaine compte à 80 % du plan, un jour manqué ne la casse pas','Partage ton graphique de discipline sur 30 jours en image']
+  }},
   { code:15, name:'1.7.6', live:true, notes:{
     ru:['Немецкий язык','Уведомление со списком задач читается на любом фоне шторки — светлом и тёмном','Рамки у галочек заметнее'],
     de:['Deutsch als App-Sprache','Die Benachrichtigung mit Aufgaben ist auf jedem Hintergrund lesbar, hell oder dunkel','Kästchen mit deutlicheren Rändern'],
@@ -6637,6 +6863,7 @@ function goalCardHTML(g, today){
         ${tr('gc.days',{v:activeDays||'—'})}<br>
         ${tr('gc.todayLbl')} <b style="color:${cat.color}">${todayItems.length?(todayItems.length+' '+plural(todayItems.length,tp('pl.task'))):tr('wp.dayOff')}</b>
       </div>
+      ${goalStreakHTML(g)}
       ${termHTML}${overdueHTML}
       ${actions}
     </div>`;
@@ -6655,6 +6882,7 @@ function goalCardHTML(g, today){
         ${tr('gc.manual')}<br>
         ${tr('gc.days',{v:daysList||tr('gc.everyDay')})}
       </div>
+      ${goalStreakHTML(g)}
       ${termHTML}${overdueHTML}
       ${actions}
     </div>`;
@@ -6682,6 +6910,7 @@ function goalCardHTML(g, today){
       ${tr('gc.todayLbl')} <b style="color:${cat.color}">${curTarget!==null?(curTarget+(unit?(' '+unit):'')):tr('wp.dayOff')}</b><br>
       ${tr('gc.days',{v:daysList})} · ${tr('gc.totalDays',{n:totalActive})}
     </div>
+    ${goalStreakHTML(g)}
     ${termHTML}${paceHTML}${overdueHTML}
     ${actions}
   </div>`;
@@ -6886,7 +7115,78 @@ function discChartHTML(){
        +   '<div class="dc-chips">'+chips+'</div>'
        +   '<div class="dc-canvas-box"><canvas id="disc-canvas"></canvas></div>'
        +   '<div class="dc-sum" id="disc-sum"></div>'
+       +   (canShareImage() ? '<button class="dc-share" onclick="shareDiscCard()">↗ '+tr('sh.btn')+'</button>' : '')
        + '</div>';
+}
+
+/* ---------- 1.7.7: карточка «Моя дисциплина за 30 дней» → Поделиться ----------
+   Картинка 1080×1350 (4:5 — Telegram, Instagram, сторис) на своём тёмном фоне,
+   не зависит от темы экранов. Всегда последние 30 дней, какой бы период ни был
+   выбран на графике. Отправка: натив (AndroidBridge.shareImage, 1.7.7+) или,
+   в браузере, скачивание файла. В старых APK метода нет — кнопку не показываем. */
+function canShareImage(){
+  if(typeof AndroidBridge==='undefined') return true;            // браузер/PWA — скачивание
+  return typeof AndroidBridge.shareImage==='function';
+}
+function shareRoundRect(g,x,y,w,h,r){
+  g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r);
+  g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath();
+}
+function buildShareCanvas(){
+  const series=buildDiscSeries();
+  const win=series.slice(Math.max(0, series.length-30));
+  const sm=discSummary(win, series);
+  const W=1080, H=1350, F='-apple-system,Roboto,"Segoe UI",sans-serif';
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const g=cv.getContext('2d');
+  const bg=g.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#141a26'); bg.addColorStop(1,'#0b0e14');
+  g.fillStyle=bg; g.fillRect(0,0,W,H);
+  // заголовок
+  g.fillStyle='#ffffff'; g.textAlign='left'; g.textBaseline='alphabetic';
+  g.font='800 64px '+F; g.fillText(tr('sh.title'), 80, 170);
+  g.fillStyle='#8b93a3'; g.font='500 34px '+F;
+  if(win.length) g.fillText(fmtFull(win[0].date)+' — '+fmtFull(win[win.length-1].date), 80, 225);
+  // плитки
+  const tiles=[[tr('dc.rate'), sm.rate+'%', '#ffffff'],
+               [tr('dc.streak'), '🔥 '+overallStreak()+' '+tr('dc.weeksShort'), '#ffb648'],
+               [tr('dc.level'), discSigned(sm.level), sm.level>=0?'#3ecf8e':'#ff5c5c']];
+  const tw=(W-160-2*30)/3;
+  tiles.forEach((t,i)=>{
+    const x=80+i*(tw+30), y=280;
+    g.fillStyle='#1b2232'; shareRoundRect(g,x,y,tw,190,28); g.fill();
+    let ls=28; g.font='700 '+ls+'px '+F;
+    while(ls>18 && g.measureText(String(t[0]).toUpperCase()).width>tw-60){ ls-=1; g.font='700 '+ls+'px '+F; }
+    g.fillStyle='#8b93a3'; g.fillText(String(t[0]).toUpperCase(), x+30, y+62);
+    let fs=60; g.font='800 '+fs+'px '+F;
+    while(fs>30 && g.measureText(t[1]).width>tw-60){ fs-=2; g.font='800 '+fs+'px '+F; }   // «🔥 12 нед.» — ужать, а не вылезти
+    g.fillStyle=t[2]; g.fillText(t[1], x+30, y+145);
+  });
+  // график
+  const px=80, py=510, pw=W-160, ph=640;
+  g.fillStyle='#161c28'; shareRoundRect(g,px,py,pw,ph,32); g.fill();
+  if(win.length){
+    g.save(); g.translate(px+24, py+30); g.scale(2.2,2.2);
+    discPaint(g, (pw-48)/2.2, (ph-50)/2.2, win,
+      {ok:'#3ecf8e', bad:'#ff5c5c', line:'#2f3747', muted:'#8b93a3', acc:'#5b9dff', bg:'#161c28'});
+    g.restore();
+  }
+  // подпись
+  g.fillStyle='#ffffff'; g.font='800 44px '+F; g.fillText('Planner', 80, 1250);
+  g.fillStyle='#8b93a3'; g.font='500 32px '+F; g.fillText(tr('sh.footer'), 80, 1298);
+  return cv;
+}
+function shareDiscCard(){
+  try{
+    const cv=buildShareCanvas();
+    const url=cv.toDataURL('image/png');
+    const name='planner-discipline-'+todayStr()+'.png';
+    if(typeof AndroidBridge!=='undefined' && typeof AndroidBridge.shareImage==='function'){
+      AndroidBridge.shareImage(url.split(',')[1], name, tr('sh.text',{url:STORE_URL}));
+      return;
+    }
+    const a=document.createElement('a'); a.href=url; a.download=name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ toast(tr('sh.fail')); }
 }
 
 function setDiscPeriod(p){
@@ -7008,10 +7308,27 @@ function renderDiscChart(){
 
   const colOk    = discCssVar('--ok','#3ecf8e');
   const colBad   = discCssVar('--danger','#ff5c5c');
-  const colLine  = discCssVar('--line','#2a2f3a');
   const colMuted = discCssVar('--muted','#8b93a3');
-  const colAcc   = discCssVar('--accent','#5b9dff');
-  const colBg    = discCssVar('--bg','#0f1115');
+  discPaint(g, W, H, win, {ok:colOk, bad:colBad, line:discCssVar('--line','#2a2f3a'),
+    muted:colMuted, acc:discCssVar('--accent','#5b9dff'), bg:discCssVar('--bg','#0f1115')});
+
+  if(sumEl){
+    const sm = discSummary(win, series);
+    const lvlColor = sm.level>0 ? colOk : (sm.level<0 ? colBad : colMuted);
+    sumEl.innerHTML =
+      '<div class="dc-cell"><span class="dc-k">'+tr('dc.days')+'</span><span class="dc-v">'+sm.days+'</span></div>'
+     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.level')+'</span><span class="dc-v" style="color:'+lvlColor+'">'+discSigned(sm.level)+'</span></div>'
+     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.best')+'</span><span class="dc-v" style="color:'+colOk+'">'+discSigned(sm.best)+'</span></div>'
+     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.worst')+'</span><span class="dc-v" style="color:'+colBad+'">'+discSigned(sm.worst)+'</span></div>'
+     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.rate')+'</span><span class="dc-v">'+sm.rate+'%</span></div>'
+     +'<div class="dc-cell" onclick="toast(tr(\'st.hint\'))"><span class="dc-k">'+tr('dc.streak')+'</span><span class="dc-v">🔥 '+overallStreak()+' '+tr('dc.weeksShort')+'</span></div>';
+  }
+}
+
+/* Рисунок графика дисциплины в контекст g размером W×H (логические px).
+   Общий для экрана «История» и карточки «Поделиться» (1.7.7) — цвета снаружи. */
+function discPaint(g, W, H, win, C){
+  const colOk=C.ok, colBad=C.bad, colLine=C.line, colMuted=C.muted, colAcc=C.acc, colBg=C.bg;
 
   const padL=32, padR=8, padT=10, padB=18;
   const plotW = Math.max(10, W - padL - padR);
@@ -7097,16 +7414,6 @@ function renderDiscChart(){
     g.fillText(fmtShort(win[idx].date), Math.min(Math.max(cx, padL+14), padL+plotW-14), H-padB+4);
   }
 
-  if(sumEl){
-    const sm = discSummary(win, series);
-    const lvlColor = sm.level>0 ? colOk : (sm.level<0 ? colBad : colMuted);
-    sumEl.innerHTML =
-      '<div class="dc-cell"><span class="dc-k">'+tr('dc.days')+'</span><span class="dc-v">'+sm.days+'</span></div>'
-     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.level')+'</span><span class="dc-v" style="color:'+lvlColor+'">'+discSigned(sm.level)+'</span></div>'
-     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.best')+'</span><span class="dc-v" style="color:'+colOk+'">'+discSigned(sm.best)+'</span></div>'
-     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.worst')+'</span><span class="dc-v" style="color:'+colBad+'">'+discSigned(sm.worst)+'</span></div>'
-     +'<div class="dc-cell"><span class="dc-k">'+tr('dc.rate')+'</span><span class="dc-v">'+sm.rate+'%</span></div>';
-  }
 }
 
 /* живая свеча: раз в минуту, пока экран «История» открыт и вкладка видима */
@@ -8718,7 +9025,8 @@ function legacyExport(){
 function init(){
   if(LEGACY_EXPORT){ legacyExport(); return; }
   load();
-  const firstRun = (_lastRaw===null);   // в хранилище ещё ничего не записано — новая установка
+  const firstRun = (_lastRaw===null);
+  applyNativeDone(true);   // 1.7.7: отметки из шторки/виджета, пока приложение было закрыто   // в хранилище ещё ничего не записано — новая установка
   // i18n: язык уже проставлен миграцией — применяем к статичной разметке
   document.documentElement.setAttribute('lang', curLang());
   applyStaticI18n();
@@ -8756,6 +9064,7 @@ document.addEventListener('visibilitychange',()=>{
   if(LEGACY_EXPORT) return;
   if(!document.hidden){
     if(syncFromStorage()){ closeModal(); applyTheme(curScreen); }   // сначала сверка — до любой записи
+    applyNativeDone(true);   // 1.7.7: отметки из шторки/виджета; render ниже
     if(state.lastGen!==todayStr()){ runDailyGen(); }
     render(); // обновить баннеры событий (время могло наступить) и бэйдж
     rateCountOpen();
