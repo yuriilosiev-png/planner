@@ -108,6 +108,30 @@
             android:name=".NotifAlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+        <!-- 1.7.7: «выполнено» из шторки и виджета. Шлём только сами себе
+             через PendingIntent — exported=false. -->
+        <receiver
+            android:name=".DoneReceiver"
+            android:exported="false" />
+        <!-- 1.7.7: виджет «Сегодня» на главном экране. label — подпись в списке
+             виджетов лаунчера. -->
+        <receiver
+            android:name=".TodayWidget"
+            android:label="Planner"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_today_info" />
+        </receiver>
+        <!-- 1.7.7: строки списка виджета. BIND_REMOTEVIEWS — подключиться может
+             только система. -->
+        <service
+            android:name=".TodayWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- FileProvider — обязателен для «Поделиться» файлом на Android 7+.
              Без него система бросает FileUriExposedException.
              authorities ОБЯЗАН совпадать с тем, что строит код:
