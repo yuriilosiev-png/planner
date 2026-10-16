@@ -4353,8 +4353,8 @@ function buildNotificationPayloadAll(){
   const rows = notifTodayTasks().map(t=>{
     const f = taskNotifShowFrom(t);
     if(f===null) return null;
-    // 1.7.7: id + tap — натив рисует кнопку «выполнено» (только простые задачи;
-    // чек-листу и статусной задаче нужен выбор пунктов/статуса в приложении)
+    // 1.7.7: id + tap — натив рисует кнопку «выполнено» у каждой невыполненной
+    // задачи (чек-лист: тап закрывает все пункты, статусная: тап ставит 🟢)
     return {time:f, title:(t.title||'').trim(), from:f, until:'', goalId:t.goalId||null,
             id:t.id, tap:notifTapable(t)};
   }).filter(Boolean).sort(compareTasksByTime);
@@ -4383,9 +4383,11 @@ function buildNotificationPayloadAll(){
 
   return rows.map(r=>({time:r.time, title:r.title, from:r.from, until:r.until, id:r.id, tap:r.tap})).concat(goals);
 }
-// 1.7.7: какие задачи можно отметить одним тапом из шторки/виджета
+// 1.7.7: какие задачи можно отметить одним тапом из шторки/виджета — любая
+// невыполненная. Чек-лист закрывается целиком, статусная получает 🟢
+// (см. applyNativeDone). Ошибся — в приложении снимешь пункт/статус.
 function notifTapable(t){
-  return !!t && !t.done && t.kind!=='checklist' && t.kind!=='manual';
+  return !!t && !t.done && !t.skipped;
 }
 /* 1.7.7: снимок для виджета «Сегодня»: все задачи дня (без пропущенных),
    невыполненные — списком по времени, плюс «выполнено N из M». */
@@ -4414,6 +4416,12 @@ function applyNativeDone(silent){
   list.forEach(p=>{
     const t = p && state.tasks.find(x=>x.id===p.id);
     if(!t || t.done || !notifTapable(t)) return;
+    if(t.kind==='checklist'){
+      (t.items||[]).forEach(i=>{ i.done=true; });
+      t.status = 'green';
+    } else if(t.kind==='manual'){
+      t.status = 'green';
+    }
     t.done = true;
     t.skipped = false;
     t.doneAt = new Date(p.at || Date.now()).toISOString();
