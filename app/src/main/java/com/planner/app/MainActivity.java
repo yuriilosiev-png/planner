@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -120,6 +122,14 @@ public class MainActivity extends Activity {
 
     public static MainActivity getInstance() {
         return sInstance != null ? sInstance.get() : null;
+    }
+
+    /** 1.7.7: задачу отметили в шторке или виджете. Если приложение живо —
+     *  страница сразу забирает очередь отметок; если нет — заберёт при запуске
+     *  (init) или возврате (visibilitychange). */
+    static void onNativeDone() {
+        MainActivity a = getInstance();
+        if (a != null) a.callJs("window.applyNativeDone&&applyNativeDone()");
     }
 
     @Override
@@ -535,6 +545,20 @@ public class MainActivity extends Activity {
             });
         }
 
+        /** 1.7.7: поделиться картинкой (карточка «Моя дисциплина за 30 дней»).
+         *  base64 — PNG без префикса data:, text — подпись со ссылкой на Play. */
+        @JavascriptInterface
+        public void shareImage(final String base64, final String filename, final String text) {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    a.doShareImage(base64, filename, text);
+                }
+            });
+        }
+
         /** Сохранить JSON в папку Загрузки (Downloads). */
         @JavascriptInterface
         public void saveToDownloads(final String json, final String filename) {
@@ -767,6 +791,14 @@ public class MainActivity extends Activity {
             if (a != null) a.markLegacyDone();
         }
 
+        /** 1.7.7: отметки «выполнено» из шторки и виджета, ещё не применённые
+         *  страницей. Возвращает JSON [{"id","at"}] и очищает очередь. */
+        @JavascriptInterface
+        public String takePendingDone() {
+            final MainActivity a = activityRef.get();
+            return a == null ? "[]" : DoneReceiver.takePending(a);
+        }
+
         /** Открыть страницу приложения в Google Play (кнопка «Обновить»). */
         @JavascriptInterface
         public void openStore() {
@@ -809,6 +841,36 @@ public class MainActivity extends Activity {
             Log.e(TAG, "shareBackup failed", e);
             callJs("window.onNativeBackupResult && window.onNativeBackupResult('share','error','"
                 + jsEscape(e.getMessage()) + "')");
+        }
+    }
+
+    /** 1.7.7: PNG из страницы → cache/backups (тот же путь FileProvider, что у
+     *  копии) → системный «Поделиться». ClipData нужен, чтобы право чтения
+     *  файла дошло до выбранного приложения через chooser на Android 10+. */
+    private void doShareImage(String base64, String filename, String text) {
+        try {
+            if (filename == null || filename.trim().isEmpty()) filename = "planner-discipline.png";
+            byte[] png = Base64.decode(base64, Base64.DEFAULT);
+            File dir = new File(getCacheDir(), "backups");
+            if (!dir.exists()) dir.mkdirs();
+            File f = new File(dir, filename);
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(png);
+            fos.close();
+
+            Uri uri = FileProvider.getUriForFile(
+                this, getPackageName() + ".fileprovider", f);
+
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/png");
+            share.putExtra(Intent.EXTRA_STREAM, uri);
+            if (text != null && !text.isEmpty()) share.putExtra(Intent.EXTRA_TEXT, text);
+            share.setClipData(ClipData.newRawUri("", uri));
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(share, null));
+        } catch (Exception e) {
+            Log.e(TAG, "shareImage failed", e);
+            callJs("window.toast && toast(tr('sh.fail'))");
         }
     }
 
