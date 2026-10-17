@@ -623,7 +623,9 @@ public class NotificationService extends Service {
             b.setPriority(Notification.PRIORITY_LOW);
         }
 
-        b.setSmallIcon(R.mipmap.ic_launcher)
+        // 1.7.7: одноцветный значок (res/drawable/ic_notif.xml). Цветная иконка
+        // приложения здесь превращалась в белый квадрат — Android берёт только силуэт.
+        b.setSmallIcon(R.drawable.ic_notif)
                 .setContentTitle(lTitle)
                 .setContentIntent(pi)
                 .setOngoing(true)
