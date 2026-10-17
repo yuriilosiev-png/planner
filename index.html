@@ -1370,6 +1370,8 @@ ru:{
   'upd.copy':'Скопировать ссылку',
   'upd.copied':'Ссылка скопирована — вставьте её в браузере',
   'upd.manualCopy':'Эта версия не умеет сама открывать Google Play. Нажмите «Скопировать ссылку» и откройте её в браузере — или найдите приложение в Google Play и нажмите «Обновить».',
+  'wn.banner':'Planner обновлён до версии {v}',
+  'wn.title':'Что нового в {v}',
   'rate.titleDay':'🎉 Все задачи на сегодня выполнены',
   'rate.titleGoal':'🏆 Цель достигнута!',
   'rate.text':'Если пользуетесь приложением — оцените его в Google Play. Отзыв помогает другим его найти, а мне — понять, что улучшить.',
@@ -1855,6 +1857,8 @@ en:{
   'upd.copy':'Copy link',
   'upd.copied':'Link copied — paste it into your browser',
   'upd.manualCopy':'This version can’t open Google Play by itself. Tap “Copy link” and open it in your browser — or find this app in Google Play and tap “Update”.',
+  'wn.banner':'Planner updated to {v}',
+  'wn.title':'What’s new in {v}',
   'rate.titleDay':'🎉 All of today’s tasks are done',
   'rate.titleGoal':'🏆 Goal achieved!',
   'rate.text':'If you use the app, please rate it on Google Play. A review helps others find it and helps me see what to improve.',
@@ -2340,6 +2344,8 @@ es:{
   'upd.copy':'Copiar enlace',
   'upd.copied':'Enlace copiado: pégalo en tu navegador',
   'upd.manualCopy':'Esta versión no puede abrir Google Play por sí sola. Toca «Copiar enlace» y ábrelo en tu navegador, o busca esta app en Google Play y toca «Actualizar».',
+  'wn.banner':'Planner se actualizó a la versión {v}',
+  'wn.title':'Novedades de la {v}',
   'rate.titleDay':'🎉 Completaste todas las tareas de hoy',
   'rate.titleGoal':'🏆 ¡Meta alcanzada!',
   'rate.text':'Si usas la app, califícala en Google Play. Una reseña ayuda a que otros la encuentren y me ayuda a saber qué mejorar.',
@@ -2825,6 +2831,8 @@ pt:{
   'upd.copy':'Copiar link',
   'upd.copied':'Link copiado — cole no seu navegador',
   'upd.manualCopy':'Esta versão não consegue abrir o Google Play sozinha. Toque em «Copiar link» e abra no navegador — ou procure este app no Google Play e toque em «Atualizar».',
+  'wn.banner':'Planner atualizado para a versão {v}',
+  'wn.title':'Novidades da {v}',
   'rate.titleDay':'🎉 Todas as tarefas de hoje concluídas',
   'rate.titleGoal':'🏆 Meta alcançada!',
   'rate.text':'Se você usa o app, avalie-o no Google Play. Uma avaliação ajuda outras pessoas a encontrá-lo e me ajuda a saber o que melhorar.',
@@ -3310,6 +3318,8 @@ de:{
   'upd.copy':'Link kopieren',
   'upd.copied':'Link kopiert — füge ihn im Browser ein',
   'upd.manualCopy':'Diese Version kann Google Play nicht selbst öffnen. Tippe auf „Link kopieren“ und öffne ihn im Browser — oder suche die App in Google Play und tippe auf „Aktualisieren“.',
+  'wn.banner':'Planner auf Version {v} aktualisiert',
+  'wn.title':'Neu in {v}',
   'rate.titleDay':'🎉 Alle Aufgaben für heute erledigt',
   'rate.titleGoal':'🏆 Ziel erreicht!',
   'rate.text':'Wenn du die App nutzt, bewerte sie bei Google Play. Eine Bewertung hilft anderen, sie zu finden, und mir zu sehen, was ich verbessern kann.',
@@ -3795,6 +3805,8 @@ fr:{
   'upd.copy':'Copier le lien',
   'upd.copied':'Lien copié — colle-le dans ton navigateur',
   'upd.manualCopy':'Cette version ne peut pas ouvrir Google Play elle-même. Appuie sur « Copier le lien » et ouvre-le dans ton navigateur — ou trouve l’appli dans Google Play et appuie sur « Mettre à jour ».',
+  'wn.banner':'Planner mis à jour en version {v}',
+  'wn.title':'Nouveautés de la {v}',
   'rate.titleDay':'🎉 Toutes les tâches du jour sont faites',
   'rate.titleGoal':'🏆 Objectif atteint !',
   'rate.text':'Si tu utilises l’appli, donne-lui une note sur Google Play. Un avis aide d’autres personnes à la trouver et m’aide à voir ce qu’il faut améliorer.',
@@ -4008,6 +4020,7 @@ function applyStaticI18n(){
   try{
     const h1=document.getElementById('screenTitle');
     if(h1) h1.textContent = screenTitle(curScreen);
+    fitHeadDate();
   }catch(e){}
 }
 /* Если открыта модалка настроек — перерисовать её на новом языке.
@@ -4949,6 +4962,36 @@ function fmtDateHuman(s){
   if(curLang()==='fr') return WEEKDAYS_FR[DOW_MAP[dt.getDay()]]+'. '+d+' '+MONTHS_FR_LOW[m-1];
   return WEEKDAYS_FULL_RU[dt.getDay()]+', '+d+' '+MONTHS_RU_GEN[m-1];
 }
+/* Дата в шапке без дня недели или с коротким днём: «18 октября» / «Вс, 18 октября» */
+function fmtDateShort(s, noWd){
+  const [y,m,d]=s.split('-').map(Number);
+  const dt=new Date(y,m-1,d), L=curLang();
+  let dm;
+  if(L==='en') dm=MONTHS_EN[m-1]+' '+d;
+  else if(L==='es') dm=d+' de '+MONTHS_ES_LOW[m-1];
+  else if(L==='pt') dm=d+' de '+MONTHS_PT_LOW[m-1];
+  else if(L==='de') dm=d+'. '+MONTHS_DE[m-1];
+  else if(L==='fr') dm=d+' '+MONTHS_FR_LOW[m-1];
+  else dm=d+' '+MONTHS_RU_GEN[m-1];
+  if(noWd) return dm;
+  const wd=({ru:WEEKDAYS_RU,en:WEEKDAYS_EN,es:WEEKDAYS_ES,pt:WEEKDAYS_PT,de:WEEKDAYS_DE,fr:WEEKDAYS_FR}[L]||WEEKDAYS_EN)[DOW_MAP[dt.getDay()]];
+  if(L==='fr') return wd+'. '+dm;
+  return wd+(L==='de'?'., ':', ')+dm;
+}
+/* 1.7.7: дата в шапке ужимается, а не заголовок. Было: дата nowrap, и в длинные
+   дни заголовок обрезался — «Ист…» (вс, RU), «Histór…» (PT). Теперь пробуем
+   полную дату → с коротким днём недели → без дня недели; берём первую, при
+   которой заголовок помещается целиком. */
+function fitHeadDate(){
+  const el=document.getElementById('todayDate'), h=document.getElementById('screenTitle');
+  if(!el) return;
+  const T=todayStr();
+  const forms=[fmtDateHuman(T), fmtDateShort(T,false), fmtDateShort(T,true)];
+  for(const f of forms){
+    el.textContent=f;
+    if(!h || !h.clientWidth || h.scrollWidth<=h.clientWidth+1) return;
+  }
+}
 /* «5 января 2026» (RU, родительный) / «January 5, 2026» (EN) — шапка агенды календаря */
 function fmtDayMonthYear(s){
   const [y,m,d]=s.split('-').map(Number);
@@ -5357,7 +5400,7 @@ function runDailyGen(){
 function catById(id){ return state.cats.find(c=>c.id===id) || {get name(){return t('cat.none');},color:'#8b93a3'}; }
 
 function render(){
-  document.getElementById('todayDate').textContent = fmtDateHuman(todayStr());
+  fitHeadDate();
   renderToday();
   renderGoals();
   renderUndone();
@@ -6501,13 +6544,13 @@ function openGoalTemplate(k){
    (мост openStore появился в 1.7.4) — вместо кнопки текстовая подсказка.
    Браузер/PWA (нет AndroidBridge) — плашки нет. */
 const APP_RELEASES = [
-  { code:16, name:'1.7.7', live:false, notes:{
-    ru:['Виджет «Сегодня» на главный экран: задачи дня и отметка прямо с рабочего стола','Отмечайте задачи прямо в шторке — кнопкой ☐ в строке','Серии недель 🔥: неделя засчитывается при 80% выполненного плана — один пропуск не обнуляет серию','Поделиться графиком дисциплины за 30 дней — картинкой в Telegram или соцсети'],
-    en:['“Today” home screen widget: your tasks for the day, checked off right from the home screen','Check off tasks right in the notification with the ☐ button','Weekly streaks 🔥: a week counts at 80% of the plan, so one missed day doesn’t break it','Share your 30-day discipline chart as a picture'],
-    es:['Widget «Hoy» para la pantalla de inicio: tus tareas del día y marcarlas desde ahí','Marca tareas directamente en la notificación con el botón ☐','Rachas semanales 🔥: una semana cuenta con el 80% del plan, un día perdido no la rompe','Comparte tu gráfico de disciplina de 30 días como imagen'],
-    pt:['Widget «Hoje» na tela inicial: suas tarefas do dia e marcar direto de lá','Marque tarefas direto na notificação com o botão ☐','Sequências semanais 🔥: uma semana conta com 80% do plano, um dia perdido não a quebra','Compartilhe seu gráfico de disciplina de 30 dias como imagem'],
-    de:['Widget „Heute“ für den Startbildschirm: Aufgaben des Tages direkt dort abhaken','Aufgaben direkt in der Benachrichtigung abhaken – mit dem ☐-Knopf','Wochenserien 🔥: eine Woche zählt ab 80 % des Plans – ein verpasster Tag beendet sie nicht','Teile dein Disziplin-Chart der letzten 30 Tage als Bild'],
-    fr:['Widget « Aujourd’hui » pour l’écran d’accueil : les tâches du jour, à cocher directement','Coche tes tâches directement dans la notification avec le bouton ☐','Séries de semaines 🔥 : une semaine compte à 80 % du plan, un jour manqué ne la casse pas','Partage ton graphique de discipline sur 30 jours en image']
+  { code:16, name:'1.7.7', live:true, notes:{
+    ru:['Виджет «Сегодня» на главный экран: задачи дня и ☐, чтобы отмечать их прямо с рабочего стола','Отмечайте задачи в шторке кнопкой ☐ — чек-лист закрывается одним касанием','Серии недель 🔥: неделя засчитывается при 80% плана, один пропуск серию не обнуляет','Поделиться графиком дисциплины за 30 дней — картинкой в Telegram или соцсети','Французский язык','Новый значок в строке уведомлений'],
+    en:['“Today” home screen widget: tasks for the day and a ☐ to check them off right from the home screen','Check off tasks in the notification with the ☐ button — checklists close in one tap','Weekly streaks 🔥: a week counts at 80% of the plan, one missed day doesn’t break it','Share your 30-day discipline chart as a picture','French language','New notification icon'],
+    es:['Widget «Hoy» para la pantalla de inicio: las tareas del día y un ☐ para marcarlas desde ahí','Marca tareas en la notificación con el botón ☐: las listas se cierran con un toque','Rachas semanales 🔥: una semana cuenta con el 80% del plan, un día perdido no la rompe','Comparte tu gráfico de disciplina de 30 días como imagen','Idioma francés','Nuevo ícono de notificación'],
+    pt:['Widget «Hoje» na tela inicial: as tarefas do dia e um ☐ para marcá-las direto de lá','Marque tarefas na notificação com o botão ☐: listas são concluídas com um toque','Sequências semanais 🔥: uma semana conta com 80% do plano, um dia perdido não a quebra','Compartilhe seu gráfico de disciplina de 30 dias como imagem','Idioma francês','Novo ícone de notificação'],
+    de:['Widget „Heute“ für den Startbildschirm: Aufgaben des Tages mit ☐ direkt dort abhaken','Aufgaben in der Benachrichtigung mit ☐ abhaken – Checklisten mit einem Tipp erledigen','Wochenserien 🔥: eine Woche zählt ab 80 % des Plans – ein verpasster Tag beendet sie nicht','Teile dein Disziplin-Chart der letzten 30 Tage als Bild','Französisch als Sprache','Neues Benachrichtigungssymbol'],
+    fr:['Widget « Aujourd’hui » pour l’écran d’accueil : les tâches du jour, à cocher avec ☐ directement','Coche tes tâches dans la notification avec ☐ — une liste se ferme d’un seul geste','Séries de semaines 🔥 : une semaine compte à 80 % du plan, un jour manqué ne la casse pas','Partage ton graphique de discipline sur 30 jours en image','Langue française','Nouvelle icône de notification']
   }},
   { code:15, name:'1.7.6', live:true, notes:{
     ru:['Немецкий язык','Уведомление со списком задач читается на любом фоне шторки — светлом и тёмном','Рамки у галочек заметнее'],
@@ -6562,6 +6605,59 @@ function updSnoozed(code){
     return !!v && v.code===code && Date.now()<v.until;
   }catch(e){ return false; }
 }
+/* ---------- 1.7.7: «Что нового» после обновления ----------
+   Плашка выше — для тех, кто ещё НЕ обновился. Эта — для тех, кто уже
+   обновился: один раз после установки новой версии на «Сегодня» появляется
+   «Planner обновлён до X · что нового», тап — список изменений этой версии на
+   языке интерфейса. ✕ или просмотр — больше не показываем (до следующей версии).
+   Новая установка — без плашки: человеку показывать «изменения» не с чем.
+   Отличаем по firstRun из init: нет сохранённых данных = новая установка. */
+const WN_SEEN_KEY = 'planner_seen_vc';   // отдельно от state — не попадает в копию
+let _wnFirstRun = false;
+function wnSeen(){
+  try{ const v=parseInt(localStorage.getItem(WN_SEEN_KEY),10); return isNaN(v)?null:v; }catch(e){ return null; }
+}
+function wnMarkSeen(){
+  const cur=installedVersionCode();
+  if(cur==null) return;
+  try{ localStorage.setItem(WN_SEEN_KEY, String(cur)); }catch(e){}
+}
+function wnRelease(){
+  const cur=installedVersionCode();
+  if(cur==null) return null;
+  const seen=wnSeen();
+  if(seen===null && _wnFirstRun){ wnMarkSeen(); return null; }   // новая установка
+  if(seen!==null && seen>=cur) return null;
+  // плашка появилась в 1.7.7 (код 16): по старым версиям «что нового» не показываем
+  return APP_RELEASES.find(r=>r.code===cur && r.code>=16) || null;
+}
+function whatsNewBannerHTML(){
+  const rel=wnRelease();
+  if(!rel || pendingReleases().length) return '';   // есть версия новее — там своя плашка
+  return `<div class="ev-banners">
+    <div class="ev-banner upd-banner" onclick="openWhatsNew()">
+      <span class="eb-ic">✨</span>
+      <div class="eb-body">
+        <div class="eb-ttl">${tr('wn.banner',{v:esc(rel.name)})}</div>
+        <div class="eb-sub">${tr('upd.bannerSub')}</div>
+      </div>
+      <span class="eb-x" onclick="event.stopPropagation();wnMarkSeen();renderToday()">✕</span>
+    </div></div>`;
+}
+function openWhatsNew(){
+  const rel=wnRelease();
+  if(!rel) return;
+  const L=curLang();
+  const items=(rel.notes[L]||rel.notes.en||[]).map(n=>`<li>${esc(n)}</li>`).join('');
+  wnMarkSeen();
+  showModal(`
+    <h2>${tr('wn.title',{v:esc(rel.name)})}</h2>
+    <ul class="upd-list">${items}</ul>
+    <div class="modal-btns">
+      <button class="primary" onclick="closeModal();renderToday()">${tr('upd.ok')}</button>
+    </div>`);
+}
+
 function updateBannerHTML(){
   const rel=pendingReleases();
   if(!rel.length || updSnoozed(rel[0].code)) return '';
@@ -6786,7 +6882,7 @@ function renderToday(){
     return !t.done;
   }).sort(compareTasksByTime);
   const el = document.getElementById('s-today');
-  const banners = updateBannerHTML() + eventBannersHTML();
+  const banners = updateBannerHTML() + whatsNewBannerHTML() + eventBannersHTML();
   if(!list.length){
     el.innerHTML = banners + `<div class="empty"><div class="big">☑</div>${t('today.empty')}<br>${t('today.emptyHint')}<br><button class="empty-cta" onclick="onFab()">${t('empty.ctaTask')}</button></div>`;
     return;
@@ -9034,6 +9130,7 @@ function init(){
   if(LEGACY_EXPORT){ legacyExport(); return; }
   load();
   const firstRun = (_lastRaw===null);
+  _wnFirstRun = firstRun;   // 1.7.7: новая установка — без плашки «Что нового»
   applyNativeDone(true);   // 1.7.7: отметки из шторки/виджета, пока приложение было закрыто   // в хранилище ещё ничего не записано — новая установка
   // i18n: язык уже проставлен миграцией — применяем к статичной разметке
   document.documentElement.setAttribute('lang', curLang());
