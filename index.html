@@ -4987,11 +4987,20 @@ function fitHeadDate(){
   if(!el) return;
   const T=todayStr();
   const forms=[fmtDateHuman(T), fmtDateShort(T,false), fmtDateShort(T,true)];
+  // запас 10px: впритык заголовок слипается с датой, а на телефоне шрифт
+  // бывает чуть шире — и вместо «История» выходит «Истор…»
   for(const f of forms){
     el.textContent=f;
-    if(!h || !h.clientWidth || h.scrollWidth<=h.clientWidth+1) return;
+    if(!h || !h.clientWidth) return;
+    // ширина самого текста (scrollWidth при overflow:hidden не меньше clientWidth)
+    let tw=h.scrollWidth;
+    try{ const r=document.createRange(); r.selectNodeContents(h); tw=Math.max(r.getBoundingClientRect().width, 0); }catch(e){}
+    if(h.scrollWidth<=h.clientWidth+1 && h.clientWidth-tw>=10) return;
   }
 }
+// перепроверить, когда догрузятся шрифты и при повороте/смене ширины
+try{ document.fonts && document.fonts.ready.then(()=>fitHeadDate()); }catch(e){}
+window.addEventListener('resize', ()=>{ try{ fitHeadDate(); }catch(e){} });
 /* «5 января 2026» (RU, родительный) / «January 5, 2026» (EN) — шапка агенды календаря */
 function fmtDayMonthYear(s){
   const [y,m,d]=s.split('-').map(Number);
