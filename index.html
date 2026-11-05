@@ -260,6 +260,38 @@ input,select,textarea{font-family:inherit;font-size:16px}
 .wel-btns button{padding:15px;border-radius:12px;font-size:15px;font-weight:700}
 .wel-btns .primary{background:var(--accent);color:#fff}
 .wel-btns .ghost{background:var(--surface2);border:1px solid var(--line)}
+/* 1.7.8: яркий баннер помощников в приветствии */
+.wel-hp{margin:-4px -4px 0;border-radius:18px;padding:16px 14px 0;color:#fff;overflow:hidden;
+  background:radial-gradient(120% 80% at 50% 110%,rgba(255,255,255,.35),transparent 60%),linear-gradient(135deg,#ff8a3d 0%,#ff4f7b 45%,#7a5cff 100%);
+  box-shadow:0 10px 26px rgba(122,92,255,.35)}
+.wel-hp-t{font-size:21px;font-weight:900;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.wel-hp-s{font-size:14px;line-height:1.35;margin-top:6px;opacity:.95}
+.wel-hp-team{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:6px}
+.wel-hp-team button{display:flex;flex-direction:column;align-items:center;gap:0;padding:0 0 10px;background:none;color:#fff;min-width:0}
+.wel-hp-team img{height:150px;width:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));transition:transform .15s}
+.wel-hp-team button:active img{transform:scale(1.06) translateY(-4px)}
+.wel-hp-team b{font-size:11px;font-weight:800;line-height:1.15;margin-top:4px;padding:3px 6px;
+  background:color-mix(in srgb,var(--cc) 70%,#000);max-width:100%;text-align:center;border-radius:9px}
+.wel-or{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+/* 1.7.8: экскурсия */
+.tour-ov{position:fixed;inset:0;z-index:400}
+.tour-hole{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,6,20,.68);border:2px solid var(--cc);
+  transition:all .35s cubic-bezier(.3,1.2,.5,1);pointer-events:none}
+.tour-hole.none{display:none}
+.tour-ov.dim{background:rgba(8,6,20,.68)}
+.tour-card{position:fixed;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:flex-end;gap:4px;
+  animation:tourIn .35s ease}
+@keyframes tourIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.tour-card img{height:150px;width:auto;max-width:32%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+.tour-txt{flex:1;min-width:0;background:var(--surface2);color:var(--txt);border:1px solid var(--line);border-left:3px solid var(--cc);
+  border-radius:16px 16px 16px 4px;padding:11px 12px;font-size:14.5px;line-height:1.4;box-shadow:0 10px 30px rgba(0,0,0,.45);margin-bottom:8px}
+.tour-txt b{display:block;font-size:12px;color:color-mix(in srgb,var(--cc) 55%,var(--txt));margin-bottom:3px}
+.tour-btns{display:flex;align-items:center;gap:8px;margin-top:10px}
+.tour-btns button{padding:8px 12px;border-radius:10px;font-weight:800;font-size:13.5px;white-space:nowrap}
+.tour-skip{background:transparent;color:var(--muted)}
+.tour-next{margin-left:auto;background:var(--cc);color:#fff}
+.tour-n{font-size:12px;color:var(--muted);font-weight:700}
+.hp-tour{width:100%;margin-top:14px;padding:11px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);font-weight:800;font-size:14px;color:var(--txt)}
 .tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
 .tpl-grid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-radius:14px;
   background:var(--surface2);border:1px solid var(--line);font-size:14px;font-weight:700;line-height:1.25}
@@ -476,7 +508,7 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 /* Голосовой ввод (1.7.4): микрофон внутри текстового поля.
    Обёртка .vwrap ставится скриптом только на устройствах с распознавателем. */
 .vwrap{position:relative;display:block}
-.wp-item .vwrap{flex:1;min-width:0}
+.wp-item .vwrap,.hq-in .vwrap{flex:1;min-width:0}
 .vwrap>input.vin,.vwrap>textarea.vin{width:100%;padding-right:42px}
 .vmic{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:34px;height:34px;
   border:0;border-radius:50%;background:transparent;color:var(--accent);padding:0;
@@ -777,6 +809,231 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 .bk-opt b{display:block;font-size:16px;margin-bottom:4px}
 .bk-opt span{display:block;font-size:13px;color:var(--muted);line-height:1.4}
 .bk-sub{font-size:12px;font-weight:600;opacity:.75;margin-left:2px}
+/* ===== 1.7.8: экран «Награды» ===== */
+.rw-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;margin-top:4px}
+.rw-bal{display:flex;align-items:center;justify-content:center;gap:8px}
+.rw-star{font-size:30px;line-height:1}
+.rw-num{font-size:44px;font-weight:900;letter-spacing:-1px;line-height:1}
+.rw-sub{text-align:center;color:var(--muted);font-size:14px;font-weight:600;margin-top:4px}
+.rw-week{display:flex;justify-content:space-between;gap:4px;margin-top:14px}
+.rw-d{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.rw-d span{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;
+  border:2px solid var(--line);color:var(--muted)}
+.rw-d i{font-style:normal;font-size:11px;color:var(--muted);font-weight:700}
+.rw-d.ok span{background:var(--ok);border-color:var(--ok);color:#fff}
+.rw-d.miss span{background:var(--danger);border-color:var(--danger);color:#fff}
+.rw-d.off span{border-style:dashed}
+.rw-d.fut span{opacity:.45}
+.rw-d.today span{box-shadow:0 0 0 3px var(--accent-dim);border-color:var(--accent)}
+.rw-d.today i{color:var(--accent)}
+.rw-wnote{text-align:center;font-size:13px;color:var(--muted);font-weight:600;margin-top:10px}
+.rw-warn{margin-top:12px;background:rgba(255,92,92,.14);border:1px solid var(--danger);border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:600;line-height:1.4}
+.rw-warn.soft{background:rgba(255,182,72,.16);border-color:var(--warn)}
+.rw-shop{display:flex;flex-direction:column;gap:8px}
+.rw-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;cursor:pointer}
+.rw-emo{font-size:28px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px;flex:0 0 40px}
+.rw-body{flex:1;min-width:0}
+.rw-name{font-weight:700;font-size:16px;line-height:1.25}
+.rw-price{font-size:13px;color:var(--muted);font-weight:700;margin-top:2px}
+.rw-take{background:#f5b301;color:#3a2600;font-weight:800;font-size:14px;border-radius:999px;padding:8px 16px;flex:0 0 auto}
+.rw-need{font-size:12.5px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.rw-add,.rw-more{display:block;width:100%;margin-top:8px;padding:11px;border-radius:var(--r);border:1px dashed var(--line);color:var(--accent);font-weight:700;font-size:15px;background:transparent}
+.rw-log{display:flex;flex-direction:column;gap:8px}
+.rw-day{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.rw-dh{display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-bottom:4px}
+.rw-dh b{color:var(--ok)} .rw-dh b.neg{color:var(--danger)}
+.rw-row{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--muted);padding:3px 0;font-weight:500}
+.rw-row em{font-style:normal;opacity:.8}
+.rw-row b{color:var(--txt);font-weight:800;flex:0 0 auto}
+.rw-row.penalty b,.rw-row.buy b{color:var(--danger)}
+.rw-row.bonus b{color:#d99a00}
+.rw-empty{color:var(--muted);font-size:14px;text-align:center;padding:14px}
+.rw-rules{margin:16px 0 8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.rw-rules summary{font-weight:800;font-size:15px;cursor:pointer}
+.rw-rules p{font-size:14px;line-height:1.45;margin-top:9px;color:var(--txt)}
+.rw-emos{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.rw-eb{font-size:24px;width:44px;height:44px;border-radius:12px;background:var(--surface2);border:2px solid transparent}
+.rw-eb.on{border-color:var(--accent)}
+.rw-in{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);margin:4px 0 12px}
+/* «Незавершённые» внутри «Истории» */
+.un-hist{margin:4px 0 6px}
+.un-hist-h{width:100%;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-weight:800;font-size:15px;text-align:left}
+.un-hist-h span:first-child{flex:1}
+.un-cnt{background:var(--danger);color:#fff;font-size:12px;border-radius:999px;padding:1px 8px}
+.un-chev{color:var(--muted);font-size:12px}
+.un-hist .task{margin-top:8px}
+/* ===== 1.7.8: «Помощник» ===== */
+.nav button .badge.rw{background:#f5b301;color:#3a2600;font-weight:800}
+.hp-card{border-radius:var(--r);border:1px solid var(--line);background:var(--surface);margin-top:4px;overflow:hidden}
+.hp-hero{display:flex;align-items:flex-end;gap:6px;padding:12px 12px 0 4px;min-height:228px;
+  background:radial-gradient(120% 90% at 20% 100%, color-mix(in srgb,var(--cc) 30%,transparent) 0%, transparent 70%), var(--surface)}
+.hp-fig{height:220px;width:auto;max-width:46%;object-fit:contain;object-position:bottom;flex:0 0 auto;cursor:pointer;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));transform-origin:50% 100%}
+/* 1.7.8: персонажи живут — обёртка .hp-fw держит размер и позу, картинка внутри дышит,
+   наклейки (.st) стоят относительно макушки (--hx/--hy из HP_HEAD). --u = 1% роста фигуры. */
+.hp-fw{position:relative;display:inline-block;flex:0 0 auto;line-height:0;transform-origin:50% 100%}
+.hp-fw>img{max-width:none!important;transform-origin:50% 100%;animation:hpBreath 3.4s ease-in-out infinite}
+.hp-fw.fig-genie>img{animation:hpFloat 3s ease-in-out infinite}
+.hp-fig-w{max-width:46%;--u:2.2px} .hq-fig-w{max-width:34%;--u:calc(min(42vh,260px)/100)}
+.tour-img-w{max-width:32%;--u:1.5px} .hp-pimg-w{max-width:34%;--u:1.32px}
+.tour-img{height:150px;width:auto;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+.hp-pimg{height:132px;width:auto;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
+/* позы — один раз при появлении эмоции */
+.hp-fw.em-happy{animation:hpHop 1.1s cubic-bezier(.3,.7,.4,1) .05s both}
+.hp-fw.em-joke{animation:hpGiggle .9s ease-in-out both}
+.hp-fw.em-think{animation:hpTilt 1.3s ease-in-out both}
+.hp-fw.em-proud{animation:hpProud 1.5s ease-in-out both}
+.hp-fw.em-sad{animation:hpSink 1s ease-out both}
+.hp-fw.em-sly{animation:hpSly .7s ease-in-out .15s both}
+.hp-fw.em-strict{animation:hpShake .45s ease-in-out .1s both}
+.hp-fw.em-mystery>img{animation:hpMyst 4.2s ease-in-out infinite}
+.hp-fw.em-stern>img{animation:hpBreath 4.6s ease-in-out infinite}
+.hp-fw.still,.hp-fw.still *{animation-delay:-30s!important}
+@keyframes hpBreath{0%,100%{transform:none}50%{transform:scale(1.008,1.018)}}
+@keyframes hpFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-1deg)}}
+@keyframes hpHop{0%{transform:none}22%{transform:scale(1.035,.955)}48%{transform:translateY(calc(var(--u,2px)*-7)) scale(.975,1.035)}
+  72%{transform:none}82%{transform:scale(1.025,.97)}100%{transform:none}}
+@keyframes hpGiggle{0%,100%{transform:none}15%,45%,75%{transform:translateY(calc(var(--u,2px)*-2.2)) rotate(-1deg)}30%,60%,90%{transform:rotate(1deg)}}
+@keyframes hpTilt{0%{transform:none}35%,70%{transform:rotate(-3deg)}100%{transform:none}}
+@keyframes hpProud{0%{transform:none}45%{transform:scale(1.05)}65%{transform:scale(1.035)}100%{transform:none}}
+@keyframes hpSink{0%{transform:none}100%{transform:scale(.99,.968) rotate(1.4deg)}}
+@keyframes hpSly{0%,100%{transform:none}40%{transform:rotate(-4.5deg)}60%{transform:rotate(-3deg)}}
+@keyframes hpShake{0%,100%{transform:none}20%{transform:translateX(-3px) rotate(-1deg)}40%{transform:translateX(3px) rotate(1deg)}
+  60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+@keyframes hpMyst{0%,100%{transform:rotate(0)}25%{transform:rotate(1.4deg) translateY(-2px)}75%{transform:rotate(-1.4deg) translateY(-2px)}}
+/* наклейки */
+.hp-fw .st{position:absolute;left:calc(var(--hx) + var(--x)*1%);top:calc(var(--hy) + var(--y)*1%);pointer-events:none;font-style:normal;
+  transform:translate(-50%,-50%)}
+.st-star{width:calc(var(--u)*8*var(--s,1));height:calc(var(--u)*8*var(--s,1));background:linear-gradient(160deg,#ffe680,#ffb800 60%,#f08c00);
+  clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);opacity:0}
+.st-burst{animation:stBurst 1.25s cubic-bezier(.2,.8,.3,1) both}
+@keyframes stBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  20%{opacity:1}70%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateX(calc(var(--u)*var(--d))) rotate(calc(var(--a)*-1)) rotate(140deg) scale(1)}}
+.st-spark{width:calc(var(--u)*10);height:calc(var(--u)*10);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);
+  opacity:0;animation:stTwinkle 2.4s ease-in-out infinite}
+.st-gold{background:radial-gradient(circle,#fff6c0 0,#ffcf3a 45%,#f0a000 100%);filter:drop-shadow(0 0 1px rgba(150,90,0,.6))}
+.st-white{background:radial-gradient(circle,#fff 0,#fff 35%,#e9dcff 100%);filter:drop-shadow(0 0 calc(var(--u)*1.2) var(--cc,#9b6bff)) drop-shadow(0 0 1px rgba(0,0,0,.35))}
+.st-once{animation:stTwinkle 1.1s ease-in-out .45s both;width:calc(var(--u)*14);height:calc(var(--u)*14)}
+@keyframes stTwinkle{0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}50%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(45deg)}}
+.st-q,.st-ex{font:900 calc(var(--u)*16)/1 system-ui,sans-serif;color:#fff;-webkit-text-stroke:calc(var(--u)*.9) var(--cc,#7a5cff);
+  paint-order:stroke;text-shadow:0 2px 4px rgba(0,0,0,.25);animation:stPop .45s cubic-bezier(.3,1.6,.5,1) .3s both, stBob 1.8s ease-in-out .75s infinite}
+.st-ex{color:#ffde59;-webkit-text-stroke-color:#c0392b}
+@keyframes stPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes stBob{0%,100%{transform:translate(-50%,-50%) rotate(-6deg)}50%{transform:translate(-50%,-62%) rotate(6deg)}}
+.st-cloud{width:calc(var(--u)*24);height:calc(var(--u)*10);border-radius:999px;background:#9aa3b2;
+  box-shadow:calc(var(--u)*-6) calc(var(--u)*-3) 0 calc(var(--u)*-1) #9aa3b2, calc(var(--u)*5) calc(var(--u)*-5) 0 calc(var(--u)*0) #a7afbd;
+  animation:stPop .5s ease-out .35s both, stDrift 3s ease-in-out .85s infinite}
+@keyframes stDrift{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-46%,-50%)}}
+.st-cloud b{position:absolute;top:80%;width:calc(var(--u)*3);height:calc(var(--u)*3);background:#4a9eea;border-radius:0 50% 50% 50%;
+  transform:rotate(45deg);opacity:0;animation:stRain 1.1s linear infinite}
+.st-cloud b:nth-child(1){left:22%;animation-delay:.8s} .st-cloud b:nth-child(2){left:50%;animation-delay:1.15s} .st-cloud b:nth-child(3){left:76%;animation-delay:1.5s}
+@keyframes stRain{0%{opacity:0;transform:translateY(0) rotate(45deg)}15%{opacity:1}100%{opacity:0;transform:translateY(calc(var(--u)*12)) rotate(45deg)}}
+.st-leaf{width:calc(var(--u)*5);height:calc(var(--u)*8);background:linear-gradient(135deg,#7cc46a,#3f8f3a);border-radius:0 100% 0 100%;
+  opacity:0;animation:stLeaf 4.5s ease-in-out 1s infinite}
+@keyframes stLeaf{0%{opacity:0;transform:translate(-50%,-50%) rotate(0)}10%{opacity:1}
+  50%{transform:translate(calc(-50% + var(--u)*-6),calc(-50% + var(--u)*14)) rotate(70deg)}90%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--u)*3),calc(-50% + var(--u)*30)) rotate(160deg)}}
+.hp-pop .hp-fw>img{animation:hpBob 2.6s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.hp-fw,.hp-fw *{animation:none!important} .hp-fw .st{display:none}}
+.hp-fw>img.hp-jump{animation:hpJump .45s ease!important}
+.hp-fig.hp-jump{animation:hpJump .45s ease}
+.hp-jump{animation:hpJump .45s ease}
+@keyframes hpJump{0%{transform:scale(1)}40%{transform:scale(1.05,0.95) translateY(-6px)}100%{transform:none}}
+.hp-say{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:12px;align-self:center}
+.hp-say>b{font-size:13px;color:color-mix(in srgb,var(--cc) 55%,var(--txt));font-weight:800;letter-spacing:.2px}
+.hp-bub{position:relative;background:var(--surface2);border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:10px 12px;font-size:15px;line-height:1.4}
+.hp-go{background:var(--cc);color:#fff;font-weight:800;font-size:14px;border-radius:12px;padding:10px 12px;text-align:center;line-height:1.25}
+.hp-intro{padding:14px}
+.hp-ttl{font-size:18px;font-weight:800}
+.hp-sub{color:var(--muted);font-size:13.5px;line-height:1.4;margin-top:4px}
+.hp-team{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.hp-mate{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 8px;border-radius:12px;background:var(--surface2);
+  border:2px solid transparent;text-align:center;min-width:0}
+.hp-mate.on{border-color:var(--cc)}
+.hp-mate img{height:120px;width:100%;object-fit:contain;object-position:bottom}
+.hp-mate b{font-size:12px;line-height:1.2;font-weight:800}
+.hp-mate i{font-style:normal;font-size:11px;color:var(--muted);line-height:1.25}
+.hp-team.sm .hp-mate img{height:78px}
+.hp-team.sm .hp-mate b{font-size:11px}
+.hp-set{margin:16px 0 8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+/* 1.7.8: цели глазами помощника */
+.hp-gl{margin:14px 0 6px}
+.hp-gl-t{font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:0 4px 8px}
+.hp-gc{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:11px 13px;margin-bottom:8px}
+.hp-gc.st-good{border-left-color:var(--ok)} .hp-gc.st-new{border-left-color:#7cc46a} .hp-gc.st-ok{border-left-color:var(--muted)}
+.hp-gc.st-miss{border-left-color:#f5b301} .hp-gc.st-behind{border-left-color:#ff8a3d} .hp-gc.st-lost{border-left-color:var(--danger)}
+.hp-gc-top{display:flex;align-items:center;gap:8px}
+.hp-gc-top b{flex:1;min-width:0;font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hp-gc-ic{font-size:17px}
+.hp-gc-st{font-size:11.5px;font-weight:800;color:var(--muted);background:var(--surface2);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.hp-gc-line{font-size:14px;line-height:1.4;margin-top:6px;color:var(--txt)}
+.hp-gc-btns{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.hp-gc-btns button{flex:1;min-width:0;padding:9px 6px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);font-weight:700;font-size:13.5px;color:var(--txt)}
+.hp-gc-btns .hp-gc-go{flex:1 1 100%;background:var(--cc);border-color:var(--cc);color:#fff}
+.hp-set summary{font-weight:800;font-size:15px;cursor:pointer}
+.hp-set .th-label{display:block;margin-top:12px}
+.hp-seg{display:flex;gap:6px;margin-top:6px}
+.hp-seg button{flex:1;padding:9px 4px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);font-weight:700;font-size:13.5px;color:var(--txt)}
+.hp-seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.hp-hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.35}
+.hp-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;font-weight:600;font-size:14px}
+.hp-row input{width:22px;height:22px;accent-color:var(--accent)}
+/* реплика на других экранах */
+.hp-pop{position:fixed;left:8px;right:8px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:250;display:flex;align-items:flex-end;gap:4px;
+  transform:translateY(150%);opacity:0;transition:transform .4s cubic-bezier(.2,1.3,.4,1),opacity .25s;pointer-events:none}
+.hp-pop.show{transform:none;opacity:1;pointer-events:auto}
+.hp-pop img{height:132px;width:auto;max-width:34%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45));animation:hpBob 2.6s ease-in-out infinite}
+@keyframes hpBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hp-pbub{flex:1;background:var(--surface2);color:var(--txt);border:1px solid var(--line);border-left:3px solid var(--cc);border-radius:16px 16px 16px 4px;
+  padding:10px 12px;font-size:14.5px;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.4);margin-bottom:10px}
+.hp-pbub b{display:block;font-size:12px;color:color-mix(in srgb,var(--cc) 55%,var(--txt));margin-bottom:2px}
+.hp-px{position:absolute;right:2px;top:-10px;width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:12px}
+/* опрос */
+.hq-ov{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;background:var(--bg);color:var(--txt)}
+.hq-ov.show{display:flex}
+.hq-top{display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
+.hq-top b{flex:1;font-size:17px;color:var(--txt)}
+.hq-top b::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--cc);margin-right:8px;vertical-align:1px}
+.hq-prog{font-size:12.5px;font-weight:800;color:var(--muted);background:var(--surface2);border-radius:999px;padding:2px 9px}
+.hq-x{font-size:20px;color:var(--muted);padding:2px 6px}
+.hq-stage{flex:1;min-height:0;display:flex;align-items:flex-end;gap:4px;padding-left:4px}
+.hq-fig{height:min(42vh,260px);width:auto;max-width:34%;object-fit:contain;object-position:bottom;flex:0 0 auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+.hq-chat{flex:1;min-width:0;height:100%;overflow-y:auto;padding:12px 10px 12px 0;display:flex;flex-direction:column;gap:9px}
+.hq-m{display:flex;max-width:96%}
+.hq-m.me{align-self:flex-end}
+.hq-bub{background:var(--surface2);border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:9px 12px;font-size:15px;line-height:1.4}
+.hq-m.me .hq-bub{background:var(--accent);border-color:var(--accent);color:#fff;border-radius:16px 16px 4px 16px}
+.hq-typing{display:flex;gap:5px;padding:13px 14px}
+.hq-typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:hqDot 1.1s infinite}
+.hq-typing i:nth-child(2){animation-delay:.15s}.hq-typing i:nth-child(3){animation-delay:.3s}
+@keyframes hqDot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+.hq-flag{margin-left:6px;font-size:12px;line-height:1;color:var(--muted);opacity:.55;padding:2px;vertical-align:1px}
+.hq-flag.on{color:#e5484d;opacity:1}
+.hq-ai{font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px;background:var(--cc);color:#fff;margin-right:2px}
+.hq-bottom{padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+/* клавиатура открыта (onNativeKeyboard): нижняя навигация и отступ под системные кнопки не нужны */
+html.kb .nav{display:none}
+html.kb .hq-bottom{padding-bottom:10px}
+.hq-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.hq-chips button{background:var(--surface2);border:1.5px solid var(--line);border-radius:999px;padding:8px 13px;font-size:14px;font-weight:700;color:var(--txt)}
+.hq-chips.days button{width:44px;padding:8px 0}
+.hq-chips.days button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.hq-in{display:flex;gap:8px}
+.hq-in input,.hq-in select{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface2);color:var(--txt);font-size:15px}
+.hq-in select{flex:0 0 92px}
+.hq-in button{width:46px;border-radius:12px;background:var(--accent);color:#fff;font-size:18px}
+.hq-in .vmic{width:34px;border-radius:50%;background:transparent;color:var(--accent)}
+.hq-go{width:100%;background:var(--accent);color:#fff;font-weight:800;border-radius:12px;padding:12px;font-size:15.5px}
+.hq-ghost{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:800;font-size:15.5px;color:var(--txt)}
+.hq-row2{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+.hq-sum{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:4px}
+.hq-sum-t{font-size:17px;font-weight:800}
+.hq-sum-why{font-style:italic;color:var(--muted);margin:4px 0 6px;font-size:14px}
+.hq-sum-row{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;padding:7px 0;border-top:1px solid var(--line)}
+.hq-sum-row span{color:var(--muted)}
+.hq-sum-row b{text-align:right}
+.hq-sum-row.big b{font-size:17px;color:var(--ok)}
 </style>
 </head>
 <body>
@@ -801,6 +1058,7 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
 
   <!-- SCREEN 3: UNFINISHED -->
   <div class="screen" id="s-undone"></div>
+  <div class="screen" id="s-helper"></div>
 
   <!-- SCREEN 4: HISTORY -->
   <div class="screen" id="s-history"></div>
@@ -818,9 +1076,9 @@ label.gm-lbl span, .field label.gm-lbl span{color:var(--muted);font-weight:400;f
   <button data-screen="goals" onclick="switchScreen('goals')">
     <span class="ic">🎯</span><span>Цели</span>
   </button>
-  <button data-screen="undone" onclick="switchScreen('undone')">
-    <span class="ic">⏰</span><span>Незавершённые</span>
-    <span class="badge" id="undoneBadge" style="display:none">0</span>
+  <button data-screen="helper" onclick="switchScreen('helper')">
+    <span class="ic">🤝</span><span>Помощник</span>
+    <span class="badge rw" id="rewardsBadge" style="display:none">0</span>
   </button>
   <button data-screen="history" onclick="switchScreen('history')">
     <span class="ic">📚</span><span>История</span>
@@ -1406,6 +1664,20 @@ ru:{
   'wel.text':'Посмотрите, как выглядит приложение после месяца использования, или сразу начните со своей цели.',
   'wel.demo':'Посмотреть на примере',
   'wel.scratch':'Начать с нуля',
+  'wel.hpT':'🎯 Создай первую цель с помощником',
+  'wel.hpSub':'Выбери персонажа — он задаст 7 вопросов и превратит желание в план на каждый день.',
+  'wel.or':'или',
+  'tour.btn':'Экскурсия по приложению', 'tour.goal':'Создать цель', 'tour.next':'Дальше', 'tour.skip':'Пропустить', 'tour.done':'Готово',
+  'tour.today':'Это задачи на сегодня. Отмечай выполненное — за каждую задачу начисляется балл.',
+  'tour.fab':'Плюс — добавить задачу, цель или событие. Можно голосом.',
+  'tour.goals':'Цели. Каждая сама раскладывается на задачи по дням, ты только отмечаешь.',
+  'tour.helper':'А это я. Помогу поставить цель, похвалю за сделанное и подскажу, где буксуешь.',
+  'tour.review':'Здесь я разбираю каждую цель: что идёт по плану, где пропуски, что пора перепланировать.',
+  'tour.rewards':'Баллы копятся — меняй их на награды, которые придумаешь сам.',
+  'tour.history':'График дисциплины: видно, как ты держишь темп неделями и месяцами.',
+  'tour.calendar':'Календарь: события и задачи на весь месяц.',
+  'tour.settings':'Настройки: темы оформления, напоминания и резервная копия данных.',
+  'tour.end':'Вот и всё! Начнём с первой цели?',
   'wel.offline':'Для примера нужен интернет. Начните с нуля или попробуйте позже.',
   'demo.bar':'🧪 Это пример',
   'demo.start':'Начать своё',
@@ -1893,6 +2165,20 @@ en:{
   'wel.text':'See what the app looks like after a month of use, or start right away with your own goal.',
   'wel.demo':'Explore an example',
   'wel.scratch':'Start from scratch',
+  'wel.hpT':'🎯 Create your first goal with a helper',
+  'wel.hpSub':'Pick a character — 7 questions and your wish becomes a day-by-day plan.',
+  'wel.or':'or',
+  'tour.btn':'App tour', 'tour.goal':'Create a goal', 'tour.next':'Next', 'tour.skip':'Skip', 'tour.done':'Done',
+  'tour.today':'These are today’s tasks. Tick off what’s done — every task earns a point.',
+  'tour.fab':'Plus adds a task, a goal or an event. You can dictate it too.',
+  'tour.goals':'Goals. Each one splits itself into daily tasks — you just tick them off.',
+  'tour.helper':'And this is me. I’ll help you set goals, praise your progress and point out where you stall.',
+  'tour.review':'Here I go through each goal: what’s on track, where you miss days, what needs a new plan.',
+  'tour.rewards':'Points add up — trade them for rewards you set yourself.',
+  'tour.history':'The discipline chart shows how you keep pace over weeks and months.',
+  'tour.calendar':'The calendar: events and tasks for the whole month.',
+  'tour.settings':'Settings: themes, reminders and data backup.',
+  'tour.end':'That’s it! Shall we start with your first goal?',
   'wel.offline':'The example needs an internet connection. Start from scratch or try later.',
   'demo.bar':'🧪 This is an example',
   'demo.start':'Start my own',
@@ -4002,7 +4288,7 @@ function setLang(l){
 
 // подписи, которые лежат в статическом HTML (нижняя навигация)
 function applyStaticI18n(){
-  const map={today:'nav.today',goals:'nav.goals',undone:'nav.undone',history:'nav.history',calendar:'nav.calendar'};
+  const map={today:'nav.today',goals:'nav.goals',helper:'nav.helper',history:'nav.history',calendar:'nav.calendar'};
   for(const k in map){
     const btn=document.querySelector('.nav button[data-screen="'+k+'"] span:not(.ic):not(.badge)');
     if(btn) btn.textContent = t(map[k]);
@@ -4061,6 +4347,7 @@ const DEFAULT_THEMES = {
   today:   {mode:'gradient', top:{hue:222, sat:16}, bottom:{hue:152, sat:59}},
   goals:   {mode:'gradient', top:{hue:152, sat:27}, bottom:{hue:320, sat:40}},
   undone:  {mode:'gradient', top:{hue:30,  sat:80}, bottom:{hue:265, sat:40}},
+  helper:  {mode:'gradient', top:{hue:30,  sat:80}, bottom:{hue:265, sat:40}},
   history: {mode:'gradient', top:{hue:108, sat:74}, bottom:{hue:265, sat:40}},
   calendar:{mode:'gradient', top:{hue:15,  sat:12}, bottom:{hue:200, sat:40}},
   tree:    {mode:'gradient', top:{hue:142, sat:14}, bottom:{hue:200, sat:40}},
@@ -4647,7 +4934,12 @@ function buildBackup(){
       achieved: state.achieved || [],
       tree: state.tree || [],
       lastGen: state.lastGen || null,
-      themes: state.themes || null
+      themes: state.themes || null,
+      // 1.7.8: награды и помощник
+      rewards: state.rewards || null,
+      rewardBuys: state.rewardBuys || [],
+      rewardsStart: state.rewardsStart || null,
+      helper: {coach: state.coach || null, style: state.helperStyle || 'normal', freq: (state.helperFreq===undefined?1:state.helperFreq), morning: state.helperMorning!==false, ai: state.helperAI || 'gemini'}
     }
   };
 }
@@ -4880,6 +5172,13 @@ function applyImport(){
     state.tree     = Array.isArray(d.tree) ? d.tree : [];
     state.lastGen  = d.lastGen || null;
     if(d.themes) state.themes = d.themes;
+    // 1.7.8: награды и помощник (в старых копиях их нет — оставляем текущие)
+    if(Array.isArray(d.rewards)) state.rewards = d.rewards;
+    if(Array.isArray(d.rewardBuys)) state.rewardBuys = d.rewardBuys;
+    if(d.rewardsStart) state.rewardsStart = d.rewardsStart;
+    if(d.helper){ state.coach = d.helper.coach || state.coach; state.helperStyle = d.helper.style || 'normal';
+      state.helperFreq = (d.helper.freq===undefined ? 1 : d.helper.freq); state.helperMorning = d.helper.morning!==false;
+      state.helperAI = d.helper.ai==='off' ? 'off' : 'gemini'; }
     // прогнать миграцию (проставит недостающие поля, нормализует темы)
     if(!state.cats || !state.cats.length) state.cats = JSON.parse(JSON.stringify(DEFAULT_CATS));
     if(!state.themes) state.themes = JSON.parse(JSON.stringify(DEFAULT_THEMES));
@@ -5408,16 +5707,1198 @@ function runDailyGen(){
    ============================================================ */
 function catById(id){ return state.cats.find(c=>c.id===id) || {get name(){return t('cat.none');},color:'#8b93a3'}; }
 
+/* ============================================================
+   ПОМОЩНИК — реплики персонажей (RU, EN; остальные языки → EN)
+   ============================================================
+   HL[lang][ключ][персонаж] = строка или массив строк (берётся одна,
+   одинаковая в течение дня). {d} {t} {n} {g} {rate} {tip} — подстановки. */
+const HL = {
+ru:{
+  name:{coach:'Тренер Макс', nadia:'Ассистент Надежда', guru:'Гуру', genie:'Джин'},
+  tag:{coach:'Строго и по делу', nadia:'Вежливо, всё по полочкам', guru:'Спокойно и со смыслом', genie:'Весело, с шутками'},
+  pick:{coach:'Без оправданий. Ставим цель, считаем норму, выполняем. Сделал — похвалю, пропустил — спрошу.',
+        nadia:'Я запомню вашу цель, посчитаю норму на каждый день и прослежу за результатом. Вам останется только выполнять.',
+        guru:'Путь в тысячу ли начинается с первого шага. Я помогу видеть этот шаг каждый день.',
+        genie:'Три желания не обещаю. Но одно настоящее исполним вместе — по кусочку в день!'},
+  hello:{coach:['Новый день. Задачи ждут — работаем.','Подъём. План на сегодня готов, осталось сделать.','Сегодня считается только то, что сделано.'],
+         nadia:['Доброе утро! План на сегодня готов, я рядом.','Здравствуйте! Сегодняшние задачи уже на месте.','Хорошего дня! Начнём с самой простой задачи?'],
+         guru:['Новый день — новый шаг. Не торопись, но иди.','Утро тихое. Самое время начать.','Сделай сегодня одно дело хорошо.'],
+         genie:['Пуф! ✨ Новый день, новые желания!','Доброе утро! Лампа натёрта, задачи ждут 🪔','Я проснулся в отличном настроении. А ты?']},
+  partial:{coach:'{d} из {t}. Неплохо, но день не закончен.',
+           nadia:'Выполнено {d} из {t}. Осталось совсем немного.',
+           guru:'{d} шагов из {t}. Путь продолжается.',
+           genie:'{d} из {t}! Ещё немного волшебства — и день наш ✨'},
+  dayDone:{coach:['{d} из {t}. Вот так и работаем.','Всё закрыто. Зачёт.','{t} из {t}. Завтра так же.'],
+           nadia:['Все задачи выполнены. Прекрасный день!','{d} из {t} — день закрыт. Я горжусь вами.','Всё сделано. Можно отдыхать со спокойной душой.'],
+           guru:['День прожит не зря. {d} шагов сделано.','Всё сделано. Теперь отдохни — это тоже часть пути.','Гора становится ниже с каждым таким днём.'],
+           genie:['✨ {d} из {t}! Лампа сияет от гордости!','Все галочки на месте! Да ты сам почти джин 🧞','Готово! Исполняю твоё желание: заслуженный отдых ✨']},
+  week:{coach:'Неделя без пропусков. +10 баллов. Не расслабляйся.',
+        nadia:'Поздравляю: неделя без пропусков! Начислено +10 баллов.',
+        guru:'Семь дней — ни одного пропуска. Так рождается привычка.',
+        genie:'Неделя без пропусков! Держи +10 волшебных баллов 🌟'},
+  miss1:{coach:'Вчера пусто. Бывает. Сегодня — хотя бы одна задача.',
+         nadia:'Вчера задачи остались невыполненными. Сегодня достаточно одной, чтобы ничего не потерять.',
+         guru:'Вчерашний день прошёл. Сегодняшний ещё твой.',
+         genie:'Вчера моя лампа скучала 🥺 Сегодня хоть одну галочку?'},
+  miss2:{coach:'Два дня тишины. Ещё один — и начнём терять баллы. Одна задача. Сейчас.',
+         nadia:'У меня для вас кое-что есть… но только если сегодня будет хоть одна выполненная задача. Вы ведь не хотите узнать, что будет на третий день?',
+         guru:'Два дня ты стоишь на месте. Один маленький шаг — и путь продолжится.',
+         genie:'Два дня без волшебства… Я джин, а не диван для лежания! Одну галочку, а? 😉'},
+  miss3:{coach:'{n} дней подряд без результата. Баллы уходят. Хватит — одна задача прямо сейчас.',
+         nadia:'Уже {n} дней подряд без выполненных задач, баллы списываются. Одна задача — и списание остановится.',
+         guru:'{n} дней ты стоишь на месте, и баллы уходят. Сделай шаг — любой.',
+         genie:'{n} дней без галочек — мои баллы тают, как мороженое! Спасай одной задачей 🙏'},
+  noTasks:{coach:'На сегодня задач нет. Поставь цель — и будет работа.',
+           nadia:'На сегодня задач нет. Хотите, составим план вместе?',
+           guru:'Сегодня путь чист. Может, пора выбрать новую вершину?',
+           genie:'Задач нет — значит, пора загадать новое желание! ✨'},
+  joke:{genie:['Знаешь, почему джинны не опаздывают? У нас дедлайны вечные — по тысяче лет!',
+               'Сидел я как-то в лампе десять веков. Вот это был день без пропусков… в лампе.',
+               'Говорят, желания сами не сбываются. Правильно говорят — их сбывают галочками ✅',
+               'Я бы тебе помог с задачей, но у меня лапки… то есть дым вместо ног.',
+               'Три желания — это пережиток. Сейчас в моде одна задача в день!',
+               'Меня однажды попросили бесконечно много желаний. Я выдал список задач на каждый день.',
+               'Магия — это просто привычка, которую делаешь каждый день. Ну и немного дыма для красоты.',
+               'Если потереть лампу — появлюсь я. Если потереть задачу — она сама не выполнится, проверял.',
+               'Мой любимый спорт — разминка для желаний. Ты сегодня разминался?',
+               'Фокус-покус! Задача исчезла… а нет, её надо сделать 😅',
+               'Джинн без лампы — как планер без задач. Грустно и некуда возвращаться.',
+               'Я хотел взять выходной, но вспомнил, что ты сегодня ещё не отметился ✨']},
+  // опрос
+  iHello:{coach:'Работаем. Семь вопросов, две минуты — и у тебя готовый план.',
+          nadia:'Здравствуйте! Задам семь коротких вопросов и соберу из ответов готовый план. Это займёт пару минут.',
+          guru:'Присядь. Семь вопросов — и туман вокруг цели рассеется.',
+          genie:'Пуф! ✨ Семь вопросов — и твоё желание превращается в план!'},
+  iGoal:{coach:'Какая цель? Коротко, одной строкой.', nadia:'Какую цель хотите достичь? Можно выбрать пример или написать свою.',
+         guru:'Чего ты хочешь достичь на самом деле?', genie:'Итак, твоё желание? Говори смело!'},
+  iWhy:{coach:'Зачем тебе это? Без «зачем» бросишь на второй неделе.', nadia:'Что изменится, когда цель будет достигнута? Я напомню вам об этом в трудный день.',
+        guru:'Представь, что цель достигнута. Что изменилось?', genie:'А что будет, когда желание сбудется? Опиши — я спрячу это в лампу 🪔'},
+  iNum:{coach:'Цифры. Сколько всего и в чём считаем?', nadia:'Как будем измерять результат? Укажите число и единицу.',
+        guru:'Как ты поймёшь, что пришёл? Назови число.', genie:'Магия любит точность! Сколько и чего?'},
+  iWhen:{coach:'Срок. К какой дате?', nadia:'К какому сроку хотите успеть?', guru:'Сколько времени ты даёшь этому пути?', genie:'Когда должно сбыться? Даже у джиннов есть дедлайны ⏳'},
+  iDays:{coach:'В какие дни работаешь? Выбирай честно, не геройствуй.', nadia:'В какие дни недели вам удобно заниматься?',
+         guru:'В какие дни ты готов идти? Лучше реже, но всегда.', genie:'В какие дни будем колдовать? Отметь!'},
+  iObst:{coach:'Что тебе помешает? Назови главного врага.', nadia:'Что чаще всего мешает в таких делах? Предусмотрим заранее.',
+         guru:'Какое препятствие ты встретишь на пути?', genie:'Какой злой колдун может всё испортить? 😈'},
+  iPlan:{coach:'Когда это случится — что делаешь? Мой совет: «{tip}».', nadia:'Предлагаю правило на этот случай: «{tip}». Можно оставить или написать своё.',
+         guru:'Подготовь ответ заранее. Например: «{tip}».', genie:'У меня есть контрзаклинание: «{tip}». Или придумай своё!'},
+  iDone:{coach:'Готово. Норма — {rate} в день. Завтра начинаем.', nadia:'План готов! Каждый день — {rate}. Я буду следить за прогрессом.',
+         guru:'Путь ясен: {rate} каждый день. Остальное — дело привычки.', genie:'Та-дам! ✨ Желание разложено на шаги: {rate} в день. Поехали!'},
+  iOk:{coach:'Принято.', nadia:'Записала.', guru:'Хорошо.', genie:'Записано в свиток! 📜'},
+  iSly:{coach:'Хорошая попытка. Вернёмся к цифрам.', nadia:'Интересная мысль. Но давайте вернёмся к цели.',
+        guru:'Река тоже любит извиваться. Но течёт к морю.', genie:'Хе-хе, хитро! Но меня не проведёшь 😏'},
+  gGood:{coach:'«{g}»: выполнено {r}% за две недели. Так держать.', nadia:'По цели «{g}» всё идёт по плану — выполнено {r}%. Отличная работа.',
+         guru:'«{g}» растёт ровно, как дерево у воды. {r}% — хороший путь.', genie:'«{g}» — {r}%! Лампа светится от гордости ✨'},
+  gOk:{coach:'«{g}»: выполнено {r}%. Можно лучше.', nadia:'«{g}»: выполнено {r}%. Неплохо, есть куда расти.',
+       guru:'«{g}»: {r}%. Путь идёт, хоть и с остановками.', genie:'«{g}»: {r}% — волшебство в процессе!'},
+  gNew:{coach:'«{g}»: старт взят. Первые дни решают.', nadia:'«{g}» только начата — я слежу за прогрессом.',
+        guru:'«{g}»: семя посажено. Поливай каждый день.', genie:'«{g}» — свежее желание! Первые шаги самые волшебные.'},
+  gMiss:{coach:'«{g}»: пропусков подряд — {n}. Разберём, что мешает?', nadia:'По цели «{g}» пропусков подряд: {n}. Давайте проработаем её ещё раз?',
+         guru:'«{g}» ждёт тебя уже {n} дн. Может, тропа слишком крутая?', genie:'Ой-ой, «{g}» скучает уже {n} дн.! Поколдуем над планом?'},
+  gBehind:{coach:'«{g}»: отстаёшь от плана на {d} {u}. Догоняй или меняем план.', nadia:'«{g}» отстаёт от плана на {d} {u}. Можно скорректировать срок или норму.',
+           guru:'«{g}»: до плана не хватает {d} {u}. Не беда — путь можно выпрямить.', genie:'«{g}» отстаёт на {d} {u}. Подкрутим заклинание?'},
+  gLost:{coach:'«{g}»: тишина {n} дн. Либо возвращаемся, либо честно вычёркиваем.', nadia:'К цели «{g}» вы не возвращались {n} дн. Перепланируем или удалим?',
+         guru:'«{g}» молчит {n} дн. Иногда отпустить — тоже путь.', genie:'«{g}» пылится в лампе {n} дн.! Оживим или отпустим?'},
+  iRe:{coach:'Что пошло не так? Говори прямо — подгоним план.', nadia:'Расскажите, что мешает, — и я подстрою план под вашу жизнь.',
+       guru:'Что встало на пути? Расскажи — найдём тропу полегче.', genie:'Что сломало заклинание? Расскажи — переколдуем!'},
+  iReS:{coach:'Пройдёмся по плану. Оставляем цифру или меняем?', nadia:'Давайте пройдёмся по плану. Цель оставляем прежней или меняем?',
+        guru:'Посмотрим на путь заново. Вершина та же?', genie:'Переколдуем! Желание оставляем прежним?'},
+  iAsk:{coach:'Вопросы — потом. Сейчас отвечай на мой.', nadia:'Я умею только составлять план по цели. Давайте вернёмся к вопросу выше.',
+        guru:'Хороший вопрос. Но сегодня спрашиваю я. Ответь на мой.', genie:'Хо-хо, вопросы тут задаю я! 😏 Отвечай на мой — и желание сбудется.'},
+},
+en:{
+  name:{coach:'Coach Max', nadia:'Assistant Nadia', guru:'Guru', genie:'Genie'},
+  tag:{coach:'Strict and to the point', nadia:'Polite and well organized', guru:'Calm and meaningful', genie:'Cheerful, full of jokes'},
+  pick:{coach:'No excuses. We set a goal, count the daily norm and do it. Done — I praise. Skipped — I ask why.',
+        nadia:'I will remember your goal, work out the daily norm and keep track of the result. All you need to do is the work.',
+        guru:'A journey of a thousand miles begins with one step. I will help you see that step every day.',
+        genie:'I can’t promise three wishes. But one real wish we’ll grant together — a little piece every day!'},
+  hello:{coach:['New day. Tasks are waiting — let’s work.','Rise and shine. The plan is ready, now do it.','Today only what’s done counts.'],
+         nadia:['Good morning! Today’s plan is ready, I’m here.','Hello! Today’s tasks are already in place.','Have a good day! Shall we start with the easiest task?'],
+         guru:['A new day is a new step. Don’t hurry, but walk.','The morning is quiet. A good time to begin.','Do one thing well today.'],
+         genie:['Poof! ✨ New day, new wishes!','Good morning! The lamp is polished, the tasks are waiting 🪔','I woke up in a great mood. And you?']},
+  partial:{coach:'{d} of {t}. Not bad, but the day isn’t over.', nadia:'{d} of {t} done. Just a little left.',
+           guru:'{d} steps of {t}. The path goes on.', genie:'{d} of {t}! A bit more magic and the day is ours ✨'},
+  dayDone:{coach:['{d} of {t}. That’s how we work.','Everything closed. Well done.','{t} of {t}. Same again tomorrow.'],
+           nadia:['All tasks are done. A wonderful day!','{d} of {t} — day complete. I’m proud of you.','Everything is done. You can rest with a clear mind.'],
+           guru:['The day was not wasted. {d} steps taken.','All done. Now rest — that is part of the path too.','The mountain gets lower with every day like this.'],
+           genie:['✨ {d} of {t}! The lamp is glowing with pride!','All ticks in place! You’re almost a genie yourself 🧞','Done! Granting your wish: a well-deserved rest ✨']},
+  week:{coach:'A week with no misses. +10 points. Don’t relax.', nadia:'Congratulations: a week with no misses! +10 points added.',
+        guru:'Seven days without a miss. This is how a habit is born.', genie:'A week with no misses! Here are +10 magic points 🌟'},
+  miss1:{coach:'Nothing yesterday. It happens. Today — at least one task.', nadia:'Yesterday’s tasks stayed undone. Today one is enough to lose nothing.',
+         guru:'Yesterday has passed. Today is still yours.', genie:'My lamp missed you yesterday 🥺 At least one tick today?'},
+  miss2:{coach:'Two days of silence. One more and you start losing points. One task. Now.',
+         nadia:'I have something for you… but only if at least one task gets done today. You don’t want to find out what happens on day three, do you?',
+         guru:'For two days you have been standing still. One small step and the path goes on.',
+         genie:'Two days without magic… I’m a genie, not a couch! One tick, please? 😉'},
+  miss3:{coach:'{n} days in a row with nothing. Points are going. Enough — one task right now.',
+         nadia:'{n} days in a row without completed tasks, points are being deducted. One task will stop it.',
+         guru:'{n} days standing still, and the points are fading. Take a step — any step.',
+         genie:'{n} days without ticks — my points are melting like ice cream! Save them with one task 🙏'},
+  noTasks:{coach:'No tasks today. Set a goal — and there will be work.', nadia:'No tasks for today. Shall we make a plan together?',
+           guru:'The path is clear today. Maybe it’s time to choose a new peak?', genie:'No tasks — time to make a new wish! ✨'},
+  joke:{genie:['Know why genies are never late? Our deadlines last a thousand years!',
+               'I once sat in a lamp for ten centuries. Talk about a streak… of sitting.',
+               'They say wishes don’t come true by themselves. Right — they come true with ticks ✅',
+               'I’d help with your task, but I have smoke instead of legs.',
+               'Three wishes are old school. One task a day is the new trend!',
+               'Someone once wished for infinite wishes. I gave them a daily to-do list.',
+               'Magic is just a habit you do every day. Plus a little smoke for style.',
+               'Rub the lamp and I appear. Rub a task and it still won’t do itself — I checked.',
+               'My favourite sport is warming up for wishes. Have you warmed up today?',
+               'Hocus-pocus! The task disappeared… oh no, you still have to do it 😅',
+               'A genie without a lamp is like a planner without tasks. Sad and nowhere to go home.',
+               'I wanted a day off, but then I remembered you haven’t ticked anything yet ✨']},
+  iHello:{coach:'Let’s work. Seven questions, two minutes — and you have a plan.', nadia:'Hello! I’ll ask seven short questions and turn the answers into a ready plan. It takes a couple of minutes.',
+          guru:'Sit down. Seven questions — and the fog around your goal will clear.', genie:'Poof! ✨ Seven questions and your wish turns into a plan!'},
+  iGoal:{coach:'What’s the goal? Short, one line.', nadia:'What goal would you like to reach? Pick an example or write your own.',
+         guru:'What do you truly want to achieve?', genie:'So, what’s your wish? Speak up!'},
+  iWhy:{coach:'Why do you need it? Without a “why” you’ll quit in week two.', nadia:'What will change when you reach it? I’ll remind you on a hard day.',
+        guru:'Imagine the goal is reached. What has changed?', genie:'What happens when the wish comes true? Tell me — I’ll keep it in my lamp 🪔'},
+  iNum:{coach:'Numbers. How much in total, and in what?', nadia:'How will we measure the result? Enter a number and a unit.',
+        guru:'How will you know you have arrived? Name a number.', genie:'Magic loves precision! How much of what?'},
+  iWhen:{coach:'Deadline. By what date?', nadia:'By when would you like to make it?', guru:'How much time do you give this path?', genie:'When should it come true? Even genies have deadlines ⏳'},
+  iDays:{coach:'Which days do you work? Choose honestly, no heroics.', nadia:'Which days of the week suit you?',
+         guru:'Which days are you ready to walk? Fewer, but always.', genie:'Which days do we do magic? Pick them!'},
+  iObst:{coach:'What will get in your way? Name the main enemy.', nadia:'What usually gets in the way? Let’s plan for it now.',
+         guru:'What obstacle will you meet on the path?', genie:'Which evil wizard could ruin everything? 😈'},
+  iPlan:{coach:'When it happens — what do you do? My advice: “{tip}”.', nadia:'I suggest a rule for that case: “{tip}”. Keep it or write your own.',
+         guru:'Prepare your answer in advance. For example: “{tip}”.', genie:'I have a counter-spell: “{tip}”. Or invent your own!'},
+  iDone:{coach:'Done. The norm is {rate} a day. We start tomorrow.', nadia:'Your plan is ready! Every day — {rate}. I’ll keep track of progress.',
+         guru:'The path is clear: {rate} every day. The rest is habit.', genie:'Ta-da! ✨ Your wish is split into steps: {rate} a day. Let’s go!'},
+  iOk:{coach:'Got it.', nadia:'Noted.', guru:'Good.', genie:'Written in the scroll! 📜'},
+  iSly:{coach:'Nice try. Back to the numbers.', nadia:'Interesting thought. But let’s get back to the goal.',
+        guru:'A river likes to wind too. But it flows to the sea.', genie:'Heh, sneaky! But you can’t fool me 😏'},
+  gGood:{coach:'“{g}”: {r}% done in two weeks. Keep it up.', nadia:'“{g}” is on track — {r}% done. Great work.',
+         guru:'“{g}” grows steadily, like a tree by the water. {r}% — a good path.', genie:'“{g}” — {r}%! The lamp glows with pride ✨'},
+  gOk:{coach:'“{g}”: {r}% done. You can do better.', nadia:'“{g}”: {r}% done. Not bad, there’s room to grow.',
+       guru:'“{g}”: {r}%. The path goes on, with some stops.', genie:'“{g}”: {r}% — magic in progress!'},
+  gNew:{coach:'“{g}”: you’ve started. The first days decide.', nadia:'“{g}” has just started — I’m keeping track.',
+        guru:'“{g}”: the seed is planted. Water it every day.', genie:'“{g}” — a fresh wish! First steps are the most magical.'},
+  gMiss:{coach:'“{g}”: {n} misses in a row. Let’s see what’s in the way?', nadia:'“{g}” has {n} misses in a row. Shall we rework it?',
+         guru:'“{g}” has waited for you {n} days. Maybe the trail is too steep?', genie:'Oh no, “{g}” has been lonely for {n} days! Shall we tweak the spell?'},
+  gBehind:{coach:'“{g}”: {d} {u} behind plan. Catch up or we change the plan.', nadia:'“{g}” is {d} {u} behind plan. We can adjust the deadline or the norm.',
+           guru:'“{g}”: {d} {u} short of the plan. No matter — the path can be straightened.', genie:'“{g}” is {d} {u} behind. Shall we tune the spell?'},
+  gLost:{coach:'“{g}”: silent for {n} days. Either we come back or honestly cross it out.', nadia:'You haven’t returned to “{g}” for {n} days. Replan or delete?',
+         guru:'“{g}” has been silent for {n} days. Letting go is a path too.', genie:'“{g}” has gathered dust in the lamp for {n} days! Revive or release?'},
+  iRe:{coach:'What went wrong? Tell me straight — we’ll fit the plan.', nadia:'Tell me what gets in the way, and I’ll fit the plan to your life.',
+       guru:'What stands in your way? Tell me — we’ll find an easier trail.', genie:'What broke the spell? Tell me — we’ll recast it!'},
+  iReS:{coach:'Let’s go through the plan. Keep the number or change it?', nadia:'Let’s go through the plan. Keep the goal as it is or change it?',
+        guru:'Let’s look at the path again. Same summit?', genie:'Recasting time! Keep the wish as it is?'},
+  iAsk:{coach:'Questions later. Answer mine first.', nadia:'I can only build a plan for your goal. Let’s get back to the question above.',
+        guru:'A good question. But today I am the one asking. Answer mine.', genie:'Ho-ho, I ask the questions here! 😏 Answer mine and your wish comes true.'},
+},
+};
+
+/* ============================================================
+   НАГРАДЫ (1.7.8) — баллы за выполненное и свои награды за баллы
+   ============================================================
+   Баланс НЕ хранится: каждый раз пересчитывается из истории задач + покупок
+   (rewardsLedger). Поэтому отметки из шторки/виджета, правка задним числом,
+   восстановление из копии ничего не ломают — правила просто применяются заново.
+
+   Правила (согласованы 21.10.2026):
+   • +1 балл за выполненную задачу; у чек-листа +1 за каждый отмеченный пункт.
+   • Пропуск = день, где были задачи, но не выполнено ни одной (пропущенные ⊘
+     тоже не выполнены). Дни без задач нейтральны: цепочку пропусков не рвут
+     и не продлевают. Сегодня пропуском не считается, пока день не кончился.
+   • 1-й день пропуска подряд — ничего.
+   • 2 дня подряд — «заморозка»: в день возвращения баллы ×½ (с округлением вверх).
+   • С 3-го дня подряд — списание столько, сколько дали бы задачи этого дня,
+     но за одну серию пропусков не больше, чем заработано за 7 дней до неё.
+   • Хотя бы одна выполненная задача — день не пропуск, серия обнуляется.
+   • Неделя (пн–вс) без единого пропуска — бонус +10 в воскресенье.
+   • Баланс никогда не уходит ниже 0.
+   • Считаем с даты включения наград (state.rewardsStart), не задним числом.
+*/
+const RW_WEEK_BONUS = 10;
+const RW_DEFAULTS = [
+  {emoji:'🍫', key:'rw.d1', price:30},
+  {emoji:'☕', key:'rw.d2', price:20},
+  {emoji:'🎬', key:'rw.d3', price:50},
+  {emoji:'📚', key:'rw.d4', price:120},
+];
+function rwName(r){ return (r && (r.name || (r.nameKey ? t(r.nameKey) : ''))) || ''; }
+const RW_EMOJIS = ['🍫','☕','🎬','📚','🍰','🎮','🛁','🍕','🎧','👟','🏖️','🎁'];
+
+function rwInit(){
+  if(!state.rewardsStart) state.rewardsStart = todayStr();
+  if(!Array.isArray(state.rewards)){
+    // стандартные награды хранят ключ перевода, а не текст — при смене языка название меняется;
+    // как только человек переименует награду, в name появится его текст
+    state.rewards = RW_DEFAULTS.map((d,i)=>({id:'rw'+Date.now().toString(36)+i, emoji:d.emoji, name:'', nameKey:d.key, price:d.price}));
+  }
+  if(!Array.isArray(state.rewardBuys)) state.rewardBuys = [];
+}
+
+/* баллы задачи: сколько дала (got) и сколько могла дать (max) */
+function rwTaskPoints(tk){
+  if(tk.kind==='checklist' && Array.isArray(tk.items) && tk.items.length){
+    return {got: tk.skipped ? 0 : tk.items.filter(i=>i.done).length, max: tk.items.length};
+  }
+  return {got: (!tk.skipped && (tk.done || tk.status)) ? 1 : 0, max: 1};
+}
+
+/* Главная функция: весь журнал баллов с даты старта по сегодня.
+   → {balance, entries:[{date, kind, delta, title, note}], days:{date:{earned,missed,planned}}, chain, todayEarned} */
+function rewardsLedger(){
+  const today = todayStr();
+  const start = state.rewardsStart || today;
+  const byDate = {};
+  state.tasks.forEach(tk=>{ if(tk.date>=start && tk.date<=today) (byDate[tk.date]=byDate[tk.date]||[]).push(tk); });
+  const buys = (state.rewardBuys||[]).slice().sort((a,b)=>a.at-b.at);
+  const entries=[], days={};
+  let bal=0, chain=0, chainCap=0, chainSpent=0;
+  const earnedOn = {};              // чистый заработок по датам (для потолка списаний)
+  const add=(e)=>{ const before=bal; bal=Math.max(0, bal+e.delta); e.delta = bal-before; if(e.delta!==0 || e.kind==='buy') entries.push(e); };
+
+  for(let d=start; d<=today; d=addDays(d,1)){
+    const list = byDate[d] || [];
+    let got=0, max=0;
+    const perTask = list.map(tk=>{ const p=rwTaskPoints(tk); got+=p.got; max+=p.max; return {tk,p}; });
+    const planned = list.length>0;
+    const isPast = d<today;
+    let missed = planned && got===0 && isPast;
+    days[d] = {planned, earned:0, missed, max};
+
+    if(planned && got>0){
+      const half = chain>=2;
+      perTask.forEach(({tk,p})=>{
+        if(!p.got) return;
+        const pts = half ? Math.ceil(p.got/2) : p.got;
+        add({date:d, kind:'earn', delta:pts, title:tk.title, note: (tk.kind==='checklist' ? p.got+'/'+p.max : '') + (half ? ' · ½' : '')});
+        days[d].earned += pts;
+      });
+      earnedOn[d] = days[d].earned;
+      chain = 0; chainSpent = 0;
+    } else if(missed){
+      chain++;
+      if(chain===1){
+        // потолок на всю серию: заработок за 7 дней до её начала
+        chainCap = 0; for(let k=1;k<=7;k++) chainCap += earnedOn[addDays(d,-k)]||0;
+        chainSpent = 0;
+      }
+      if(chain>=3){
+        const pen = Math.min(max, Math.max(0, chainCap-chainSpent));
+        if(pen>0){ chainSpent += pen; add({date:d, kind:'penalty', delta:-pen, title:t('rw.penDay',{n:chain})}); }
+      }
+    }
+    // бонус за неделю: в воскресенье, если неделя прошла и в ней не было ни одного пропуска
+    if(dowIndex(d)===6 && d<today){
+      const ws = addDays(d,-6);
+      let anyPlanned=false, anyMissed=false;
+      for(let k=0;k<7;k++){ const x=addDays(ws,k); if(x<start) { anyMissed=true; break; } const dd=days[x]; if(dd&&dd.planned) anyPlanned=true; if(dd&&dd.missed) anyMissed=true; }
+      if(anyPlanned && !anyMissed) add({date:d, kind:'bonus', delta:RW_WEEK_BONUS, title:t('rw.weekBonus')});
+    }
+    // покупки этого дня
+    buys.filter(b=>b.date===d).forEach(b=>add({date:d, kind:'buy', delta:-b.price, title:(b.emoji?b.emoji+' ':'')+b.name}));
+  }
+  return {balance:bal, entries, days, chain, todayEarned:(days[today]&&days[today].earned)||0};
+}
+
+function updateRewardsBadge(){
+  const b = document.getElementById('rewardsBadge'); if(!b) return;
+  const n = rewardsLedger().balance;
+  if(n>0){ b.style.display='flex'; b.textContent = n>999 ? Math.floor(n/1000)+'k' : n; } else b.style.display='none';
+}
+
+let rwLogOpen = false;
+function renderRewards(){
+  const el = document.getElementById('hpRewards'); if(!el) return;   // блок внутри экрана «Помощник»
+  rwInit();
+  const L = rewardsLedger(), today = todayStr();
+  const ws = weekStartOf(today);
+  // точки недели
+  let dots='', weekMiss=false, weekPlanned=false;
+  const WD = (typeof WEEKDAYS!=='undefined') ? WEEKDAYS : ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  for(let k=0;k<7;k++){
+    const d=addDays(ws,k), dd=L.days[d];
+    let cls='rw-d', mark='';
+    if(d>today){ cls+=' fut'; }
+    else if(d<(state.rewardsStart||today)){ cls+=' fut'; }
+    else if(!dd || !dd.planned){ cls+=' off'; mark='–'; }
+    else if(dd.missed){ cls+=' miss'; mark='✕'; weekMiss=true; weekPlanned=true; }
+    else if(dd.earned>0){ cls+=' ok'; mark='✓'; weekPlanned=true; }
+    else { cls+=' now'; weekPlanned=true; }
+    if(d===today) cls+=' today';
+    dots += `<div class="${cls}"><span>${mark}</span><i>${WD[k]}</i></div>`;
+  }
+  const weekNote = weekMiss ? t('rw.weekLost') : t('rw.weekOn',{n:RW_WEEK_BONUS});
+  // предупреждение о серии пропусков
+  let warn='';
+  const todayDone = L.todayEarned>0;
+  if(!todayDone && L.chain>=3) warn = `<div class="rw-warn">⚠️ ${t('rw.warnPen',{n:L.chain})}</div>`;
+  else if(!todayDone && L.chain===2) warn = `<div class="rw-warn">⚠️ ${t('rw.warnChain')}</div>`;
+  else if(!todayDone && L.chain===1) warn = `<div class="rw-warn soft">${t('rw.warnOne')}</div>`;
+
+  const bal = L.balance;
+  const shop = (state.rewards||[]).map(r=>{
+    const can = bal>=r.price;
+    return `<div class="rw-item" onclick="rwEdit('${r.id}')">
+      <div class="rw-emo">${esc(r.emoji||'🎁')}</div>
+      <div class="rw-body"><div class="rw-name">${esc(rwName(r))}</div><div class="rw-price">${r.price} ⭐</div></div>
+      ${can ? `<button class="rw-take" onclick="event.stopPropagation();rwBuy('${r.id}')">${t('rw.take')}</button>`
+            : `<div class="rw-need">${t('rw.need',{n:r.price-bal})}</div>`}
+    </div>`;
+  }).join('');
+
+  // журнал по дням (последние 14 дней с движением)
+  const byDay={};
+  L.entries.forEach(e=>{ (byDay[e.date]=byDay[e.date]||[]).push(e); });
+  const dates = Object.keys(byDay).sort().reverse().slice(0, rwLogOpen?60:5);
+  const log = dates.map(d=>{
+    const sum = byDay[d].reduce((s,e)=>s+e.delta,0);
+    const rows = byDay[d].map(e=>`<div class="rw-row ${e.kind}"><span>${esc(e.title)}${e.note?` <em>${esc(e.note)}</em>`:''}</span><b>${e.delta>0?'+':''}${e.delta}</b></div>`).join('');
+    return `<div class="rw-day"><div class="rw-dh"><span>${d===today?t('rw.today'):fmtDateHuman(d)}</span><b class="${sum<0?'neg':''}">${sum>0?'+':''}${sum}</b></div>${rows}</div>`;
+  }).join('') || `<div class="rw-empty">${t('rw.logEmpty')}</div>`;
+
+  el.innerHTML = `
+  <div class="rw-card">
+    <div class="rw-bal"><span class="rw-star">⭐</span><span class="rw-num">${bal}</span></div>
+    <div class="rw-sub">${t('rw.balance')} · ${t('rw.todayPlus',{n:L.todayEarned})}</div>
+    <div class="rw-week">${dots}</div>
+    <div class="rw-wnote">${weekNote}</div>
+    ${warn}
+  </div>
+  <div class="sec-title">${t('rw.shop')}</div>
+  <div class="rw-shop">${shop}</div>
+  <button class="rw-add" onclick="rwEdit()">＋ ${t('rw.add')}</button>
+  <div class="sec-title">${t('rw.log')}</div>
+  <div class="rw-log">${log}</div>
+  ${Object.keys(byDay).length>5 ? `<button class="rw-more" onclick="rwLogOpen=!rwLogOpen;renderRewards()">${rwLogOpen?t('rw.less'):t('rw.more')}</button>`:''}
+  <details class="rw-rules"><summary>${t('rw.rulesT')}</summary><div>${t('rw.rules',{n:RW_WEEK_BONUS})}</div></details>
+  `;
+}
+
+function rwBuy(id){
+  const r=(state.rewards||[]).find(x=>x.id===id); if(!r) return;
+  const bal=rewardsLedger().balance;
+  if(bal<r.price){ toast(t('rw.need',{n:r.price-bal})); return; }
+  showModal(`<h2>${esc(r.emoji)} ${esc(rwName(r))}</h2>
+    <div class="hint">${t('rw.buyQ',{p:r.price, b:bal-r.price})}</div>
+    <div class="modal-btns"><button class="ghost" onclick="closeModal()">${t('btn.cancel')}</button>
+    <button class="primary" onclick="rwBuyDo('${r.id}')">${t('rw.take')}</button></div>`);
+}
+function rwBuyDo(id){
+  const r=(state.rewards||[]).find(x=>x.id===id); if(!r) return;
+  state.rewardBuys.push({id:'b'+Date.now().toString(36), rewardId:r.id, emoji:r.emoji, name:rwName(r), price:r.price, date:todayStr(), at:Date.now()});
+  save(); closeModal(); render(); toast(t('rw.enjoy',{e:r.emoji||'🎁'}));
+}
+
+let rwPickEmoji='🎁';
+function rwEdit(id){
+  const r = id ? (state.rewards||[]).find(x=>x.id===id) : null;
+  rwPickEmoji = r ? (r.emoji||'🎁') : RW_EMOJIS[0];
+  const emo = RW_EMOJIS.map(e=>`<button class="rw-eb${e===rwPickEmoji?' on':''}" onclick="rwPickEmoji='${e}';document.querySelectorAll('.rw-eb').forEach(b=>b.classList.toggle('on',b.textContent==='${e}'))">${e}</button>`).join('');
+  showModal(`<h2>${r?t('rw.editT'):t('rw.addT')}</h2>
+    <div class="rw-emos">${emo}</div>
+    <label class="th-label">${t('rw.name')}</label>
+    <input id="rwName" class="rw-in" maxlength="40" value="${r?esc(rwName(r)):''}" placeholder="${t('rw.namePh')}">
+    <label class="th-label">${t('rw.price')}</label>
+    <input id="rwPrice" class="rw-in" type="number" inputmode="numeric" min="1" max="9999" value="${r?r.price:20}">
+    <div class="modal-btns">
+      ${r?`<button class="ghost" style="color:var(--danger)" onclick="rwDel('${r.id}')">${t('rw.del')}</button>`:`<button class="ghost" onclick="closeModal()">${t('btn.cancel')}</button>`}
+      <button class="primary" onclick="rwSave(${r?`'${r.id}'`:'null'})">${t('rw.save')}</button>
+    </div>`);
+}
+function rwSave(id){
+  const name=(document.getElementById('rwName').value||'').trim();
+  const price=Math.max(1, Math.min(9999, parseInt(document.getElementById('rwPrice').value,10)||0));
+  if(!name){ toast(t('rw.nameReq')); return; }
+  if(id){ const r=state.rewards.find(x=>x.id===id); if(r){ if(name!==rwName(r)) { r.name=name; delete r.nameKey; } r.price=price; r.emoji=rwPickEmoji; } }
+  else state.rewards.push({id:'rw'+Date.now().toString(36), emoji:rwPickEmoji, name, price});
+  save(); closeModal(); renderRewards();
+}
+function rwDel(id){ state.rewards=state.rewards.filter(x=>x.id!==id); save(); closeModal(); renderRewards(); }
+
+/* «Незавершённые» переезжают в «Историю» — сворачиваемый блок сверху */
+let unInHistOpen = false;
+function undoneSectionHTML(){
+  const today=todayStr();
+  const list = state.tasks.filter(tk=>!tk.done && (tk.date<today || tk.skipped)).sort((a,b)=>a.date<b.date?1:-1);
+  if(!list.length) return '';
+  let html = `<div class="un-hist"><button class="un-hist-h" onclick="unInHistOpen=!unInHistOpen;renderHistory()">
+      <span>⏰ ${t('title.undone')}</span><span class="un-cnt">${list.length}</span><span class="un-chev">${unInHistOpen?'▲':'▼'}</span></button>`;
+  if(unInHistOpen){
+    list.forEach(tk=>{
+      const cat=catById(tk.catId), sel=tk.id===selectedTaskId?' sel':'';
+      const catName = tk.fromTree ? tr('today.fromTree') : esc(catLabel(cat));
+      const skipMark = tk.skipped ? '<span class="ud-skip">'+tr('un.skipped')+'</span> ' : '';
+      const extra = (tk.kind==='checklist'&&tk.items) ? ` <span class="ud-prog">${tk.items.filter(i=>i.done).length}/${tk.items.length}</span>` : '';
+      html += `<div class="task${sel}${tk.skipped?' skipped':''}" data-id="${tk.id}" onclick="taskTap('${tk.id}',event)" ondblclick="taskDblTap('${tk.id}',event)">
+        <span class="cat-dot" style="background:${cat.color}"></span>
+        <div class="body"><div class="ttl">${esc(tk.title)}${extra}</div>
+        <div class="meta"><span class="catname">${skipMark}${catName}</span><span style="color:var(--warn)">${fmtShort(tk.date)}</span></div></div>
+        <div class="check">✓</div></div>`;
+      if(tk.id===selectedTaskId) html += actionBarHTML(tk);
+    });
+  }
+  return html + '</div>';
+}
+
+Object.assign(I18N.ru, {
+  'rw.d1':'Плитка шоколада', 'rw.d2':'Кофе в кофейне', 'rw.d3':'Вечер с фильмом', 'rw.d4':'Новая книга',
+  'rw.balance':'баллов', 'rw.todayPlus':'сегодня +{n}',
+  'rw.weekOn':'Неделя без пропусков — +{n} ⭐ по итогам воскресенья',
+  'rw.weekLost':'На этой неделе был пропуск — бонуса не будет',
+  'rw.warnOne':'Вчера пропуск. Сделай сегодня хотя бы одну задачу — и ничего не потеряешь.',
+  'rw.warnChain':'Два дня подряд без выполненных задач. Сегодня баллы начислятся ×½, а если пропустить и сегодня — начнётся списание.',
+  'rw.warnPen':'Пропущено дней подряд: {n} — баллы списываются. Выполни хотя бы одну задачу, чтобы остановить списание.',
+  'rw.shop':'Мои награды', 'rw.take':'Взять', 'rw.need':'ещё {n} ⭐', 'rw.add':'Добавить награду',
+  'rw.log':'История баллов', 'rw.today':'Сегодня', 'rw.logEmpty':'Пока пусто — выполни задачу, и здесь появятся первые баллы.',
+  'rw.more':'Показать всё', 'rw.less':'Свернуть',
+  'rw.penDay':'Пропуск, {n}-й день подряд', 'rw.weekBonus':'🔥 Неделя без пропусков',
+  'rw.buyQ':'Спишется {p} ⭐, останется {b} ⭐. Наслаждайся — ты это заработал.',
+  'rw.enjoy':'{e} Приятного!',
+  'rw.addT':'Новая награда', 'rw.editT':'Награда', 'rw.name':'Название', 'rw.namePh':'Например, серия сериала',
+  'rw.price':'Цена в баллах', 'rw.save':'Сохранить', 'rw.del':'Удалить', 'rw.nameReq':'Напиши название',
+  'rw.rulesT':'Как начисляются баллы',
+  'rw.rules':'<p><b>+1 ⭐</b> за каждую выполненную задачу. У чек-листа — за каждый отмеченный пункт: тренировка из 5 упражнений даёт 5 баллов.</p>'
+    +'<p><b>+{n} ⭐</b> за неделю (пн–вс) без единого пропуска.</p>'
+    +'<p><b>Пропуск</b> — день, когда были задачи, но не выполнена ни одна. Дни без задач не считаются.</p>'
+    +'<p>1 день пропуска — ничего не теряешь.<br>2 дня подряд — в день возвращения баллы ×½.<br>С 3-го дня подряд — списывается столько, сколько дали бы задачи этого дня, но не больше, чем заработано за неделю до пропусков.</p>'
+    +'<p>Хотя бы одна выполненная задача за день — и списания нет. Баланс не уходит ниже нуля.</p>'
+    +'<p>Награды придумываешь сам: что угодно, что тебя радует. Нажми на награду, чтобы изменить её или удалить.</p>',
+});
+
+/* ============================================================
+   ПОМОЩНИК (1.7.8) — вкладка вместо «Незавершённых»
+   ============================================================
+   Сверху персонаж в полный рост с репликой по ситуации, ниже баланс
+   и награды (renderRewards), внизу настройки помощника.
+   Работает без сети и без ИИ: реплики готовые (HL), эмоция выбирается
+   по состоянию дня и серии пропусков из rewardsLedger().
+   Картинки: coach/<персонаж>-<эмоция>.webp (440×920, у части шире). */
+const HP_LIST = ['coach','nadia','guru','genie'];
+const HP = {
+  coach:{color:'#ff7a45', sig:'strict', emos:['hello','think','happy','proud','sad','strict','sly']},
+  nadia:{color:'#9b6bff', sig:'mystery', emos:['hello','think','happy','proud','sad','mystery','sly']},
+  guru: {color:'#3fa34d', sig:'stern', emos:['hello','think','happy','proud','sad','stern','sly']},
+  genie:{color:'#3cc6c0', sig:'tease', emos:['hello','think','happy','proud','sad','tease','sly','joke']},
+};
+function hpImg(p, emo){ return 'coach/'+p+'-'+emo+'.webp'; }
+/* ===== 1.7.8: анимации эмоций — «как в CapCut», но прямо в приложении =====
+   Персонаж — обёртка .hp-fw (поза: прыжок, наклон, оседание — один раз при появлении)
+   + картинка внутри (дыхание/парение — всё время) + наклейки (звёзды, «?», тучка…).
+   Ничего не скачивается: двигается та же картинка, наклейки нарисованы CSS.
+   still — эмоция не сменилась (перерисовка опроса): разовые движения сразу в конце. */
+const HP_HEAD = {"coach-happy": [46.2, 2.8], "coach-hello": [49.8, 2.6], "coach-proud": [49.4, 2.9], "coach-sad": [50.5, 3.0], "coach-sly": [52.3, 3.0], "coach-strict": [46.6, 2.6], "coach-think": [47.5, 3.8], "genie-happy": [49.3, 9.9], "genie-hello": [39.8, 10.0], "genie-joke": [35.3, 14.8], "genie-proud": [51.3, 2.6], "genie-sad": [44.9, 10.5], "genie-sly": [39.9, 16.5], "genie-tease": [34.5, 14.0], "genie-think": [50.0, 6.2], "guru-happy": [54.6, 4.2], "guru-hello": [47.5, 8.3], "guru-proud": [56.7, 7.6], "guru-sad": [44.3, 6.4], "guru-sly": [55.7, 7.7], "guru-stern": [53.3, 8.2], "guru-think": [62.6, 21.3], "nadia-happy": [41.2, 2.6], "nadia-hello": [42.4, 2.6], "nadia-mystery": [52.4, 2.6], "nadia-proud": [48.4, 2.6], "nadia-sad": [45.2, 2.6], "nadia-sly": [49.9, 2.6], "nadia-think": [42.7, 2.6]};   // верх головы на картинке: [x%, y%]
+const HP_EM = {hello:'hello', think:'think', happy:'happy', proud:'proud', sad:'sad', sly:'sly',
+  mystery:'mystery', strict:'strict', stern:'stern', tease:'sly', joke:'joke'};
+function hpStickers(em){
+  const st=(cls,x,y,extra)=>`<i class="st ${cls}" style="--x:${x};--y:${y};${extra||''}"></i>`;
+  switch(em){
+    case 'happy': case 'joke':
+      return [-150,-120,-95,-70,-45,-20,-170].map((a,i)=>st('st-star st-burst',0,4,`--a:${a}deg;--d:${i%2?30:38};--s:${i%3?1:1.3};animation-delay:${.35+i*.03}s`)).join('');
+    case 'proud':
+      return [[-30,8],[28,4],[-36,30],[34,26],[-22,52],[30,48]].map(([x,y],i)=>st('st-spark st-gold',x,y,`animation-delay:${i*.45}s`)).join('');
+    case 'think':  return `<i class="st st-q" style="--x:22;--y:-2">?</i>`;
+    case 'sad':    return `<i class="st st-cloud" style="--x:4;--y:-9"><b></b><b></b><b></b></i>`;
+    case 'sly':    return st('st-spark st-white st-once',16,9);
+    case 'mystery':return [[-32,6],[30,2],[-38,28],[36,24],[-26,48],[34,46],[0,-4]].map(([x,y],i)=>st('st-spark st-white',x,y,`animation-delay:${i*.6}s`)).join('');
+    case 'strict': return `<i class="st st-ex" style="--x:22;--y:-1">!</i>`;
+    case 'stern':  return st('st-leaf',18,-6);
+  }
+  return '';
+}
+function hpFigHTML(p, emo, imgCls, still, attrs){
+  const k=p+'-'+emo, h=HP_HEAD[k]||[50,4], em=HP_EM[emo]||'hello';
+  return `<span class="hp-fw ${imgCls}-w fig-${p} em-${em}${still?' still':''}" style="--hx:${h[0]}%;--hy:${h[1]}%">`+
+    `<img class="${imgCls} fig-${p}" data-k="${k}" src="${(hpBlinkCache[k]&&hpBlinkCache[k].o)||hpImg(p,emo)}" alt="" ${attrs||''}>${hpStickers(em)}</span>`;
+}
+/* 1.7.8: моргание. Для картинок из списка есть кадры -b1 (веки прикрыты) и -b2 (закрыты),
+   нарисованные поверх оригинала, — поза и размер те же. Раз в 2,5–6 с один видимый
+   персонаж моргает: b1 → b2 → b1 → исходник. Кадры подгружаются заранее. */
+const HP_BLINK = new Set(["coach-hello", "coach-proud", "coach-sad", "coach-sly", "coach-strict", "coach-think", "genie-happy", "genie-hello", "genie-proud", "genie-sad", "genie-sly", "genie-tease", "genie-think", "guru-hello", "guru-proud", "guru-sad", "guru-sly", "guru-stern", "nadia-hello", "nadia-mystery", "nadia-proud", "nadia-sad", "nadia-sly", "nadia-think"]);
+/* Кадры берём через fetch → blob: и держим в памяти. Приложение при сети открывает
+   страницу с LOAD_NO_CACHE: каждая смена src у <img> по обычному адресу шла бы в сеть,
+   кадр не успевал прийти за 60 мс — моргания не было видно. blob: в сеть не ходит. */
+const hpBlinkCache = {};
+function hpBlinkLoad(k){
+  if(hpBlinkCache[k]) return hpBlinkCache[k];
+  const c = hpBlinkCache[k] = {ready:false};
+  const get=u=>fetch(u).then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(b=>URL.createObjectURL(b));
+  Promise.all(['', '-b1', '-b2'].map(x=>get('coach/'+k+x+'.webp')))
+    .then(([o,b1,b2])=>{ Object.assign(c,{o,b1,b2,ready:true});
+      // декодируем заранее, чтобы первый кадр не мигал пустотой
+      [b1,b2].forEach(u=>{ const im=new Image(); im.src=u; });
+    }).catch(()=>{ c.failed=true; });
+  return c;
+}
+function hpBlinkKey(img){
+  const k = img.dataset.k || ((img.getAttribute('src')||'').match(/coach\/([a-z]+-[a-z]+)\.webp$/)||[])[1];
+  return k && HP_BLINK.has(k) ? k : null;
+}
+function hpBlinkTick(){
+  try{
+    if(document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // поверх всего — экскурсия или опрос: моргает тот, кого видно
+    const sel = document.getElementById('tourOv') ? '.tour-img'
+      : (document.querySelector('#hqOv.show') ? '.hq-fig' : '.hp-fig,.hp-pop.show .hp-pimg');
+    const imgs=[...document.querySelectorAll(sel)]
+      .filter(i=>i.isConnected && i.getClientRects().length && !i.dataset.blinking && hpBlinkKey(i));
+    imgs.forEach(i=>hpBlinkLoad(hpBlinkKey(i)));
+    const img=imgs[Math.floor(Math.random()*imgs.length)]; if(!img) return;
+    const k=hpBlinkKey(img), c=hpBlinkLoad(k);
+    if(!c.ready) return;
+    img.dataset.k=k; img.dataset.blinking='1';
+    const seq=[c.b1, c.b2, c.b1, c.o], step=[0,60,150,210];
+    seq.forEach((u,i)=>setTimeout(()=>{ if(img.dataset.k===k) img.src=u; if(i===3) delete img.dataset.blinking; }, step[i]));
+  }catch(e){}
+}
+(function hpBlinkLoop(){ setTimeout(()=>{ hpBlinkTick(); hpBlinkLoop(); }, 2500+Math.random()*3500); })();
+function hpName(p){ return hpLine('name', p); }
+
+/* строка персонажа; массив → один вариант на день (стабильно, не прыгает при перерисовке) */
+function hpLine(key, p, vars, salt){
+  const src = HL[curLang()] || HL.en;
+  let v = (src[key] && src[key][p]!==undefined) ? src[key][p] : (HL.en[key] ? HL.en[key][p] : '');
+  if(Array.isArray(v)){
+    const seed = todayStr()+key+p+(salt||'');
+    let h=0; for(let i=0;i<seed.length;i++) h=(h*31+seed.charCodeAt(i))|0;
+    v = v[Math.abs(h)%v.length];
+  }
+  v = String(v||'');
+  for(const k in (vars||{})) v = v.split('{'+k+'}').join(vars[k]);
+  return v;
+}
+
+function hpInit(){
+  if(state.helperStyle===undefined) state.helperStyle='normal';   // soft | normal | strict
+  if(state.helperFreq===undefined)  state.helperFreq=1;           // 0 | 1 | 3 реплик в день на других экранах
+  if(state.helperMorning===undefined) state.helperMorning=true;
+  if(state.helperAI===undefined) state.helperAI='gemini';         // off | gemini (позже: claude, gpt)
+  if(!state.helperSeen || state.helperSeen.date!==todayStr()) state.helperSeen={date:todayStr(), n:0, keys:[]};
+  if(state.themes && !state.themes.helper)
+    state.themes.helper = JSON.parse(JSON.stringify(state.themes.undone || DEFAULT_THEMES.helper));
+}
+
+/* Настроение дня → {emo, key, vars} */
+function hpMood(p){
+  const L = rewardsLedger(), today = todayStr();
+  const list = state.tasks.filter(tk=>tk.date===today);
+  const done = list.filter(tk=>tk.done).length;
+  const style = state.helperStyle;
+  const sig = HP[p].sig;
+  const todayOk = L.todayEarned>0;
+  if(!todayOk && L.chain>=3) return {emo:sig, key:'miss3', vars:{n:L.chain}};
+  if(!todayOk && L.chain===2) return style==='soft' ? {emo:'sad', key:'miss1'} : {emo:sig, key:'miss2'};
+  if(!todayOk && L.chain===1) return style==='strict' ? {emo:sig, key:'miss2'} : {emo:'sad', key:'miss1'};
+  const y = addDays(today,-1);
+  if(L.entries.some(e=>e.kind==='bonus' && e.date===y)) return {emo:'proud', key:'week'};
+  if(list.length && done===list.length) return {emo:'happy', key:'dayDone', vars:{d:done, t:list.length}};
+  if(done>0) return {emo:'think', key:'partial', vars:{d:done, t:list.length}};
+  if(!list.length) return {emo:'hello', key:'noTasks'};
+  if(p==='genie'){
+    let h=0; const s=today+'joke'; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0;
+    if(Math.abs(h)%3===0) return {emo:'joke', key:'joke'};
+  }
+  return {emo:'hello', key:'hello'};
+}
+
+/* ---------- 1.7.8: взгляд помощника на цели ----------
+   Только по данным в телефоне, без ИИ: задачи цели за 14 дней, пропуски подряд,
+   дни без активности, темп (для числовых — факт против плана).
+   Порядок важности: забыта → пропуски → отставание → старт → в процессе → по плану.
+   «Оставить» прячет предупреждения по цели на 7 дней (state.hpSnooze). */
+const HP_G_ORDER = {lost:0, miss:1, behind:2, new:3, ok:4, good:5};
+const HP_G_ICON  = {lost:'💤', miss:'⚠️', behind:'🐢', new:'🌱', ok:'🙂', good:'🔥'};
+function hpTaskDone(t){ return rwTaskPoints(t).got>0; }
+function hpGoalProgress(g){
+  // для числовых: сколько уже пройдено — факт, отмеченные задачи (их значение по плану) или старт
+  let v = Number(g.start)||0;
+  if(g.factValue!==null && g.factValue!==undefined && g.factValue!=='' && !isNaN(Number(g.factValue))) v = Number(g.factValue);
+  state.tasks.forEach(t=>{ if(t.goalId===g.id && t.segmentVal!=null && hpTaskDone(t)){
+    const sv=Number(t.segmentVal); if(!isNaN(sv) && (g.target>=g.start ? sv>v : sv<v)) v=sv; } });
+  return v;
+}
+function hpGoalStat(g){
+  // после перепланирования счёт начинается заново — старые пропуски не в счёт
+  const T=todayStr(), c0=g.createdDate||T, created = (g.replanned && g.replanned>c0) ? g.replanned : c0;
+  const age=Math.max(0, daysBetween(created,T));
+  const from = addDays(T,-14) > created ? addDays(T,-14) : created;
+  const past = state.tasks.filter(t=>t.goalId===g.id && t.date<T && t.date>=created).sort((a,b)=>a.date<b.date?1:-1);
+  const todayDone = state.tasks.some(t=>t.goalId===g.id && t.date===T && hpTaskDone(t));
+  let chain=0; if(!todayDone) for(const t of past){ if(hpTaskDone(t)) break; chain++; }
+  const last = past.find(hpTaskDone);
+  const quiet = todayDone ? 0 : daysBetween(last ? last.date : created, T);
+  const win = past.filter(t=>t.date>=from), planned=win.length, done=win.filter(hpTaskDone).length;
+  const rate = planned ? Math.round(done/planned*100) : 0;
+  const unit = (g.numeric&&g.numeric.unit) || g.unit || '';
+  const pace = (g.kind||'numeric')==='numeric' ? paceInfo(g,T) : null;
+  let st;
+  if(age>=7 && quiet>=14) st='lost';
+  else if(chain>=2) st='miss';
+  else if(pace && pace.status==='behind' && pace.diff>0 && pace.factAgeDays<=14) st='behind';
+  else if(age<3 || planned<2) st='new';
+  else if(rate>=80) st='good';
+  else st='ok';
+  const snoozed = (state.hpSnooze||{})[g.id] >= T;
+  if(snoozed && (st==='lost'||st==='miss'||st==='behind')) st='ok';
+  return {st, chain, quiet, rate, unit, pace, age};
+}
+function hpGoalLineKey(st){ return {good:'gGood', ok:'gOk', new:'gNew', miss:'gMiss', behind:'gBehind', lost:'gLost'}[st]; }
+function hpGoalVars(g, s){ return {g:g.name, r:s.rate, n: s.st==='lost' ? s.quiet : s.chain, d: s.pace ? s.pace.diff : 0, u:s.unit}; }
+function hpGoalsHTML(){
+  const p=state.coach; if(!p || !HP[p] || !state.goals.length) return '';
+  const rows = state.goals.map(g=>({g, s:hpGoalStat(g)})).sort((a,b)=>HP_G_ORDER[a.s.st]-HP_G_ORDER[b.s.st]);
+  return `<div class="hp-gl"><div class="hp-gl-t">${t('hp.gT')}</div>${rows.map(({g,s})=>{
+    const warn = s.st==='lost'||s.st==='miss'||s.st==='behind';
+    const btns = !warn ? '' : `<div class="hp-gc-btns">
+        <button class="hp-gc-go" onclick="hpReplan('${g.id}')">${t('hp.replan')}</button>
+        ${s.st==='lost'?`<button onclick="delGoal('${g.id}')">${t('hp.del')}</button>`:''}
+        <button onclick="hpSnoozeGoal('${g.id}')">${t('hp.keep')}</button></div>`;
+    return `<div class="hp-gc st-${s.st}" style="--cc:${HP[p].color}">
+      <div class="hp-gc-top"><span class="hp-gc-ic">${HP_G_ICON[s.st]}</span><b>${esc(g.name)}</b><span class="hp-gc-st">${t('hp.st.'+s.st)}</span></div>
+      <div class="hp-gc-line">${esc(hpLine(hpGoalLineKey(s.st), p, hpGoalVars(g,s), g.id))}</div>${btns}</div>`;
+  }).join('')}</div>`;
+}
+function hpSnoozeGoal(id){
+  state.hpSnooze = state.hpSnooze || {};
+  state.hpSnooze[id] = addDays(todayStr(), 7);
+  save(); renderHelper(); toast(t('hp.kept'));
+}
+/* первая цель, о которой стоит сказать на другом экране (не чаще раза в день) */
+function hpGoalWarn(){
+  let best=null;
+  state.goals.forEach(g=>{ const s=hpGoalStat(g); if((s.st==='lost'||s.st==='miss') && (!best || HP_G_ORDER[s.st]<HP_G_ORDER[best.s.st])) best={g,s}; });
+  return best;
+}
+
+/* ---------- экран ---------- */
+let hpSetOpen = false;
+function renderHelper(){
+  const el = document.getElementById('s-helper'); if(!el) return;
+  hpInit(); rwInit();
+  const p = state.coach;
+  let hero;
+  if(!p || !HP[p]){
+    hero = `<div class="hp-card hp-intro"><div class="hp-ttl">${t('hp.pickT')}</div><div class="hp-sub">${t('hp.pickSub')}</div>
+      <div class="hp-team">${HP_LIST.map(id=>`<button class="hp-mate" onclick="hpChoose('${id}')" style="--cc:${HP[id].color}">
+        <img src="${hpImg(id,'hello')}" alt="" loading="lazy"><b>${esc(hpName(id))}</b><i>${esc(hpLine('tag',id))}</i></button>`).join('')}</div></div>`;
+  } else {
+    const m = hpMood(p);
+    const line = m.key==='joke' ? hpLine('joke','genie',null) : hpLine(m.key, p, m.vars);
+    hero = `<div class="hp-card hp-hero" style="--cc:${HP[p].color}">
+      ${hpFigHTML(p, m.emo, 'hp-fig', false, 'onclick="hpPoke()"')}
+      <div class="hp-say"><b>${esc(hpName(p))}</b><div class="hp-bub">${esc(line)}</div>
+        <button class="hp-go" onclick="hpStart()">🎯 ${t('hp.newGoal')}</button></div>
+    </div>`;
+  }
+  el.innerHTML = hero + hpSettingsHTML() + hpGoalsHTML() + `<div id="hpRewards"></div>`;
+  renderRewards();
+}
+/* тап по персонажу — Джин шутит, остальные повторяют реплику дня с другой фразой */
+let hpPokeN = 0;
+function hpPoke(){
+  const p=state.coach; if(!p) return;
+  hpPokeN++;
+  const fig=document.querySelector('.hp-fig'), bub=document.querySelector('.hp-bub');
+  if(p==='genie'){ if(fig){ fig.src=hpImg('genie','joke'); fig.dataset.k='genie-joke'; } if(bub) bub.textContent=hpLine('joke','genie',null,'poke'+hpPokeN); }
+  else { const k=['hello','pick'][hpPokeN%2]; if(fig){ const e=hpPokeN%2?'think':'hello'; fig.src=hpImg(p,e); fig.dataset.k=p+'-'+e; } if(bub) bub.textContent=hpLine(k,p,null,'poke'+hpPokeN); }
+  if(fig){ fig.classList.remove('hp-jump'); void fig.offsetWidth; fig.classList.add('hp-jump'); }
+  const w=fig && fig.closest('.hp-fw');
+  if(w){ const em = p==='genie' ? 'joke' : (hpPokeN%2 ? 'think' : 'hello');
+    w.className=w.className.replace(/\bem-\w+/,'em-'+em); w.querySelectorAll('.st').forEach(x=>x.remove());
+    w.insertAdjacentHTML('beforeend', hpStickers(em)); }
+}
+function hpChoose(id){ state.coach=id; save(); renderHelper(); }
+
+function hpSettingsHTML(){
+  const seg=(key,opts)=>`<div class="hp-seg">${opts.map(o=>`<button class="${state[key]===o.v?'on':''}" onclick="hpSet('${key}',${JSON.stringify(o.v).replace(/"/g,"'")})">${o.l}</button>`).join('')}</div>`;
+  const p = state.coach;
+  return `<details class="hp-set" ${hpSetOpen?'open':''} ontoggle="hpSetOpen=this.open">
+    <summary>⚙️ ${t('hp.settings')}</summary>
+    <label class="th-label">${t('hp.sChar')}</label>
+    <div class="hp-team sm">${HP_LIST.map(id=>`<button class="hp-mate${p===id?' on':''}" onclick="hpChoose('${id}')" style="--cc:${HP[id].color}">
+      <img src="${hpImg(id,'hello')}" alt="" loading="lazy"><b>${esc(hpName(id))}</b></button>`).join('')}</div>
+    <label class="th-label">${t('hp.sStyle')}</label>
+    ${seg('helperStyle',[{v:'soft',l:t('hp.soft')},{v:'normal',l:t('hp.normal')},{v:'strict',l:t('hp.strict')}])}
+    <div class="hp-hint">${t('hp.styleHint.'+state.helperStyle)}</div>
+    <label class="th-label">${t('hp.sFreq')}</label>
+    ${seg('helperFreq',[{v:0,l:t('hp.f0')},{v:1,l:t('hp.f1')},{v:3,l:t('hp.f3')}])}
+    <label class="hp-row"><span>${t('hp.sMorning')}</span><input type="checkbox" ${state.helperMorning?'checked':''} onchange="hpSet('helperMorning',this.checked)"></label>
+    <button class="hp-tour" onclick="tourStart()">🧭 ${t('tour.btn')}</button>
+    ${HP_AI_URL ? `<label class="th-label">${t('hp.sAI')}</label>
+    ${seg('helperAI',[{v:'off',l:t('hp.aiOff')},{v:'gemini',l:'AI'}])}
+    <div class="hp-hint">${t(state.helperAI==='off' ? 'hp.aiHintOff' : 'hp.aiHint')}</div>` : ''}
+  </details>`;
+}
+function hpSet(key,val){ state[key]=val; save(); renderHelper(); }
+
+/* ---------- реплика на других экранах ---------- */
+let hpPopTimer=null;
+function hpPop(key, vars, emo){
+  const p=state.coach; if(!p || !HP[p]) return;
+  let el=document.getElementById('hpPop');
+  if(!el){ el=document.createElement('div'); el.id='hpPop'; el.className='hp-pop'; document.body.appendChild(el); }
+  const text = key==='joke' ? hpLine('joke','genie',null,'pop') : hpLine(key,p,vars);
+  el.style.setProperty('--cc', HP[p].color);
+  el.innerHTML = `${hpFigHTML(p, emo||'hello', 'hp-pimg', false, 'onclick="hpPopClose();switchScreen(\'helper\')"')}
+    <div class="hp-pbub"><b>${esc(hpName(p))}</b>${esc(text)}</div>
+    <button class="hp-px" onclick="hpPopClose()" aria-label="close">✕</button>`;
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(hpPopTimer); hpPopTimer=setTimeout(hpPopClose, 8000);
+}
+function hpPopClose(){ const el=document.getElementById('hpPop'); if(el) el.classList.remove('show'); }
+
+/* Вызывается после каждой перерисовки: решает, сказать ли что-то на текущем экране.
+   Утреннее слово — один раз в день при открытии; «день закрыт» и «неделя» — один раз,
+   с лимитом по частоте. На экране «Помощник» всплывашек нет — там он и так на виду. */
+function hpCheck(){
+  const p=state.coach; if(!p || !HP[p] || curScreen==='helper') return;
+  if(document.getElementById('modalBg') && document.getElementById('modalBg').classList.contains('show')) return;
+  hpInit();
+  const S=state.helperSeen, seen=k=>S.keys.indexOf(k)>=0, mark=k=>{ S.keys.push(k); save(); };
+  const m=hpMood(p);
+  if(state.helperMorning && !seen('morning')){
+    mark('morning');
+    if(m.key==='dayDone'||m.key==='partial') return;  // уже работает — не отвлекаем
+    hpPop(m.key, m.vars, m.emo); return;
+  }
+  if(state.helperFreq<=0 || S.n>=state.helperFreq) return;
+  if(m.key==='dayDone' && !seen('dayDone')){ mark('dayDone'); S.n++; save(); hpPop('dayDone', m.vars, 'happy'); return; }
+  if(m.key==='week' && !seen('week')){ mark('week'); S.n++; save(); hpPop('week', null, 'proud'); return; }
+  if(!seen('goalWarn')){
+    const w=hpGoalWarn();
+    if(w){ mark('goalWarn'); S.n++; save(); hpPop(hpGoalLineKey(w.s.st), hpGoalVars(w.g,w.s), w.s.st==='lost' ? 'sad' : HP[p].sig); }
+  }
+}
+
+/* ---------- опрос «новая цель» ---------- */
+let hq=null;
+const HQ_ORDER=['goal','why','num','when','days','obst','plan','sum'];
+/* ===== 1.7.8: AI в опросе =====
+   Режим AI: персонаж сам ведёт разговор по контексту — может уточнить уровень,
+   опыт, расписание, предложить реалистичную цифру — но ведёт к цели. Каждый ход
+   уходит в Cloudflare Worker planner-ai (worker/planner-ai.js) → Workers AI с
+   историей и уже собранными полями. В ответ: реплика, что нового узнал (set) и
+   о чём спрашивает (ask) — по ask внизу показываются нужные кнопки.
+   Нет адреса / сети / ошибка / лимит — опрос продолжается по сценарию с первого
+   несобранного поля, ничего не теряется. */
+const HP_AI_URL = 'https://planner-ai.yuriilosiev.workers.dev';
+const HQ_AI_MAX = 14;            // ходов AI на опрос; дальше — добор полей по сценарию
+let hpAILimitShown = false, hpAIFailShown = false;
+function hpAIOn(){ return !!HP_AI_URL && state.helperAI!=='off' && navigator.onLine!==false; }
+function hpDev(){
+  try{
+    let d=localStorage.getItem('planner_dev');
+    if(!d){ d=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('planner_dev',d); }
+    return d;
+  }catch(e){ return 'nostore'; }
+}
+async function hpAI(path, body){
+  const ctl=new AbortController(), tm=setTimeout(()=>ctl.abort(), 25000);
+  try{
+    const res=await fetch(HP_AI_URL+path, {method:'POST', signal:ctl.signal, headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({lang:curLang(), persona:state.coach, style:state.helperStyle, model:state.helperAI, device:hpDev()}, body))});
+    if(res.status===429){ if(!hpAILimitShown){ hpAILimitShown=true; toast(t('hp.aiLimit')); } return null; }
+    const j=await res.json().catch(()=>null);
+    return (res.ok && j) ? j : null;
+  }catch(e){ return null; }
+  finally{ clearTimeout(tm); }
+}
+/* первое несобранное поле — с него продолжает сценарий */
+function hqMissing(){
+  const g=hq.g, d=hq.done;
+  if(!g.title) return 'goal';
+  if(!d.has('why')) return 'why';
+  if(!(g.target>0)) return 'num';
+  if(!g.deadline) return 'when';
+  if(!d.has('days')) return 'days';
+  if(hq.replan) return 'sum';      // перепланирование: препятствие и правило — по желанию
+  if(!d.has('obst')) return 'obst';
+  if(!d.has('plan')) return 'plan';
+  return 'sum';
+}
+function hqToScript(text, step, applied){
+  hq.mode='script';
+  if(!hpAIFailShown){ hpAIFailShown=true; toast(t('hp.aiFail')); }
+  // свободный ответ ещё не разобран — отдаём его сценарию на том же шаге
+  if(text && !applied && ['goal','why','num','obst','plan'].includes(step)){
+    hq.msgs.pop(); hq.step=step; hqAns(text, -1); return;
+  }
+  const st=hqMissing();
+  if(st==='sum') hqFinish(); else hqNext(st);
+}
+function hqSlots(){
+  const g=hq.g, T=todayStr();
+  return {title:g.title, why:g.why, target:g.target, unit:g.unit,
+    deadlineDays: g.deadline ? daysBetween(T, g.deadline) : 0,
+    days:g.days, daysConfirmed:hq.done.has('days'), obst:g.obst, tip:hq.tip||'', plan:g.plan};
+}
+function hqApply(set){
+  const g=hq.g, d=hq.done; if(!set) return;
+  if(set.title){ g.title=set.title; d.add('goal'); }
+  if(set.type) g.type=set.type;
+  if(set.why){ g.why=set.why; d.add('why'); }
+  if(set.target>0){ g.target=set.target; d.add('num'); }
+  if(set.unit) g.unit=set.unit;
+  if(set.deadlineDays>0){ g.deadline=addDays(todayStr(), Math.max(7, set.deadlineDays)); d.add('when'); }
+  if(Array.isArray(set.days) && set.days.length){ g.days=set.days.slice(); d.add('days'); }
+  if(set.obst){ g.obst=set.obst; d.add('obst'); }
+  if(set.tip) hq.tip=set.tip;
+  if(set.plan){ g.plan=set.plan; d.add('plan'); }
+}
+async function hqTurn(text, applied){
+  const run=hq, step=hq.step;
+  hq.busy=true; hq.turns=(hq.turns||0)+1;
+  hq.msgs.push({who:'me', text}); hq.msgs.push({who:'bot', typing:true}); hqRender();
+  const wd=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][(new Date().getDay()+6)%7];
+  const r = await hpAI('/chat', {history: hq.msgs.filter(m=>!m.typing).map(m=>({who:m.who, text:m.text})),
+    slots:hqSlots(), today:todayStr(), weekday:wd, units:t('hp.units'),
+    mode: hq.replan ? 'replan' : 'new', context: hq.replan ? hqReContext() : ''});
+  if(hq!==run) return;                       // опрос закрыли или начали заново
+  hq.busy=false; hq.msgs=hq.msgs.filter(m=>!m.typing);
+  if(!r || typeof r.reply!=='string' || !r.reply.trim()){ hqToScript(text, step, applied); return; }
+  hqApply(r.set);
+  hq.msgs.push({who:'bot', text:r.reply, ai:true, answer:text});
+  hq.emo = ['think','happy','proud','sad','sly'].includes(r.emo) ? r.emo : 'think';
+  let ask = r.ask || 'free';
+  if(ask==='done'){
+    const miss=hqMissing();
+    // AI считает, что всего хватает: необязательное добираем молча, обязательное — спросим
+    if(['why','obst','plan','days'].includes(miss) && hq.g.title && hq.g.target>0 && hq.g.deadline){
+      if(!hq.g.plan && hq.tip) hq.g.plan=hq.tip;
+      hqFinish(); return;
+    }
+    ask = miss==='sum' ? 'sum' : miss;
+    if(ask==='sum'){ hqFinish(); return; }
+  }
+  if(hq.turns>=HQ_AI_MAX){ hq.mode='script'; const st=hqMissing(); if(st==='sum') hqFinish(); else hqNext(st); return; }
+  if(ask==='plan' && !hq.tip) hq.tip=t('hp.tipDefault');
+  hq.step=ask; hqRender();
+}
+function hqFlag(i){
+  const m=hq.msgs[i]; if(!m || !m.ai || m.flagged) return;
+  m.flagged=true; hqRender(); toast(t('hp.aiThanks'));
+  hpAI('/report', {answer:m.answer, reply:m.text});
+}
+function hpStart(){
+  if(!state.coach) return;
+  hq={step:'goal', emo:'hello', msgs:[], mode: hpAIOn() ? 'ai' : 'script', done:new Set(), turns:0,
+      g:{title:'', why:'', target:0, unit:'', deadline:'', days:[0,1,2,3,4], obst:'', plan:'', type:null}};
+  hqSay('iHello'); hqNext('goal');
+}
+/* 1.7.8: перепланирование существующей цели. Поля опроса заполнены текущим планом,
+   прогресс (hq.base) — точка нового старта: норма считается на остаток.
+   С ИИ персонаж видит статистику цели (context) и сначала выясняет, что мешает;
+   без ИИ — проход по шагам с кнопками «Оставить …». Сохранение меняет ту же цель. */
+function hpReplan(id){
+  const goal=state.goals.find(x=>x.id===id); if(!goal || !state.coach) return;
+  hpInit();
+  const st=hpGoalStat(goal), kind=goal.kind||'numeric', T=todayStr();
+  const lines=String(goal.vision||'').split('\n');
+  const op=lines.find(l=>l.indexOf(' → ')>0)||'';
+  const why=lines.filter(l=>l!==op).join(' ').trim();
+  const unit=(goal.numeric&&goal.numeric.unit)||goal.unit||'';
+  hq={step:'', emo:'think', msgs:[], mode: hpAIOn() ? 'ai' : 'script', done:new Set(['goal','why']), turns:0,
+      replan:goal.id, kind, base: kind==='numeric' ? hpGoalProgress(goal) : 0, stat:st,
+      tip: op ? op.split(' → ')[1] : '',
+      g:{title:goal.name, why, target:Number(goal.target)||0, unit, deadline:goal.deadline||addDays(T,30),
+         days: goalActiveDows(goal).slice(), obst: op ? op.split(' → ')[0] : '', plan: op ? op.split(' → ')[1] : '', type:goal.type||null}};
+  if(kind!=='numeric') hq.done.add('num');
+  if(kind==='checklist') hq.done.add('days');
+  const warn = st.st==='lost'||st.st==='miss'||st.st==='behind';
+  hq.emo = st.st==='lost' ? 'sad' : warn ? HP[state.coach].sig : 'think';
+  hq.msgs.push({who:'bot', text:hpLine(hpGoalLineKey(st.st), state.coach, hpGoalVars(goal,st), goal.id)});
+  hpPopClose(); switchScreen('helper');
+  if(hq.mode==='ai'){ hqSay('iRe'); hq.step='free'; hqRender(); return; }
+  hqSay('iReS'); hq.step = kind==='numeric' ? 'num' : 'when'; hqRender();
+}
+/* статистика цели для ИИ — короткими фактами */
+function hqReContext(){
+  const goal=state.goals.find(x=>x.id===hq.replan); if(!goal) return '';
+  const s=hq.stat, T=todayStr(), g=hq.g;
+  const parts=['REPLAN of an existing goal "'+goal.name+'"', 'created '+(goal.createdDate||'?'), 'deadline '+(goal.deadline||'none')+' ('+daysBetween(T, goal.deadline||T)+' days left)'];
+  if(hq.kind==='numeric') parts.push('progress '+hq.base+' of '+g.target+' '+g.unit+(s.pace?(', plan for today '+s.pace.planToday):''));
+  parts.push('done '+s.rate+'% of planned days in the last 14 days', 'misses in a row: '+s.chain, 'days since last activity: '+s.quiet, 'status: '+s.st);
+  if(hq.kind!=='numeric') parts.push('goal kind '+hq.kind+': do not change target/unit');
+  return parts.join('; ');
+}
+function hqSay(key, vars){ hq.msgs.push({who:'bot', text:hpLine(key, state.coach, vars)}); }
+function hqNext(step){ hq.step=step; hq.emo='think'; hqSay('i'+step.charAt(0).toUpperCase()+step.slice(1), step==='plan'?{tip:hq.tip}:null); hqRender(); }
+function hqRender(){
+  const p=state.coach, c=HP[p];
+  const msgs = hq.msgs.map((m,i)=> m.typing
+    ? `<div class="hq-m bot"><div class="hq-bub hq-typing"><i></i><i></i><i></i></div></div>`
+    : m.who==='bot'
+    ? `<div class="hq-m bot"><div class="hq-bub">${esc(m.text)}${m.ai?`<button class="hq-flag${m.flagged?' on':''}" onclick="hqFlag(${i})" aria-label="${esc(t('hp.aiReport'))}" title="${esc(t('hp.aiReport'))}">⚑</button>`:''}</div></div>`
+    : `<div class="hq-m me"><div class="hq-bub">${esc(m.text)}</div></div>`).join('');
+  const chips=(arr)=>`<div class="hq-chips">${arr.map((x,i)=>`<button onclick="hqChip(${i})">${esc(x)}</button>`).join('')}</div>`;
+  const field=(ph,type)=>`<div class="hq-in"><input id="hqIn" type="${type||'text'}" placeholder="${esc(ph)}" onkeydown="if(event.key==='Enter')hqSend()"><button onclick="hqSend()">➤</button></div>`;
+  let input='';
+  hq.chips=[];
+  switch(hq.step){
+    case 'goal': hq.chips=t('hp.goals'); input=chips(hq.chips)+field(t('hp.goalPh')); break;
+    case 'why':  hq.chips=[t('hp.skip')]; input=chips(hq.chips)+field(t('hp.whyPh')); break;
+    case 'num':  if(hq.replan){ hq.chips=[t('hp.keepVal',{v:hq.g.target+' '+hq.g.unit})]; input=chips(hq.chips); } else input='';
+                 input+=`<div class="hq-in"><input id="hqIn" type="text" inputmode="decimal" placeholder="${esc(t('hp.numPh'))}" onkeydown="if(event.key==='Enter')hqSend()"><select id="hqUnit">${t('hp.units').map(u=>`<option>${esc(u)}</option>`).join('')}</select><button onclick="hqSend()">➤</button></div>`; break;
+    case 'when': hq.chips=t('hp.whens').map(w=>w[0]); if(hq.replan) hq.chips.push(t('hp.keepDate'));
+                 input=chips(hq.chips)+(hq.mode==='ai'?field(t('hp.whenPh')):''); break;
+    case 'free': input=field(t('hp.freePh')); break;
+    case 'days': input=`<div class="hq-chips days">${WEEKDAYS.map((w,i)=>`<button class="${hq.g.days.includes(i)?'on':''}" onclick="hqDay(${i})">${w}</button>`).join('')}</div>
+                 <button class="hq-go" onclick="hqDaysDone()">${t('hp.ready')}</button>`; break;
+    case 'obst': hq.chips=t('hp.obst').map(o=>o[0]); input=chips(hq.chips)+field(t('hp.ownPh')); break;
+    case 'plan': hq.chips=[t('hp.keepTip')]; input=chips(hq.chips)+field(t('hp.rulePh')); break;
+    case 'sum':  input = hq.replan
+                   ? `<div class="hq-row2"><button class="hq-ghost" onclick="hqClose()">${t('hp.cancel')}</button><button class="hq-go" onclick="hqSaveReplan()">${t('hp.saveRe')}</button></div>`
+                   : `<div class="hq-row2"><button class="hq-ghost" onclick="hpStart()">${t('hp.again')}</button><button class="hq-go" onclick="hqCreate()">${t('hp.create')}</button></div>`; break;
+  }
+  const i = hq.mode==='ai' ? (hq.step==='sum' ? 6 : Math.min(hq.done.size, 6)) : HQ_ORDER.indexOf(hq.step);
+  hqShow(`<div class="hq-top" style="--cc:${c.color}"><b>${esc(hpName(p))}</b>${hq.mode==='ai'?'<span class="hq-ai">AI</span>':''}<span class="hq-prog">${Math.min(i+1,7)}/7</span><button class="hq-x" onclick="hqClose()">✕</button></div>
+    <div class="hq-stage">${hpFigHTML(p, hq.emo, 'hq-fig', hq.emo===hq.lastEmo)}<div class="hq-chat" id="hqChat">${msgs}${hq.step==='sum'?hqSummaryHTML():''}</div></div>
+    <div class="hq-bottom">${input}</div>`);
+  hq.lastEmo=hq.emo;
+  const ch=document.getElementById('hqChat'); if(ch){ ch.scrollTop=ch.scrollHeight; requestAnimationFrame(()=>{ ch.scrollTop=ch.scrollHeight; }); }
+}
+function hqChip(i){
+  if(hq.busy) return;
+  if(hq.mode!=='ai'){ hqAns(hq.chips[i], i); return; }
+  // в режиме AI значение чипа известно сразу — записываем и отдаём ход персонажу
+  const g=hq.g, d=hq.done, x=hq.chips[i], T=todayStr();
+  switch(hq.step){
+    case 'goal': g.title=x; g.type=['travel','physical','learning','learning'][i]||null; d.add('goal'); break;
+    case 'why':  g.why=''; d.add('why'); break;
+    case 'num':  d.add('num'); break;                       // «Оставить N» при перепланировании
+    case 'when': { if(i>=t('hp.whens').length){ d.add('when'); break; }  // «Оставить срок»
+                   const w=t('hp.whens')[i]; g.deadline = w[1]>0 ? addDays(T,w[1]) : T.slice(0,4)+'-12-31';
+                   if(daysBetween(T,g.deadline)<7) g.deadline=addDays(T,30); d.add('when'); break; }
+    case 'obst': { const o=t('hp.obst')[i]; g.obst=o[0]; hq.tip=o[1]; d.add('obst'); break; }
+    case 'plan': g.plan=hq.tip; d.add('plan'); break;
+  }
+  hqTurn(x, true);
+}
+function hqSend(){
+  const el=document.getElementById('hqIn'); if(!el||!String(el.value).trim()) return;
+  if(hq.busy) return;
+  let v=String(el.value).trim(), shown=v;
+  if(hq.step==='num'){ const u=document.getElementById('hqUnit').value; if(hq.mode!=='ai' || /^[\d\s.,]+$/.test(v)) hq.g.unit=u; if(/^[\d\s.,]+$/.test(v)) shown=v+' '+u; }
+  if(hq.mode==='ai'){
+    if(hq.step==='num' && /^[\d\s.,]+$/.test(v)){ const n=hqNum(v); if(n>0){ hq.g.target=n; hq.done.add('num'); } }
+    el.value=''; hqTurn(shown, hq.done.has('num') && hq.step==='num' && /^[\d\s.,]+$/.test(v)); return;
+  }
+  hqAns(shown, -1);
+}
+/* число из ввода или диктовки: «150 000», «1,5», «150 тысяч», «2 млн», «10k» */
+function hqNum(v){
+  const s=String(v).toLowerCase().replace(/\u00a0/g,' ');
+  const m=s.match(/\d[\d\s]*(?:[.,]\d+)?/); if(!m) return NaN;
+  let n=parseFloat(m[0].replace(/\s/g,'').replace(',','.'));
+  const rest=s.slice(m.index+m[0].length);
+  if(/^\s*(тыс|thousand|k\b|к\b)/.test(rest)) n*=1e3;
+  else if(/^\s*(млн|миллион|million|m\b|mln)/.test(rest)) n*=1e6;
+  return n;
+}
+function hqDay(i){ const d=hq.g.days, k=d.indexOf(i); if(k<0) d.push(i); else d.splice(k,1); d.sort(); hqRender(); }
+function hqDaysTxt(){ return hq.g.days.length===7 ? t('hp.everyDay') : hq.g.days.map(i=>WEEKDAYS[i]).join(', '); }
+function hqDaysDone(){
+  if(!hq.g.days.length){ toast(t('gv.oneDay')); return; }
+  if(hq.busy) return;
+  if(hq.mode==='ai'){ hq.done.add('days'); hqTurn(hqDaysTxt(), true); return; }
+  hqAns(hqDaysTxt(), -1);
+}
+/* «хитрая улыбка»: пропуск вопроса или ответ-отписка */
+function hqSly(){ hq.emo='sly'; hqSay('iSly'); }
+function hqAns(v, chipIdx){
+  const g=hq.g; hq.msgs.push({who:'me', text:v});
+  // встречный вопрос вместо ответа — персонаж возвращает к своему
+  if(chipIdx<0 && /[?¿]\s*$/.test(v) && ['goal','why','obst','plan'].includes(hq.step)){
+    hq.emo='sly'; hqSay('iAsk'); hqRender(); return;
+  }
+  switch(hq.step){
+    case 'goal':
+      if(v.length<3){ hqSly(); hqRender(); return; }
+      g.title=v; g.type = chipIdx>=0 ? ['travel','physical','learning','learning'][chipIdx] : null;
+      hqSay('iOk'); hqNext('why'); break;
+    case 'why':
+      if(chipIdx===0){ g.why=''; hqSly(); setTimeout(()=>hqNext('num'),900); hqRender(); return; }
+      g.why=v; hqNext('num'); break;
+    case 'num': {
+      if(hq.replan && chipIdx===0){ hqNext('when'); break; }
+      const n=hqNum(v);
+      if(!(n>0)){ hqSly(); hqRender(); return; }
+      g.target=n; hqNext('when'); break; }
+    case 'when': {
+      if(hq.replan && chipIdx>=t('hp.whens').length){ hqNext(hq.kind==='checklist' ? 'obst' : 'days'); break; }
+      const T=todayStr(), w=t('hp.whens')[chipIdx];
+      g.deadline = w[1]>0 ? addDays(T,w[1]) : T.slice(0,4)+'-12-31';
+      if(daysBetween(T,g.deadline)<7) g.deadline=addDays(T,30);
+      hqNext(hq.replan && hq.kind==='checklist' ? 'obst' : 'days'); break; }
+    case 'days': hqSay('iOk'); hqNext('obst'); break;
+    case 'obst': {
+      g.obst=v; const o=chipIdx>=0 ? t('hp.obst')[chipIdx] : null;
+      hq.tip = o ? o[1] : t('hp.tipDefault'); hqNext('plan'); break; }
+    case 'plan': g.plan = chipIdx===0 ? hq.tip : v; hqFinish(); break;
+  }
+}
+function hqCalc(){
+  const g=hq.g, T=addDays(todayStr(),1);
+  const n=activeDaysCount(T, g.deadline, g.days);
+  const left = hq.replan ? Math.max(0, g.target-(hq.base||0)) : g.target;
+  const per=n>0 ? left/n : 0;
+  const nice=per>=10 ? Math.ceil(per) : Math.ceil(per*10)/10;
+  return {n, per:nice, rate:nice+' '+g.unit};
+}
+function hqFinish(){ hq.step='sum'; hq.emo='happy'; if(hq.mode!=='ai') hqSay('iDone',{rate:hqCalc().rate}); hqRender(); }
+function hqSummaryHTML(){
+  const g=hq.g, k=hqCalc();
+  return `<div class="hq-sum">
+    <div class="hq-sum-t">🎯 ${esc(g.title)}</div>
+    ${g.why?`<div class="hq-sum-why">«${esc(g.why)}»</div>`:''}
+    ${hq.replan && hq.kind==='numeric' ? `<div class="hq-sum-row"><span>${t('hp.sNow')}</span><b>${hq.base} ${esc(g.unit)}</b></div>` : ''}
+    ${hq.kind && hq.kind!=='numeric' ? `<div class="hq-sum-row"><span>${t('hp.sGoal')}</span><b>${fmtFull(g.deadline)}</b></div>`
+      : `<div class="hq-sum-row"><span>${t('hp.sGoal')}</span><b>${g.target} ${esc(g.unit)} · ${fmtFull(g.deadline)}</b></div>`}
+    <div class="hq-sum-row"><span>${t('hp.sDays')}</span><b>${esc(hqDaysTxt())} · ${k.n}</b></div>
+    ${hq.kind && hq.kind!=='numeric' ? '' : `<div class="hq-sum-row big"><span>${t('hp.sNorm')}</span><b>${esc(k.rate)}</b></div>`}
+    ${g.obst?`<div class="hq-sum-row"><span>${esc(g.obst)} →</span><b>${esc(g.plan)}</b></div>`:''}
+  </div>`;
+}
+/* Создаёт обычную числовую цель — дальше она живёт как любая другая */
+function hqCreate(){
+  const g=hq.g, today=todayStr();
+  const units=t('hp.units');
+  let type=g.type;
+  if(!type){ const ui=units.indexOf(g.unit); type = ui<=2 ? 'material' : (ui<=4 ? 'physical' : 'learning'); }
+  let catId=TYPE_TO_CAT[type]; if(!state.cats.some(c=>c.id===catId)) catId=(state.cats[0]||{}).id||'';
+  const vision=[g.why, g.obst ? (g.obst+' → '+g.plan) : ''].filter(Boolean).join('\n');
+  state.goals.push({
+    id:uid(), name:g.title, catId, kind:'numeric', type, vision,
+    start:0, target:g.target, unit:g.unit, numeric:{start:0,target:g.target,unit:g.unit},
+    deadline:g.deadline, days:g.days.slice(), time:null, showInNotif:false,
+    factValue:null, factDate:null,
+    weeklyPlan:{0:[],1:[],2:[],3:[],4:[],5:[],6:[]},
+    created:Date.now(), createdDate:today, byHelper:state.coach
+  });
+  generateForDate(today);
+  save(); hqClose(); switchScreen('goals'); toast(t('gt.created'));
+}
+function hqSaveReplan(){
+  const goal=state.goals.find(x=>x.id===hq.replan); if(!goal){ hqClose(); return; }
+  const g=hq.g, T=todayStr(), kind=hq.kind;
+  goal.name = g.title || goal.name;
+  goal.deadline = g.deadline || goal.deadline;
+  goal.vision = [g.why, g.obst ? (g.obst+' → '+(g.plan||hq.tip||'')) : ''].filter(Boolean).join('\n');
+  if(kind==='numeric'){
+    // новый отсчёт: от сегодняшнего прогресса к цели, норма — на остаток
+    goal.start = hq.base; goal.target = g.target; goal.unit = g.unit;
+    goal.numeric = {start:hq.base, target:g.target, unit:g.unit};
+    goal.createdDate = T;
+  }
+  if(kind!=='checklist' && g.days && g.days.length) goal.days = g.days.slice();
+  goal.replanned = T;
+  if(state.hpSnooze) delete state.hpSnooze[goal.id];
+  // сегодняшняя невыполненная задача по старому плану → заново по новому
+  state.tasks = state.tasks.filter(t=>!(t.goalId===goal.id && t.date===T && !hpTaskDone(t)));
+  generateForDate(T);
+  save(); hqClose(); render(); toast(t('hp.reSaved'));
+}
+function hqShow(html){
+  let ov=document.getElementById('hqOv');
+  if(!ov){ ov=document.createElement('div'); ov.id='hqOv'; ov.className='hq-ov'; document.body.appendChild(ov); }
+  ov.innerHTML=html; ov.classList.add('show');
+}
+function hqClose(){ const ov=document.getElementById('hqOv'); if(ov) ov.classList.remove('show'); }
+
+Object.assign(I18N.ru, {
+  'nav.helper':'Помощник', 'title.helper':'Помощник', 'sc.helper':'Помощник',
+  'hp.pickT':'Выбери помощника', 'hp.pickSub':'Он поможет поставить цель, будет хвалить за выполненное и напоминать о пропусках. Сменить можно в настройках ниже.',
+  'hp.newGoal':'Новая цель с помощником', 'hp.settings':'Настройки помощника',
+  'hp.sChar':'Персонаж', 'hp.sStyle':'Стиль', 'hp.soft':'Мягко', 'hp.normal':'Обычно', 'hp.strict':'Строго',
+  'hp.styleHint.soft':'Только поддерживает, без строгих слов.', 'hp.styleHint.normal':'Хвалит за выполненное, с 2-го дня пропусков становится строже.',
+  'hp.styleHint.strict':'Строгий уже после первого пропуска.',
+  'hp.sFreq':'Реплики на других экранах', 'hp.f0':'Нет', 'hp.f1':'Раз в день', 'hp.f3':'До 3 в день', 'hp.sMorning':'Утреннее слово при открытии',
+  'hp.gT':'Цели глазами помощника', 'hp.replan':'Перепланировать', 'hp.keep':'Оставить', 'hp.del':'Удалить',
+  'hp.kept':'Хорошо, неделю не напоминаю об этой цели', 'hp.st.good':'по плану', 'hp.st.ok':'в процессе', 'hp.st.new':'старт',
+  'hp.st.miss':'пропуски', 'hp.st.behind':'отставание', 'hp.st.lost':'забыта',
+  'hp.keepVal':'Оставить {v}', 'hp.keepDate':'Оставить срок', 'hp.saveRe':'Сохранить изменения', 'hp.cancel':'Отмена',
+  'hp.reSaved':'План обновлён', 'hp.sNow':'Сейчас', 'hp.sLeft':'Осталось',
+  'hp.sAI':'Кто отвечает в опросе', 'hp.aiOff':'Сценарий',
+  'hp.aiHint':"Отвечает AI — открытая модель (Qwen, GLM или Llama) на серверах Cloudflare: ваши ответы в опросе отправляются туда для обработки и не используются для обучения. Без интернета — обычный сценарий. ⚑ у ответа — пожаловаться. Built with Llama.",
+  'hp.aiHintOff':'Готовый сценарий: без интернета и AI.',
+  'hp.aiLimit':'Лимит AI на сегодня исчерпан — дальше по сценарию', 'hp.aiReport':'Пожаловаться на ответ', 'hp.aiThanks':'Спасибо, жалоба отправлена',
+  'hp.goals':['Накопить на поездку','Бегать 3 раза в неделю','Читать каждый день','Выучить язык'],
+  'hp.goalPh':'Своя цель…', 'hp.whyPh':'Что изменится…', 'hp.skip':'Пропустить', 'hp.numPh':'Сколько',
+  'hp.units':['₽','$','€','км','раз','страниц','минут','часов'],
+  'hp.whens':[['Через месяц',30],['Через 3 месяца',91],['Через полгода',182],['До конца года',0]],
+  'hp.ready':'Готово', 'hp.everyDay':'Каждый день',
+  'hp.obst':[['Устану после работы','если устал — делаю минимум: 10 минут'],['Забуду','напоминание вечером и задача в шторке'],['Не будет времени','делаю утром, до работы'],['Лень','начинаю с 2 минут — дальше само пойдёт']],
+  'hp.ownPh':'Своё…', 'hp.freePh':'Ответ…', 'hp.whenPh':'Или своими словами: «к лету»…', 'hp.aiFail':'AI не ответил — продолжаю по сценарию', 'hp.keepTip':'Оставить совет', 'hp.rulePh':'Своё правило…', 'hp.tipDefault':'сделаю хотя бы минимум, но в тот же день',
+  'hp.again':'Заново', 'hp.create':'Создать цель', 'hp.sGoal':'Цель', 'hp.sDays':'Дни', 'hp.sNorm':'Норма в день',
+});
+Object.assign(I18N.en, {
+  'nav.helper':'Helper', 'title.helper':'Helper', 'sc.helper':'Helper',
+  'hp.pickT':'Choose your helper', 'hp.pickSub':'They help you set a goal, praise you for what’s done and remind you about misses. You can change it in the settings below.',
+  'hp.newGoal':'New goal with helper', 'hp.settings':'Helper settings',
+  'hp.sChar':'Character', 'hp.sStyle':'Style', 'hp.soft':'Soft', 'hp.normal':'Normal', 'hp.strict':'Strict',
+  'hp.styleHint.soft':'Only supportive, no strict words.', 'hp.styleHint.normal':'Praises what’s done, gets stricter from the 2nd missed day.',
+  'hp.styleHint.strict':'Strict right after the first miss.',
+  'hp.sFreq':'Messages on other screens', 'hp.f0':'None', 'hp.f1':'Once a day', 'hp.f3':'Up to 3 a day', 'hp.sMorning':'Morning word on opening',
+  'hp.gT':'Goals through the helper’s eyes', 'hp.replan':'Replan', 'hp.keep':'Keep', 'hp.del':'Delete',
+  'hp.kept':'OK, no reminders about this goal for a week', 'hp.st.good':'on track', 'hp.st.ok':'in progress', 'hp.st.new':'new',
+  'hp.st.miss':'misses', 'hp.st.behind':'behind', 'hp.st.lost':'forgotten',
+  'hp.keepVal':'Keep {v}', 'hp.keepDate':'Keep the deadline', 'hp.saveRe':'Save changes', 'hp.cancel':'Cancel',
+  'hp.reSaved':'Plan updated', 'hp.sNow':'Now', 'hp.sLeft':'Left',
+  'hp.sAI':'Who answers in the interview', 'hp.aiOff':'Script',
+  'hp.aiHint':"An AI answers — an open model (Qwen, GLM or Llama) on Cloudflare’s servers: your interview answers are sent there for processing and are not used for training. Offline — the usual script. ⚑ on a reply — report it. Built with Llama.",
+  'hp.aiHintOff':'Ready-made script: no internet, no AI.',
+  'hp.aiLimit':'Today’s AI limit is used up — continuing with the script', 'hp.aiReport':'Report this reply', 'hp.aiThanks':'Thanks, the report was sent',
+  'hp.goals':['Save for a trip','Run 3 times a week','Read every day','Learn a language'],
+  'hp.goalPh':'Your own goal…', 'hp.whyPh':'What will change…', 'hp.skip':'Skip', 'hp.numPh':'How much',
+  'hp.units':['$','€','£','km','times','pages','minutes','hours'],
+  'hp.whens':[['In a month',30],['In 3 months',91],['In half a year',182],['By the end of the year',0]],
+  'hp.ready':'Done', 'hp.everyDay':'Every day',
+  'hp.obst':[['Tired after work','if tired — I do the minimum: 10 minutes'],['I’ll forget','an evening reminder and the task in the shade'],['No time','I do it in the morning, before work'],['Laziness','I start with 2 minutes — the rest follows']],
+  'hp.ownPh':'Your own…', 'hp.freePh':'Your answer…', 'hp.whenPh':'Or in your words: “by summer”…', 'hp.aiFail':'AI didn’t answer — continuing with the script', 'hp.keepTip':'Keep the advice', 'hp.rulePh':'Your own rule…', 'hp.tipDefault':'I’ll do at least the minimum, but the same day',
+  'hp.again':'Start over', 'hp.create':'Create goal', 'hp.sGoal':'Goal', 'hp.sDays':'Days', 'hp.sNorm':'Daily norm',
+  // награды
+  'rw.d1':'A chocolate bar', 'rw.d2':'Coffee at a café', 'rw.d3':'A movie night', 'rw.d4':'A new book',
+  'rw.balance':'points', 'rw.todayPlus':'today +{n}',
+  'rw.weekOn':'A week with no misses — +{n} ⭐ after Sunday',
+  'rw.weekLost':'There was a miss this week — no bonus',
+  'rw.warnOne':'Yesterday was a miss. Do at least one task today and you lose nothing.',
+  'rw.warnChain':'Two days in a row with no tasks done. Today points count ×½, and if you miss today too, deductions begin.',
+  'rw.warnPen':'Missed days in a row: {n} — points are being deducted. Do at least one task to stop it.',
+  'rw.shop':'My rewards', 'rw.take':'Take', 'rw.need':'{n} ⭐ more', 'rw.add':'Add a reward',
+  'rw.log':'Points history', 'rw.today':'Today', 'rw.logEmpty':'Empty for now — complete a task and your first points will appear here.',
+  'rw.more':'Show all', 'rw.less':'Collapse',
+  'rw.penDay':'Missed, day {n} in a row', 'rw.weekBonus':'🔥 A week with no misses',
+  'rw.buyQ':'{p} ⭐ will be spent, {b} ⭐ will remain. Enjoy — you earned it.',
+  'rw.enjoy':'{e} Enjoy!',
+  'rw.addT':'New reward', 'rw.editT':'Reward', 'rw.name':'Name', 'rw.namePh':'For example, an episode of a series',
+  'rw.price':'Price in points', 'rw.save':'Save', 'rw.del':'Delete', 'rw.nameReq':'Enter a name',
+  'rw.rulesT':'How points are earned',
+  'rw.rules':'<p><b>+1 ⭐</b> for every completed task. For a checklist — for every ticked item: a workout of 5 exercises gives 5 points.</p>'
+    +'<p><b>+{n} ⭐</b> for a week (Mon–Sun) without a single miss.</p>'
+    +'<p><b>A miss</b> is a day that had tasks but none were done. Days without tasks don’t count.</p>'
+    +'<p>1 missed day — you lose nothing.<br>2 days in a row — on the day you return, points count ×½.<br>From the 3rd day in a row — as many points are deducted as that day’s tasks would give, but no more than you earned in the week before the misses.</p>'
+    +'<p>At least one task done in a day — no deduction. The balance never goes below zero.</p>'
+    +'<p>You invent the rewards yourself: anything that makes you happy. Tap a reward to change or delete it.</p>',
+});
+
+/* 1.7.8: помощник, награды, экскурсия — es / pt / de / fr */
+Object.assign(I18N.es, {"wel.hpT": "🎯 Crea tu primera meta con un asistente", "wel.hpSub": "Elige un personaje: 7 preguntas y tu deseo se convierte en un plan para cada día.", "wel.or": "o", "tour.btn": "Recorrido por la app", "tour.goal": "Crear una meta", "tour.next": "Siguiente", "tour.skip": "Omitir", "tour.done": "Listo", "tour.today": "Estas son las tareas de hoy. Marca lo que hagas: cada tarea te da un punto.", "tour.fab": "El botón + agrega una tarea, una meta o un evento. También puedes dictarlo.", "tour.goals": "Metas. Cada una se divide sola en tareas diarias; tú solo las marcas.", "tour.helper": "Y esta soy yo. Te ayudo a fijar metas, celebro tus avances y te aviso dónde te atascas.", "tour.review": "Aquí reviso cada meta: qué va según el plan, dónde faltas días y qué necesita un nuevo plan.", "tour.rewards": "Los puntos se acumulan: cámbialos por recompensas que tú mismo eliges.", "tour.history": "El gráfico de disciplina muestra cómo mantienes el ritmo durante semanas y meses.", "tour.calendar": "El calendario: eventos y tareas de todo el mes.", "tour.settings": "Ajustes: temas, recordatorios y copia de seguridad.", "tour.end": "¡Eso es todo! ¿Empezamos con tu primera meta?", "nav.helper": "Asistente", "title.helper": "Asistente", "sc.helper": "Asistente", "hp.pickT": "Elige tu asistente", "hp.pickSub": "Te ayuda a fijar una meta, te felicita por lo que haces y te recuerda los días perdidos. Puedes cambiarlo en los ajustes de abajo.", "hp.newGoal": "Nueva meta con el asistente", "hp.settings": "Ajustes del asistente", "hp.sChar": "Personaje", "hp.sStyle": "Estilo", "hp.soft": "Suave", "hp.normal": "Normal", "hp.strict": "Estricto", "hp.styleHint.soft": "Solo apoya, sin palabras duras.", "hp.styleHint.normal": "Felicita lo hecho y se pone más estricto desde el 2.º día perdido.", "hp.styleHint.strict": "Estricto desde el primer día perdido.", "hp.sFreq": "Mensajes en otras pantallas", "hp.f0": "Ninguno", "hp.f1": "Una vez al día", "hp.f3": "Hasta 3 al día", "hp.sMorning": "Saludo de la mañana al abrir", "hp.gT": "Tus metas según el asistente", "hp.replan": "Replanificar", "hp.keep": "Mantener", "hp.del": "Eliminar", "hp.kept": "De acuerdo, no te recordaré esta meta durante una semana", "hp.st.good": "en plan", "hp.st.ok": "en curso", "hp.st.new": "inicio", "hp.st.miss": "días perdidos", "hp.st.behind": "atrasada", "hp.st.lost": "olvidada", "hp.keepVal": "Mantener {v}", "hp.keepDate": "Mantener la fecha", "hp.saveRe": "Guardar cambios", "hp.cancel": "Cancelar", "hp.reSaved": "Plan actualizado", "hp.sNow": "Ahora", "hp.sLeft": "Falta", "hp.sAI": "Quién responde en la entrevista", "hp.aiOff": "Guion", "hp.aiHint": "Responde una IA, un modelo abierto (Qwen, GLM o Llama) en los servidores de Cloudflare: tus respuestas de la entrevista se envían allí para procesarlas y no se usan para entrenar. Sin internet, el guion habitual. ⚑ en una respuesta: reportarla. Built with Llama.", "hp.aiHintOff": "Guion preparado: sin internet y sin IA.", "hp.aiLimit": "Se agotó el límite de IA de hoy; seguimos con el guion", "hp.aiReport": "Reportar esta respuesta", "hp.aiThanks": "Gracias, el reporte fue enviado", "hp.goals": ["Ahorrar para un viaje", "Correr 3 veces por semana", "Leer cada día", "Aprender un idioma"], "hp.goalPh": "Tu propia meta…", "hp.whyPh": "Qué cambiará…", "hp.skip": "Omitir", "hp.numPh": "Cuánto", "hp.units": ["$", "US$", "€", "km", "veces", "páginas", "minutos", "horas"], "hp.whens": [["En un mes", 30], ["En 3 meses", 91], ["En medio año", 182], ["Antes de fin de año", 0]], "hp.ready": "Listo", "hp.everyDay": "Todos los días", "hp.obst": [["Cansancio después del trabajo", "si estoy cansado, hago lo mínimo: 10 minutos"], ["Se me olvida", "un recordatorio por la noche y la tarea en las notificaciones"], ["Falta de tiempo", "lo hago por la mañana, antes del trabajo"], ["Pereza", "empiezo con 2 minutos; lo demás viene solo"]], "hp.ownPh": "Lo tuyo…", "hp.freePh": "Tu respuesta…", "hp.whenPh": "O con tus palabras: «para el verano»…", "hp.aiFail": "La IA no respondió; sigo con el guion", "hp.keepTip": "Mantener el consejo", "hp.rulePh": "Tu propia regla…", "hp.tipDefault": "haré al menos lo mínimo, pero el mismo día", "hp.again": "Empezar de nuevo", "hp.create": "Crear meta", "hp.sGoal": "Meta", "hp.sDays": "Días", "hp.sNorm": "Norma diaria", "rw.d1": "Una tableta de chocolate", "rw.d2": "Un café en una cafetería", "rw.d3": "Una noche de película", "rw.d4": "Un libro nuevo", "rw.balance": "puntos", "rw.todayPlus": "hoy +{n}", "rw.weekOn": "Semana sin días perdidos: +{n} ⭐ al terminar el domingo", "rw.weekLost": "Esta semana hubo un día perdido: no habrá bono", "rw.warnOne": "Ayer fue un día perdido. Haz al menos una tarea hoy y no pierdes nada.", "rw.warnChain": "Dos días seguidos sin tareas hechas. Hoy los puntos cuentan ×½, y si hoy tampoco haces nada, empiezan los descuentos.", "rw.warnPen": "Días perdidos seguidos: {n}; se descuentan puntos. Haz al menos una tarea para detenerlo.", "rw.shop": "Mis recompensas", "rw.take": "Canjear", "rw.need": "faltan {n} ⭐", "rw.add": "Agregar recompensa", "rw.log": "Historial de puntos", "rw.today": "Hoy", "rw.logEmpty": "Por ahora vacío: completa una tarea y aquí aparecerán tus primeros puntos.", "rw.more": "Mostrar todo", "rw.less": "Contraer", "rw.penDay": "Día perdido, {n}.º seguido", "rw.weekBonus": "🔥 Semana sin días perdidos", "rw.buyQ": "Se gastarán {p} ⭐ y quedarán {b} ⭐. Disfrútalo: te lo ganaste.", "rw.enjoy": "{e} ¡Que lo disfrutes!", "rw.addT": "Nueva recompensa", "rw.editT": "Recompensa", "rw.name": "Nombre", "rw.namePh": "Por ejemplo, un capítulo de una serie", "rw.price": "Precio en puntos", "rw.save": "Guardar", "rw.del": "Eliminar", "rw.nameReq": "Escribe un nombre", "rw.rulesT": "Cómo se ganan los puntos", "rw.rules": "<p><b>+1 ⭐</b> por cada tarea completada. En una lista, por cada punto marcado: un entrenamiento de 5 ejercicios da 5 puntos.</p><p><b>+{n} ⭐</b> por una semana (lun–dom) sin un solo día perdido.</p><p><b>Día perdido</b>: un día con tareas en el que no se hizo ninguna. Los días sin tareas no cuentan.</p><p>1 día perdido: no pierdes nada.<br>2 días seguidos: el día que vuelves, los puntos cuentan ×½.<br>Desde el 3.er día seguido: se descuentan tantos puntos como darían las tareas de ese día, pero no más de lo que ganaste la semana anterior.</p><p>Con al menos una tarea hecha en el día no hay descuento. El saldo nunca baja de cero.</p><p>Las recompensas las inventas tú: cualquier cosa que te alegre. Toca una recompensa para cambiarla o eliminarla.</p>"});
+HL.es = {"name": {"coach": "Coach Max", "nadia": "Asistente Nadia", "guru": "Gurú", "genie": "Genio"}, "tag": {"coach": "Estricto y directo", "nadia": "Amable y organizada", "guru": "Sereno y profundo", "genie": "Alegre y bromista"}, "pick": {"coach": "Sin excusas. Fijamos una meta, calculamos la norma diaria y la cumplimos. Si lo haces, te felicito. Si fallas, te pregunto por qué.", "nadia": "Recordaré su meta, calcularé la norma diaria y seguiré el resultado. A usted solo le toca hacer el trabajo.", "guru": "Un viaje de mil millas empieza con un paso. Te ayudaré a ver ese paso cada día.", "genie": "No prometo tres deseos. Pero uno de verdad lo cumplimos juntos: ¡un pedacito cada día!"}, "hello": {"coach": ["Nuevo día. Las tareas esperan: a trabajar.", "Arriba. El plan está listo, ahora a cumplirlo.", "Hoy solo cuenta lo que está hecho."], "nadia": ["¡Buenos días! El plan de hoy está listo, aquí estoy.", "¡Hola! Las tareas de hoy ya están en su lugar.", "¡Que tenga un buen día! ¿Empezamos por la tarea más fácil?"], "guru": ["Un nuevo día es un nuevo paso. Sin prisa, pero camina.", "La mañana es tranquila. Buen momento para empezar.", "Haz hoy una cosa bien."], "genie": ["¡Puf! ✨ ¡Nuevo día, nuevos deseos!", "¡Buenos días! La lámpara está pulida y las tareas esperan 🪔", "Me desperté de muy buen humor. ¿Y tú?"]}, "partial": {"coach": "{d} de {t}. No está mal, pero el día no ha terminado.", "nadia": "{d} de {t} hechas. Queda muy poco.", "guru": "{d} pasos de {t}. El camino sigue.", "genie": "¡{d} de {t}! Un poco más de magia y el día es nuestro ✨"}, "dayDone": {"coach": ["{d} de {t}. Así se trabaja.", "Todo cerrado. Bien hecho.", "{t} de {t}. Mañana, igual."], "nadia": ["Todas las tareas están hechas. ¡Un día excelente!", "{d} de {t}: día completo. Estoy orgullosa de usted.", "Todo hecho. Puede descansar con la conciencia tranquila."], "guru": ["El día no se perdió. {d} pasos dados.", "Todo hecho. Ahora descansa: eso también es parte del camino.", "La montaña baja con cada día así."], "genie": ["✨ ¡{d} de {t}! ¡La lámpara brilla de orgullo!", "¡Todas las marcas en su sitio! Ya eres casi un genio 🧞", "¡Hecho! Concedo tu deseo: un merecido descanso ✨"]}, "week": {"coach": "Una semana sin fallar. +10 puntos. No te relajes.", "nadia": "Felicidades: ¡una semana sin días perdidos! Se agregaron +10 puntos.", "guru": "Siete días sin fallar. Así nace un hábito.", "genie": "¡Una semana sin fallar! Aquí tienes +10 puntos mágicos 🌟"}, "miss1": {"coach": "Ayer nada. Pasa. Hoy, al menos una tarea.", "nadia": "Las tareas de ayer quedaron sin hacer. Hoy basta con una para no perder nada.", "guru": "Ayer ya pasó. Hoy todavía es tuyo.", "genie": "Mi lámpara te extrañó ayer 🥺 ¿Al menos una marca hoy?"}, "miss2": {"coach": "Dos días de silencio. Uno más y empiezas a perder puntos. Una tarea. Ya.", "nadia": "Tengo algo para usted… pero solo si hoy se hace al menos una tarea. No querrá saber qué pasa al tercer día, ¿verdad?", "guru": "Llevas dos días quieto. Un pequeño paso y el camino sigue.", "genie": "Dos días sin magia… ¡Soy un genio, no un sofá! ¿Una marca, por favor? 😉"}, "miss3": {"coach": "{n} días seguidos sin nada. Los puntos se van. Basta: una tarea ahora mismo.", "nadia": "{n} días seguidos sin tareas completadas; se descuentan puntos. Una tarea lo detiene.", "guru": "{n} días quieto y los puntos se desvanecen. Da un paso, cualquiera.", "genie": "{n} días sin marcas: ¡mis puntos se derriten como helado! Sálvalos con una tarea 🙏"}, "noTasks": {"coach": "Hoy no hay tareas. Fija una meta y habrá trabajo.", "nadia": "No hay tareas para hoy. ¿Hacemos un plan juntos?", "guru": "Hoy el camino está despejado. ¿Quizá es hora de elegir una nueva cima?", "genie": "Sin tareas: ¡es hora de pedir un nuevo deseo! ✨"}, "joke": {"genie": ["¿Sabes por qué los genios nunca llegan tarde? ¡Nuestros plazos duran mil años!", "Una vez pasé diez siglos en una lámpara. Vaya racha… de estar sentado.", "Dicen que los deseos no se cumplen solos. Cierto: se cumplen con marcas ✅", "Te ayudaría con la tarea, pero tengo humo en lugar de piernas.", "Tres deseos es cosa del pasado. ¡Una tarea al día es la nueva moda!", "Alguien pidió deseos infinitos. Le di una lista de tareas diaria.", "La magia es solo un hábito de todos los días. Y un poco de humo para el estilo.", "Frotas la lámpara y aparezco. Frotas una tarea y no se hace sola: ya lo probé.", "Mi deporte favorito es calentar para los deseos. ¿Ya calentaste hoy?", "¡Abracadabra! La tarea desapareció… ah no, igual tienes que hacerla 😅", "Un genio sin lámpara es como un planificador sin tareas: triste y sin casa.", "Quería un día libre, pero recordé que aún no marcaste nada ✨"]}, "iHello": {"coach": "A trabajar. Siete preguntas, dos minutos, y tienes un plan.", "nadia": "¡Hola! Le haré siete preguntas cortas y convertiré las respuestas en un plan listo. Toma un par de minutos.", "guru": "Siéntate. Siete preguntas y la niebla alrededor de tu meta se disipará.", "genie": "¡Puf! ✨ ¡Siete preguntas y tu deseo se convierte en un plan!"}, "iGoal": {"coach": "¿Cuál es la meta? Corto, en una línea.", "nadia": "¿Qué meta quiere alcanzar? Elija un ejemplo o escriba la suya.", "guru": "¿Qué quieres lograr de verdad?", "genie": "Entonces, ¿cuál es tu deseo? ¡Dilo sin miedo!"}, "iWhy": {"coach": "¿Para qué lo quieres? Sin un «para qué» lo dejas en la segunda semana.", "nadia": "¿Qué cambiará cuando la alcance? Se lo recordaré en un día difícil.", "guru": "Imagina que la meta está cumplida. ¿Qué ha cambiado?", "genie": "¿Qué pasa cuando el deseo se cumpla? Cuéntame: lo guardaré en mi lámpara 🪔"}, "iNum": {"coach": "Números. ¿Cuánto en total y en qué?", "nadia": "¿Cómo mediremos el resultado? Indique un número y una unidad.", "guru": "¿Cómo sabrás que llegaste? Di un número.", "genie": "¡A la magia le encanta la precisión! ¿Cuánto de qué?"}, "iWhen": {"coach": "Plazo. ¿Para qué fecha?", "nadia": "¿Para cuándo le gustaría lograrlo?", "guru": "¿Cuánto tiempo le das a este camino?", "genie": "¿Cuándo debe cumplirse? Hasta los genios tienen plazos ⏳"}, "iDays": {"coach": "¿Qué días trabajas? Elige con honestidad, sin heroísmos.", "nadia": "¿Qué días de la semana le vienen bien?", "guru": "¿Qué días estás listo para caminar? Menos, pero siempre.", "genie": "¿Qué días hacemos magia? ¡Elígelos!"}, "iObst": {"coach": "¿Qué te va a estorbar? Nombra al enemigo principal.", "nadia": "¿Qué suele interponerse? Planifiquémoslo desde ahora.", "guru": "¿Qué obstáculo encontrarás en el camino?", "genie": "¿Qué mago malvado podría arruinarlo todo? 😈"}, "iPlan": {"coach": "Cuando pase, ¿qué haces? Mi consejo: «{tip}».", "nadia": "Le propongo una regla para ese caso: «{tip}». Manténgala o escriba la suya.", "guru": "Prepara tu respuesta de antemano. Por ejemplo: «{tip}».", "genie": "Tengo un contrahechizo: «{tip}». ¡O inventa el tuyo!"}, "iDone": {"coach": "Listo. La norma es {rate} al día. Empezamos mañana.", "nadia": "¡Su plan está listo! Cada día: {rate}. Seguiré su progreso.", "guru": "El camino está claro: {rate} cada día. Lo demás es hábito.", "genie": "¡Tachán! ✨ Tu deseo está dividido en pasos: {rate} al día. ¡Vamos!"}, "iOk": {"coach": "Entendido.", "nadia": "Anotado.", "guru": "Bien.", "genie": "¡Escrito en el pergamino! 📜"}, "iSly": {"coach": "Buen intento. Volvamos a los números.", "nadia": "Interesante idea. Pero volvamos a la meta.", "guru": "Al río también le gusta serpentear. Pero llega al mar.", "genie": "Je, ¡qué astuto! Pero a mí no me engañas 😏"}, "gGood": {"coach": "«{g}»: {r}% hecho en dos semanas. Sigue así.", "nadia": "«{g}» va según el plan: {r}% hecho. Excelente trabajo.", "guru": "«{g}» crece parejo, como un árbol junto al agua. {r}%: buen camino.", "genie": "«{g}»: ¡{r}%! La lámpara brilla de orgullo ✨"}, "gOk": {"coach": "«{g}»: {r}% hecho. Puedes hacerlo mejor.", "nadia": "«{g}»: {r}% hecho. No está mal, hay margen para crecer.", "guru": "«{g}»: {r}%. El camino sigue, con algunas paradas.", "genie": "«{g}»: {r}%, ¡magia en proceso!"}, "gNew": {"coach": "«{g}»: arrancaste. Los primeros días deciden.", "nadia": "«{g}» acaba de empezar; sigo su progreso.", "guru": "«{g}»: la semilla está plantada. Riégala cada día.", "genie": "«{g}»: ¡un deseo recién hecho! Los primeros pasos son los más mágicos."}, "gMiss": {"coach": "«{g}»: {n} días perdidos seguidos. ¿Vemos qué estorba?", "nadia": "«{g}» lleva {n} días perdidos seguidos. ¿La replanteamos?", "guru": "«{g}» te espera desde hace {n} días. ¿Quizá el sendero es muy empinado?", "genie": "Ay, «{g}» lleva {n} días sola. ¿Ajustamos el hechizo?"}, "gBehind": {"coach": "«{g}»: vas {d} {u} por detrás del plan. Recupera o cambiamos el plan.", "nadia": "«{g}» va {d} {u} por detrás del plan. Podemos ajustar el plazo o la norma.", "guru": "«{g}»: faltan {d} {u} para el plan. No importa: el camino se puede enderezar.", "genie": "«{g}» va {d} {u} atrasada. ¿Afinamos el hechizo?"}, "gLost": {"coach": "«{g}»: {n} días en silencio. O volvemos o la tachamos con honestidad.", "nadia": "No ha vuelto a «{g}» en {n} días. ¿Replanificamos o la eliminamos?", "guru": "«{g}» lleva {n} días en silencio. Soltar también es un camino.", "genie": "¡«{g}» lleva {n} días juntando polvo en la lámpara! ¿La revivimos o la soltamos?"}, "iRe": {"coach": "¿Qué salió mal? Dímelo directo y ajustamos el plan.", "nadia": "Cuénteme qué se lo impide y adaptaré el plan a su vida.", "guru": "¿Qué se interpone en tu camino? Cuéntame y buscaremos un sendero más fácil.", "genie": "¿Qué rompió el hechizo? Cuéntame y lo volvemos a lanzar."}, "iReS": {"coach": "Repasemos el plan. ¿Mantenemos la cifra o la cambiamos?", "nadia": "Repasemos el plan. ¿Mantenemos la meta como está o la cambiamos?", "guru": "Miremos el camino de nuevo. ¿La misma cima?", "genie": "¡Hora de rehacer el hechizo! ¿Mantenemos el deseo como está?"}, "iAsk": {"coach": "Las preguntas, después. Primero responde la mía.", "nadia": "Solo puedo armar un plan para su meta. Volvamos a la pregunta de arriba.", "guru": "Buena pregunta. Pero hoy pregunto yo. Responde la mía.", "genie": "¡Jo, jo, aquí las preguntas las hago yo! 😏 Responde la mía y tu deseo se cumple."}};
+Object.assign(I18N.pt, {"wel.hpT": "🎯 Crie sua primeira meta com um assistente", "wel.hpSub": "Escolha um personagem: 7 perguntas e seu desejo vira um plano para cada dia.", "wel.or": "ou", "tour.btn": "Tour pelo app", "tour.goal": "Criar uma meta", "tour.next": "Próximo", "tour.skip": "Pular", "tour.done": "Pronto", "tour.today": "Estas são as tarefas de hoje. Marque o que fizer: cada tarefa vale um ponto.", "tour.fab": "O botão + adiciona uma tarefa, uma meta ou um evento. Dá para ditar também.", "tour.goals": "Metas. Cada uma se divide sozinha em tarefas diárias; você só marca.", "tour.helper": "E esta sou eu. Ajudo a definir metas, comemoro seu progresso e aviso onde você está travando.", "tour.review": "Aqui eu reviso cada meta: o que está no plano, onde faltam dias e o que precisa de um novo plano.", "tour.rewards": "Os pontos se acumulam: troque por recompensas que você mesmo escolhe.", "tour.history": "O gráfico de disciplina mostra como você mantém o ritmo ao longo de semanas e meses.", "tour.calendar": "O calendário: eventos e tarefas do mês inteiro.", "tour.settings": "Configurações: temas, lembretes e backup dos dados.", "tour.end": "É isso! Vamos começar pela sua primeira meta?", "nav.helper": "Assistente", "title.helper": "Assistente", "sc.helper": "Assistente", "hp.pickT": "Escolha seu assistente", "hp.pickSub": "Ele ajuda a definir uma meta, elogia o que você faz e lembra dos dias perdidos. Dá para trocar nas configurações abaixo.", "hp.newGoal": "Nova meta com o assistente", "hp.settings": "Configurações do assistente", "hp.sChar": "Personagem", "hp.sStyle": "Estilo", "hp.soft": "Suave", "hp.normal": "Normal", "hp.strict": "Rígido", "hp.styleHint.soft": "Só apoia, sem palavras duras.", "hp.styleHint.normal": "Elogia o que foi feito e fica mais rígido a partir do 2º dia perdido.", "hp.styleHint.strict": "Rígido já a partir do primeiro dia perdido.", "hp.sFreq": "Mensagens em outras telas", "hp.f0": "Nenhuma", "hp.f1": "Uma vez por dia", "hp.f3": "Até 3 por dia", "hp.sMorning": "Mensagem da manhã ao abrir", "hp.gT": "Suas metas pelo olhar do assistente", "hp.replan": "Replanejar", "hp.keep": "Manter", "hp.del": "Excluir", "hp.kept": "Certo, não vou lembrar desta meta por uma semana", "hp.st.good": "no plano", "hp.st.ok": "em andamento", "hp.st.new": "início", "hp.st.miss": "dias perdidos", "hp.st.behind": "atrasada", "hp.st.lost": "esquecida", "hp.keepVal": "Manter {v}", "hp.keepDate": "Manter o prazo", "hp.saveRe": "Salvar alterações", "hp.cancel": "Cancelar", "hp.reSaved": "Plano atualizado", "hp.sNow": "Agora", "hp.sLeft": "Faltam", "hp.sAI": "Quem responde na entrevista", "hp.aiOff": "Roteiro", "hp.aiHint": "Quem responde é uma IA, um modelo aberto (Qwen, GLM ou Llama) nos servidores da Cloudflare: suas respostas da entrevista são enviadas para lá para processamento e não são usadas para treinamento. Sem internet, o roteiro de sempre. ⚑ numa resposta: denunciar. Built with Llama.", "hp.aiHintOff": "Roteiro pronto: sem internet e sem IA.", "hp.aiLimit": "O limite de IA de hoje acabou; seguimos com o roteiro", "hp.aiReport": "Denunciar esta resposta", "hp.aiThanks": "Obrigado, a denúncia foi enviada", "hp.goals": ["Juntar dinheiro para uma viagem", "Correr 3 vezes por semana", "Ler todos os dias", "Aprender um idioma"], "hp.goalPh": "Sua própria meta…", "hp.whyPh": "O que vai mudar…", "hp.skip": "Pular", "hp.numPh": "Quanto", "hp.units": ["R$", "$", "€", "km", "vezes", "páginas", "minutos", "horas"], "hp.whens": [["Em um mês", 30], ["Em 3 meses", 91], ["Em meio ano", 182], ["Até o fim do ano", 0]], "hp.ready": "Pronto", "hp.everyDay": "Todos os dias", "hp.obst": [["Cansaço depois do trabalho", "se estiver cansado, faço o mínimo: 10 minutos"], ["Vou esquecer", "um lembrete à noite e a tarefa na notificação"], ["Falta de tempo", "faço de manhã, antes do trabalho"], ["Preguiça", "começo com 2 minutos; o resto vem sozinho"]], "hp.ownPh": "O seu…", "hp.freePh": "Sua resposta…", "hp.whenPh": "Ou com suas palavras: “até o verão”…", "hp.aiFail": "A IA não respondeu; sigo com o roteiro", "hp.keepTip": "Manter o conselho", "hp.rulePh": "Sua própria regra…", "hp.tipDefault": "faço pelo menos o mínimo, mas no mesmo dia", "hp.again": "Recomeçar", "hp.create": "Criar meta", "hp.sGoal": "Meta", "hp.sDays": "Dias", "hp.sNorm": "Meta diária", "rw.d1": "Uma barra de chocolate", "rw.d2": "Um café na cafeteria", "rw.d3": "Uma noite de filme", "rw.d4": "Um livro novo", "rw.balance": "pontos", "rw.todayPlus": "hoje +{n}", "rw.weekOn": "Semana sem dias perdidos: +{n} ⭐ no fim do domingo", "rw.weekLost": "Teve um dia perdido nesta semana: sem bônus", "rw.warnOne": "Ontem foi um dia perdido. Faça pelo menos uma tarefa hoje e você não perde nada.", "rw.warnChain": "Dois dias seguidos sem tarefas feitas. Hoje os pontos valem ×½, e se hoje também passar em branco, começam os descontos.", "rw.warnPen": "Dias perdidos seguidos: {n}; os pontos estão sendo descontados. Faça pelo menos uma tarefa para parar.", "rw.shop": "Minhas recompensas", "rw.take": "Resgatar", "rw.need": "faltam {n} ⭐", "rw.add": "Adicionar recompensa", "rw.log": "Histórico de pontos", "rw.today": "Hoje", "rw.logEmpty": "Vazio por enquanto: conclua uma tarefa e os primeiros pontos aparecem aqui.", "rw.more": "Mostrar tudo", "rw.less": "Recolher", "rw.penDay": "Dia perdido, {n}º seguido", "rw.weekBonus": "🔥 Semana sem dias perdidos", "rw.buyQ": "Serão gastos {p} ⭐ e vão sobrar {b} ⭐. Aproveite: você mereceu.", "rw.enjoy": "{e} Aproveite!", "rw.addT": "Nova recompensa", "rw.editT": "Recompensa", "rw.name": "Nome", "rw.namePh": "Por exemplo, um episódio de série", "rw.price": "Preço em pontos", "rw.save": "Salvar", "rw.del": "Excluir", "rw.nameReq": "Digite um nome", "rw.rulesT": "Como os pontos são ganhos", "rw.rules": "<p><b>+1 ⭐</b> por cada tarefa concluída. Numa lista, por cada item marcado: um treino de 5 exercícios vale 5 pontos.</p><p><b>+{n} ⭐</b> por uma semana (seg–dom) sem nenhum dia perdido.</p><p><b>Dia perdido</b>: um dia com tarefas em que nenhuma foi feita. Dias sem tarefas não contam.</p><p>1 dia perdido: você não perde nada.<br>2 dias seguidos: no dia em que voltar, os pontos valem ×½.<br>A partir do 3º dia seguido: são descontados tantos pontos quanto as tarefas daquele dia dariam, mas não mais do que você ganhou na semana anterior.</p><p>Com pelo menos uma tarefa feita no dia, não há desconto. O saldo nunca fica abaixo de zero.</p><p>As recompensas você mesmo inventa: qualquer coisa que te deixe feliz. Toque numa recompensa para mudar ou excluir.</p>"});
+HL.pt = {"name": {"coach": "Coach Max", "nadia": "Assistente Nadia", "guru": "Guru", "genie": "Gênio"}, "tag": {"coach": "Rígido e direto", "nadia": "Educada e organizada", "guru": "Calmo e profundo", "genie": "Alegre e brincalhão"}, "pick": {"coach": "Sem desculpas. Definimos a meta, calculamos a meta diária e cumprimos. Fez, eu elogio. Faltou, eu pergunto por quê.", "nadia": "Vou lembrar da sua meta, calcular a meta diária e acompanhar o resultado. Você só precisa fazer o trabalho.", "guru": "Uma jornada de mil milhas começa com um passo. Vou ajudar você a ver esse passo todos os dias.", "genie": "Não prometo três desejos. Mas um de verdade a gente realiza junto: um pedacinho por dia!"}, "hello": {"coach": ["Novo dia. As tarefas esperam: ao trabalho.", "De pé. O plano está pronto, agora é cumprir.", "Hoje só conta o que estiver feito."], "nadia": ["Bom dia! O plano de hoje está pronto, estou aqui.", "Olá! As tarefas de hoje já estão no lugar.", "Tenha um bom dia! Vamos começar pela tarefa mais fácil?"], "guru": ["Um novo dia é um novo passo. Sem pressa, mas caminhe.", "A manhã é calma. Bom momento para começar.", "Faça hoje uma coisa bem feita."], "genie": ["Puf! ✨ Novo dia, novos desejos!", "Bom dia! A lâmpada está polida e as tarefas esperam 🪔", "Acordei de ótimo humor. E você?"]}, "partial": {"coach": "{d} de {t}. Nada mal, mas o dia não acabou.", "nadia": "{d} de {t} feitas. Falta pouco.", "guru": "{d} passos de {t}. O caminho continua.", "genie": "{d} de {t}! Mais um pouco de mágica e o dia é nosso ✨"}, "dayDone": {"coach": ["{d} de {t}. É assim que se trabalha.", "Tudo fechado. Muito bem.", "{t} de {t}. Amanhã, igual."], "nadia": ["Todas as tarefas feitas. Que dia ótimo!", "{d} de {t}: dia completo. Estou orgulhosa de você.", "Tudo pronto. Pode descansar tranquilo."], "guru": ["O dia não foi em vão. {d} passos dados.", "Tudo feito. Agora descanse: isso também faz parte do caminho.", "A montanha fica menor a cada dia assim."], "genie": ["✨ {d} de {t}! A lâmpada brilha de orgulho!", "Todas as marcas no lugar! Você já é quase um gênio 🧞", "Feito! Realizo seu desejo: um descanso merecido ✨"]}, "week": {"coach": "Uma semana sem falhar. +10 pontos. Não relaxe.", "nadia": "Parabéns: uma semana sem dias perdidos! +10 pontos adicionados.", "guru": "Sete dias sem falhar. É assim que nasce um hábito.", "genie": "Uma semana sem falhar! Tome +10 pontos mágicos 🌟"}, "miss1": {"coach": "Ontem nada. Acontece. Hoje, pelo menos uma tarefa.", "nadia": "As tarefas de ontem ficaram sem fazer. Hoje basta uma para não perder nada.", "guru": "Ontem já passou. Hoje ainda é seu.", "genie": "Minha lâmpada sentiu sua falta ontem 🥺 Pelo menos uma marca hoje?"}, "miss2": {"coach": "Dois dias de silêncio. Mais um e você começa a perder pontos. Uma tarefa. Agora.", "nadia": "Tenho algo para você… mas só se pelo menos uma tarefa for feita hoje. Você não quer saber o que acontece no terceiro dia, quer?", "guru": "Há dois dias você está parado. Um passo pequeno e o caminho continua.", "genie": "Dois dias sem mágica… Sou um gênio, não um sofá! Uma marca, por favor? 😉"}, "miss3": {"coach": "{n} dias seguidos sem nada. Os pontos estão indo embora. Chega: uma tarefa agora.", "nadia": "{n} dias seguidos sem tarefas concluídas; os pontos estão sendo descontados. Uma tarefa interrompe isso.", "guru": "{n} dias parado e os pontos se apagam. Dê um passo, qualquer um.", "genie": "{n} dias sem marcas: meus pontos derretem como sorvete! Salve com uma tarefa 🙏"}, "noTasks": {"coach": "Sem tarefas hoje. Defina uma meta e vai ter trabalho.", "nadia": "Não há tarefas para hoje. Vamos fazer um plano juntos?", "guru": "Hoje o caminho está livre. Talvez seja hora de escolher um novo pico?", "genie": "Sem tarefas: hora de fazer um novo desejo! ✨"}, "joke": {"genie": ["Sabe por que gênios nunca se atrasam? Nossos prazos duram mil anos!", "Uma vez passei dez séculos numa lâmpada. Que sequência… de ficar sentado.", "Dizem que desejos não se realizam sozinhos. Verdade: eles se realizam com marcas ✅", "Eu ajudaria com a tarefa, mas tenho fumaça no lugar das pernas.", "Três desejos é coisa antiga. Uma tarefa por dia é a nova moda!", "Alguém pediu desejos infinitos. Eu dei uma lista de tarefas diária.", "Mágica é só um hábito de todo dia. E um pouco de fumaça para dar estilo.", "Esfregue a lâmpada e eu apareço. Esfregue uma tarefa e ela não se faz sozinha: já testei.", "Meu esporte favorito é aquecer para os desejos. Você já aqueceu hoje?", "Abracadabra! A tarefa sumiu… ah não, você ainda precisa fazer 😅", "Gênio sem lâmpada é como planner sem tarefas: triste e sem casa.", "Queria um dia de folga, mas lembrei que você ainda não marcou nada ✨"]}, "iHello": {"coach": "Ao trabalho. Sete perguntas, dois minutos, e você tem um plano.", "nadia": "Olá! Vou fazer sete perguntas curtas e transformar as respostas num plano pronto. Leva uns dois minutos.", "guru": "Sente-se. Sete perguntas e a neblina em volta da sua meta vai se dissipar.", "genie": "Puf! ✨ Sete perguntas e seu desejo vira um plano!"}, "iGoal": {"coach": "Qual é a meta? Curto, em uma linha.", "nadia": "Que meta você quer alcançar? Escolha um exemplo ou escreva a sua.", "guru": "O que você quer conquistar de verdade?", "genie": "Então, qual é o seu desejo? Pode falar!"}, "iWhy": {"coach": "Para que você quer isso? Sem um “para quê” você desiste na segunda semana.", "nadia": "O que vai mudar quando você alcançar? Vou lembrar você num dia difícil.", "guru": "Imagine que a meta foi alcançada. O que mudou?", "genie": "O que acontece quando o desejo se realizar? Conte: vou guardar na minha lâmpada 🪔"}, "iNum": {"coach": "Números. Quanto no total e em quê?", "nadia": "Como vamos medir o resultado? Informe um número e uma unidade.", "guru": "Como você vai saber que chegou? Diga um número.", "genie": "A mágica adora precisão! Quanto de quê?"}, "iWhen": {"coach": "Prazo. Até que data?", "nadia": "Até quando você quer conseguir?", "guru": "Quanto tempo você dá a este caminho?", "genie": "Quando deve se realizar? Até gênios têm prazos ⏳"}, "iDays": {"coach": "Em que dias você trabalha nisso? Escolha com honestidade, sem heroísmo.", "nadia": "Quais dias da semana funcionam para você?", "guru": "Em que dias você está pronto para caminhar? Menos, mas sempre.", "genie": "Em que dias fazemos mágica? Escolha!"}, "iObst": {"coach": "O que vai atrapalhar? Diga o inimigo principal.", "nadia": "O que costuma atrapalhar? Vamos planejar isso agora.", "guru": "Que obstáculo você vai encontrar no caminho?", "genie": "Que bruxo malvado poderia estragar tudo? 😈"}, "iPlan": {"coach": "Quando acontecer, o que você faz? Meu conselho: “{tip}”.", "nadia": "Sugiro uma regra para esse caso: “{tip}”. Mantenha ou escreva a sua.", "guru": "Prepare sua resposta com antecedência. Por exemplo: “{tip}”.", "genie": "Tenho um contrafeitiço: “{tip}”. Ou invente o seu!"}, "iDone": {"coach": "Pronto. A meta é {rate} por dia. Começamos amanhã.", "nadia": "Seu plano está pronto! Todo dia: {rate}. Vou acompanhar o progresso.", "guru": "O caminho está claro: {rate} todo dia. O resto é hábito.", "genie": "Tcharam! ✨ Seu desejo foi dividido em passos: {rate} por dia. Vamos!"}, "iOk": {"coach": "Entendido.", "nadia": "Anotado.", "guru": "Bom.", "genie": "Escrito no pergaminho! 📜"}, "iSly": {"coach": "Boa tentativa. De volta aos números.", "nadia": "Ideia interessante. Mas vamos voltar à meta.", "guru": "O rio também gosta de fazer curvas. Mas chega ao mar.", "genie": "Hehe, que esperto! Mas comigo não cola 😏"}, "gGood": {"coach": "“{g}”: {r}% feito em duas semanas. Continue assim.", "nadia": "“{g}” está no plano: {r}% feito. Ótimo trabalho.", "guru": "“{g}” cresce firme, como uma árvore perto da água. {r}%: bom caminho.", "genie": "“{g}”: {r}%! A lâmpada brilha de orgulho ✨"}, "gOk": {"coach": "“{g}”: {r}% feito. Dá para fazer melhor.", "nadia": "“{g}”: {r}% feito. Nada mal, há espaço para crescer.", "guru": "“{g}”: {r}%. O caminho segue, com algumas paradas.", "genie": "“{g}”: {r}%, mágica em andamento!"}, "gNew": {"coach": "“{g}”: você começou. Os primeiros dias decidem.", "nadia": "“{g}” acabou de começar; estou acompanhando.", "guru": "“{g}”: a semente foi plantada. Regue todos os dias.", "genie": "“{g}”: um desejo fresquinho! Os primeiros passos são os mais mágicos."}, "gMiss": {"coach": "“{g}”: {n} dias perdidos seguidos. Vamos ver o que atrapalha?", "nadia": "“{g}” tem {n} dias perdidos seguidos. Vamos repensar?", "guru": "“{g}” espera por você há {n} dias. Talvez a trilha esteja íngreme demais?", "genie": "Ai, “{g}” está sozinha há {n} dias! Ajustamos o feitiço?"}, "gBehind": {"coach": "“{g}”: {d} {u} atrás do plano. Recupere ou mudamos o plano.", "nadia": "“{g}” está {d} {u} atrás do plano. Podemos ajustar o prazo ou a meta diária.", "guru": "“{g}”: faltam {d} {u} para o plano. Tudo bem: o caminho pode ser endireitado.", "genie": "“{g}” está {d} {u} atrasada. Afinamos o feitiço?"}, "gLost": {"coach": "“{g}”: {n} dias em silêncio. Ou voltamos, ou riscamos com honestidade.", "nadia": "Você não volta a “{g}” há {n} dias. Replanejar ou excluir?", "guru": "“{g}” está em silêncio há {n} dias. Deixar ir também é um caminho.", "genie": "“{g}” está juntando poeira na lâmpada há {n} dias! Revivemos ou soltamos?"}, "iRe": {"coach": "O que deu errado? Fale direto e ajustamos o plano.", "nadia": "Conte o que está atrapalhando e eu adapto o plano à sua vida.", "guru": "O que está no seu caminho? Conte e encontraremos uma trilha mais fácil.", "genie": "O que quebrou o feitiço? Conte e a gente refaz!"}, "iReS": {"coach": "Vamos revisar o plano. Mantém o número ou muda?", "nadia": "Vamos revisar o plano. Mantemos a meta como está ou mudamos?", "guru": "Vamos olhar o caminho de novo. O mesmo pico?", "genie": "Hora de refazer o feitiço! Mantemos o desejo como está?"}, "iAsk": {"coach": "Perguntas, depois. Primeiro responda a minha.", "nadia": "Eu só consigo montar um plano para a sua meta. Vamos voltar à pergunta acima.", "guru": "Boa pergunta. Mas hoje quem pergunta sou eu. Responda a minha.", "genie": "Ho-ho, aqui quem pergunta sou eu! 😏 Responda a minha e seu desejo se realiza."}};
+Object.assign(I18N.de, {"wel.hpT": "🎯 Erstelle dein erstes Ziel mit einem Helfer", "wel.hpSub": "Wähle eine Figur: 7 Fragen, und aus deinem Wunsch wird ein Plan für jeden Tag.", "wel.or": "oder", "tour.btn": "App-Tour", "tour.goal": "Ziel erstellen", "tour.next": "Weiter", "tour.skip": "Überspringen", "tour.done": "Fertig", "tour.today": "Das sind deine Aufgaben für heute. Hake Erledigtes ab – jede Aufgabe bringt einen Punkt.", "tour.fab": "Mit Plus fügst du eine Aufgabe, ein Ziel oder einen Termin hinzu. Auch per Sprache.", "tour.goals": "Ziele. Jedes teilt sich selbst in tägliche Aufgaben auf – du hakst sie nur ab.", "tour.helper": "Und das bin ich. Ich helfe dir, Ziele zu setzen, lobe deine Fortschritte und zeige, wo du hängst.", "tour.review": "Hier gehe ich jedes Ziel durch: was im Plan liegt, wo Tage fehlen und was einen neuen Plan braucht.", "tour.rewards": "Punkte sammeln sich – tausche sie gegen Belohnungen, die du selbst festlegst.", "tour.history": "Das Disziplin-Diagramm zeigt, wie du über Wochen und Monate dein Tempo hältst.", "tour.calendar": "Der Kalender: Termine und Aufgaben für den ganzen Monat.", "tour.settings": "Einstellungen: Designs, Erinnerungen und Datensicherung.", "tour.end": "Das war's! Fangen wir mit deinem ersten Ziel an?", "nav.helper": "Helfer", "title.helper": "Helfer", "sc.helper": "Helfer", "hp.pickT": "Wähle deinen Helfer", "hp.pickSub": "Er hilft dir, ein Ziel zu setzen, lobt Erledigtes und erinnert an verpasste Tage. Du kannst ihn unten in den Einstellungen wechseln.", "hp.newGoal": "Neues Ziel mit dem Helfer", "hp.settings": "Helfer-Einstellungen", "hp.sChar": "Figur", "hp.sStyle": "Stil", "hp.soft": "Sanft", "hp.normal": "Normal", "hp.strict": "Streng", "hp.styleHint.soft": "Nur unterstützend, ohne strenge Worte.", "hp.styleHint.normal": "Lobt Erledigtes und wird ab dem 2. verpassten Tag strenger.", "hp.styleHint.strict": "Streng schon nach dem ersten verpassten Tag.", "hp.sFreq": "Nachrichten auf anderen Seiten", "hp.f0": "Keine", "hp.f1": "Einmal am Tag", "hp.f3": "Bis zu 3 am Tag", "hp.sMorning": "Morgengruß beim Öffnen", "hp.gT": "Deine Ziele aus Sicht des Helfers", "hp.replan": "Neu planen", "hp.keep": "Behalten", "hp.del": "Löschen", "hp.kept": "Okay, eine Woche lang erinnere ich nicht an dieses Ziel", "hp.st.good": "im Plan", "hp.st.ok": "läuft", "hp.st.new": "Start", "hp.st.miss": "verpasst", "hp.st.behind": "im Rückstand", "hp.st.lost": "vergessen", "hp.keepVal": "{v} behalten", "hp.keepDate": "Frist behalten", "hp.saveRe": "Änderungen speichern", "hp.cancel": "Abbrechen", "hp.reSaved": "Plan aktualisiert", "hp.sNow": "Jetzt", "hp.sLeft": "Übrig", "hp.sAI": "Wer im Gespräch antwortet", "hp.aiOff": "Skript", "hp.aiHint": "Es antwortet eine KI – ein offenes Modell (Qwen, GLM oder Llama) auf den Servern von Cloudflare: Deine Antworten im Gespräch werden dort verarbeitet und nicht zum Training verwendet. Ohne Internet – das übliche Skript. ⚑ an einer Antwort – melden. Built with Llama.", "hp.aiHintOff": "Fertiges Skript: ohne Internet und ohne KI.", "hp.aiLimit": "Das KI-Limit für heute ist aufgebraucht – weiter mit dem Skript", "hp.aiReport": "Diese Antwort melden", "hp.aiThanks": "Danke, die Meldung wurde gesendet", "hp.goals": ["Für eine Reise sparen", "3-mal pro Woche laufen", "Jeden Tag lesen", "Eine Sprache lernen"], "hp.goalPh": "Eigenes Ziel…", "hp.whyPh": "Was sich ändert…", "hp.skip": "Überspringen", "hp.numPh": "Wie viel", "hp.units": ["€", "$", "CHF", "km", "Mal", "Seiten", "Minuten", "Stunden"], "hp.whens": [["In einem Monat", 30], ["In 3 Monaten", 91], ["In einem halben Jahr", 182], ["Bis Jahresende", 0]], "hp.ready": "Fertig", "hp.everyDay": "Jeden Tag", "hp.obst": [["Müde nach der Arbeit", "wenn ich müde bin, mache ich das Minimum: 10 Minuten"], ["Ich vergesse es", "eine Erinnerung am Abend und die Aufgabe in der Benachrichtigung"], ["Keine Zeit", "ich mache es morgens vor der Arbeit"], ["Faulheit", "ich fange mit 2 Minuten an – der Rest kommt von selbst"]], "hp.ownPh": "Eigenes…", "hp.freePh": "Deine Antwort…", "hp.whenPh": "Oder in deinen Worten: „bis zum Sommer“…", "hp.aiFail": "Die KI hat nicht geantwortet – weiter mit dem Skript", "hp.keepTip": "Tipp übernehmen", "hp.rulePh": "Eigene Regel…", "hp.tipDefault": "ich mache mindestens das Minimum, aber am selben Tag", "hp.again": "Neu beginnen", "hp.create": "Ziel erstellen", "hp.sGoal": "Ziel", "hp.sDays": "Tage", "hp.sNorm": "Tagesziel", "rw.d1": "Eine Tafel Schokolade", "rw.d2": "Kaffee im Café", "rw.d3": "Ein Filmabend", "rw.d4": "Ein neues Buch", "rw.balance": "Punkte", "rw.todayPlus": "heute +{n}", "rw.weekOn": "Woche ohne verpasste Tage – +{n} ⭐ nach Sonntag", "rw.weekLost": "Diese Woche gab es einen verpassten Tag – kein Bonus", "rw.warnOne": "Gestern war ein verpasster Tag. Erledige heute mindestens eine Aufgabe, dann verlierst du nichts.", "rw.warnChain": "Zwei Tage hintereinander ohne erledigte Aufgaben. Heute zählen Punkte ×½, und wenn du auch heute aussetzt, beginnen Abzüge.", "rw.warnPen": "Verpasste Tage in Folge: {n} – Punkte werden abgezogen. Erledige mindestens eine Aufgabe, um das zu stoppen.", "rw.shop": "Meine Belohnungen", "rw.take": "Einlösen", "rw.need": "noch {n} ⭐", "rw.add": "Belohnung hinzufügen", "rw.log": "Punkteverlauf", "rw.today": "Heute", "rw.logEmpty": "Noch leer – erledige eine Aufgabe, dann erscheinen hier die ersten Punkte.", "rw.more": "Alle anzeigen", "rw.less": "Einklappen", "rw.penDay": "Verpasst, {n}. Tag in Folge", "rw.weekBonus": "🔥 Woche ohne verpasste Tage", "rw.buyQ": "Es werden {p} ⭐ abgezogen, {b} ⭐ bleiben übrig. Genieß es – du hast es dir verdient.", "rw.enjoy": "{e} Viel Spaß!", "rw.addT": "Neue Belohnung", "rw.editT": "Belohnung", "rw.name": "Name", "rw.namePh": "Zum Beispiel eine Folge einer Serie", "rw.price": "Preis in Punkten", "rw.save": "Speichern", "rw.del": "Löschen", "rw.nameReq": "Gib einen Namen ein", "rw.rulesT": "So gibt es Punkte", "rw.rules": "<p><b>+1 ⭐</b> für jede erledigte Aufgabe. Bei einer Checkliste für jeden abgehakten Punkt: ein Training mit 5 Übungen bringt 5 Punkte.</p><p><b>+{n} ⭐</b> für eine Woche (Mo–So) ohne einen einzigen verpassten Tag.</p><p><b>Verpasster Tag</b> – ein Tag mit Aufgaben, an dem keine erledigt wurde. Tage ohne Aufgaben zählen nicht.</p><p>1 verpasster Tag – du verlierst nichts.<br>2 Tage in Folge – am Tag deiner Rückkehr zählen Punkte ×½.<br>Ab dem 3. Tag in Folge – es wird so viel abgezogen, wie die Aufgaben dieses Tages gebracht hätten, aber nicht mehr, als du in der Woche davor verdient hast.</p><p>Mindestens eine erledigte Aufgabe am Tag – kein Abzug. Der Kontostand fällt nie unter null.</p><p>Belohnungen denkst du dir selbst aus: alles, was dir Freude macht. Tippe auf eine Belohnung, um sie zu ändern oder zu löschen.</p>"});
+HL.de = {"name": {"coach": "Coach Max", "nadia": "Assistentin Nadia", "guru": "Guru", "genie": "Dschinn"}, "tag": {"coach": "Streng und direkt", "nadia": "Höflich und organisiert", "guru": "Ruhig und tiefgründig", "genie": "Fröhlich und voller Witze"}, "pick": {"coach": "Keine Ausreden. Wir setzen ein Ziel, rechnen das Tagesziel aus und ziehen es durch. Erledigt – ich lobe. Ausgelassen – ich frage nach dem Warum.", "nadia": "Ich merke mir Ihr Ziel, berechne das Tagesziel und behalte das Ergebnis im Blick. Sie müssen nur die Arbeit machen.", "guru": "Eine Reise von tausend Meilen beginnt mit einem Schritt. Ich helfe dir, diesen Schritt jeden Tag zu sehen.", "genie": "Drei Wünsche kann ich nicht versprechen. Aber einen echten erfüllen wir zusammen – jeden Tag ein Stückchen!"}, "hello": {"coach": ["Neuer Tag. Die Aufgaben warten – an die Arbeit.", "Aufstehen. Der Plan steht, jetzt umsetzen.", "Heute zählt nur, was erledigt ist."], "nadia": ["Guten Morgen! Der Plan für heute steht, ich bin da.", "Hallo! Die Aufgaben für heute sind schon bereit.", "Einen schönen Tag! Fangen wir mit der leichtesten Aufgabe an?"], "guru": ["Ein neuer Tag ist ein neuer Schritt. Keine Eile, aber geh.", "Der Morgen ist still. Eine gute Zeit zum Anfangen.", "Mach heute eine Sache gut."], "genie": ["Puff! ✨ Neuer Tag, neue Wünsche!", "Guten Morgen! Die Lampe ist poliert, die Aufgaben warten 🪔", "Ich bin bester Laune aufgewacht. Und du?"]}, "partial": {"coach": "{d} von {t}. Nicht schlecht, aber der Tag ist noch nicht vorbei.", "nadia": "{d} von {t} erledigt. Es fehlt nur noch wenig.", "guru": "{d} Schritte von {t}. Der Weg geht weiter.", "genie": "{d} von {t}! Noch ein bisschen Magie, und der Tag gehört uns ✨"}, "dayDone": {"coach": ["{d} von {t}. So wird gearbeitet.", "Alles erledigt. Gut gemacht.", "{t} von {t}. Morgen genauso."], "nadia": ["Alle Aufgaben sind erledigt. Ein wunderbarer Tag!", "{d} von {t} – Tag geschafft. Ich bin stolz auf Sie.", "Alles erledigt. Sie können mit gutem Gewissen ausruhen."], "guru": ["Der Tag war nicht vergebens. {d} Schritte gemacht.", "Alles erledigt. Jetzt ruh dich aus – auch das gehört zum Weg.", "Der Berg wird mit jedem solchen Tag niedriger."], "genie": ["✨ {d} von {t}! Die Lampe leuchtet vor Stolz!", "Alle Haken gesetzt! Du bist schon fast selbst ein Dschinn 🧞", "Geschafft! Ich erfülle deinen Wunsch: verdiente Ruhe ✨"]}, "week": {"coach": "Eine Woche ohne Aussetzer. +10 Punkte. Nicht nachlassen.", "nadia": "Glückwunsch: eine Woche ohne verpasste Tage! +10 Punkte gutgeschrieben.", "guru": "Sieben Tage ohne Aussetzer. So entsteht eine Gewohnheit.", "genie": "Eine Woche ohne Aussetzer! Hier sind +10 magische Punkte 🌟"}, "miss1": {"coach": "Gestern nichts. Kommt vor. Heute mindestens eine Aufgabe.", "nadia": "Die Aufgaben von gestern sind liegen geblieben. Heute reicht eine, um nichts zu verlieren.", "guru": "Gestern ist vorbei. Heute gehört noch dir.", "genie": "Meine Lampe hat dich gestern vermisst 🥺 Heute wenigstens ein Haken?"}, "miss2": {"coach": "Zwei Tage Funkstille. Noch einer, und du verlierst Punkte. Eine Aufgabe. Jetzt.", "nadia": "Ich habe etwas für Sie … aber nur, wenn heute mindestens eine Aufgabe erledigt wird. Sie wollen doch nicht wissen, was am dritten Tag passiert?", "guru": "Seit zwei Tagen stehst du still. Ein kleiner Schritt, und der Weg geht weiter.", "genie": "Zwei Tage ohne Magie … Ich bin ein Dschinn, kein Sofa! Ein Haken, bitte? 😉"}, "miss3": {"coach": "{n} Tage in Folge nichts. Die Punkte schwinden. Schluss – eine Aufgabe, sofort.", "nadia": "{n} Tage in Folge ohne erledigte Aufgaben, Punkte werden abgezogen. Eine Aufgabe stoppt das.", "guru": "{n} Tage Stillstand, und die Punkte verblassen. Mach einen Schritt – egal welchen.", "genie": "{n} Tage ohne Haken – meine Punkte schmelzen wie Eis! Rette sie mit einer Aufgabe 🙏"}, "noTasks": {"coach": "Heute keine Aufgaben. Setz dir ein Ziel – dann gibt es Arbeit.", "nadia": "Für heute gibt es keine Aufgaben. Machen wir gemeinsam einen Plan?", "guru": "Der Weg ist heute frei. Vielleicht Zeit, einen neuen Gipfel zu wählen?", "genie": "Keine Aufgaben – Zeit für einen neuen Wunsch! ✨"}, "joke": {"genie": ["Weißt du, warum Dschinns nie zu spät kommen? Unsere Fristen dauern tausend Jahre!", "Ich saß mal zehn Jahrhunderte in einer Lampe. Was für eine Serie … im Sitzen.", "Man sagt, Wünsche erfüllen sich nicht von selbst. Stimmt – sie erfüllen sich mit Haken ✅", "Ich würde dir bei der Aufgabe helfen, aber ich habe Rauch statt Beine.", "Drei Wünsche sind von gestern. Eine Aufgabe am Tag ist der neue Trend!", "Jemand wünschte sich unendlich viele Wünsche. Ich gab ihm eine tägliche To-do-Liste.", "Magie ist nur eine Gewohnheit, die man jeden Tag pflegt. Plus etwas Rauch für den Stil.", "Reib an der Lampe, und ich erscheine. Reib an einer Aufgabe, und sie erledigt sich trotzdem nicht – hab's getestet.", "Mein Lieblingssport ist Aufwärmen für Wünsche. Hast du dich heute schon aufgewärmt?", "Simsalabim! Die Aufgabe ist verschwunden … ach nein, du musst sie trotzdem machen 😅", "Ein Dschinn ohne Lampe ist wie ein Planer ohne Aufgaben: traurig und ohne Zuhause.", "Ich wollte einen freien Tag, aber dann fiel mir ein, dass du noch nichts abgehakt hast ✨"]}, "iHello": {"coach": "An die Arbeit. Sieben Fragen, zwei Minuten – und du hast einen Plan.", "nadia": "Hallo! Ich stelle Ihnen sieben kurze Fragen und mache aus den Antworten einen fertigen Plan. Das dauert ein paar Minuten.", "guru": "Setz dich. Sieben Fragen – und der Nebel um dein Ziel lichtet sich.", "genie": "Puff! ✨ Sieben Fragen, und dein Wunsch wird zum Plan!"}, "iGoal": {"coach": "Was ist das Ziel? Kurz, in einer Zeile.", "nadia": "Welches Ziel möchten Sie erreichen? Wählen Sie ein Beispiel oder schreiben Sie Ihr eigenes.", "guru": "Was willst du wirklich erreichen?", "genie": "Also, was ist dein Wunsch? Raus damit!"}, "iWhy": {"coach": "Wozu brauchst du das? Ohne ein „Wozu“ gibst du in Woche zwei auf.", "nadia": "Was ändert sich, wenn Sie es erreichen? Ich erinnere Sie an einem schweren Tag daran.", "guru": "Stell dir vor, das Ziel ist erreicht. Was hat sich verändert?", "genie": "Was passiert, wenn der Wunsch wahr wird? Erzähl – ich bewahre es in meiner Lampe 🪔"}, "iNum": {"coach": "Zahlen. Wie viel insgesamt, und worin?", "nadia": "Wie messen wir das Ergebnis? Geben Sie eine Zahl und eine Einheit an.", "guru": "Woran erkennst du, dass du angekommen bist? Nenne eine Zahl.", "genie": "Magie liebt Genauigkeit! Wie viel wovon?"}, "iWhen": {"coach": "Frist. Bis wann?", "nadia": "Bis wann möchten Sie es schaffen?", "guru": "Wie viel Zeit gibst du diesem Weg?", "genie": "Wann soll es wahr werden? Selbst Dschinns haben Fristen ⏳"}, "iDays": {"coach": "An welchen Tagen arbeitest du daran? Wähle ehrlich, ohne Heldentum.", "nadia": "Welche Wochentage passen Ihnen?", "guru": "An welchen Tagen bist du bereit zu gehen? Weniger, aber immer.", "genie": "An welchen Tagen zaubern wir? Such sie aus!"}, "iObst": {"coach": "Was wird dich aufhalten? Nenne den Hauptfeind.", "nadia": "Was steht Ihnen meistens im Weg? Planen wir das gleich mit ein.", "guru": "Welchem Hindernis wirst du auf dem Weg begegnen?", "genie": "Welcher böse Zauberer könnte alles verderben? 😈"}, "iPlan": {"coach": "Wenn es passiert – was machst du? Mein Rat: „{tip}“.", "nadia": "Ich schlage für diesen Fall eine Regel vor: „{tip}“. Übernehmen Sie sie oder schreiben Sie Ihre eigene.", "guru": "Leg dir die Antwort vorher zurecht. Zum Beispiel: „{tip}“.", "genie": "Ich habe einen Gegenzauber: „{tip}“. Oder erfinde deinen eigenen!"}, "iDone": {"coach": "Fertig. Das Tagesziel ist {rate}. Morgen geht's los.", "nadia": "Ihr Plan ist fertig! Jeden Tag: {rate}. Ich behalte den Fortschritt im Blick.", "guru": "Der Weg ist klar: {rate} jeden Tag. Der Rest ist Gewohnheit.", "genie": "Tadaa! ✨ Dein Wunsch ist in Schritte zerlegt: {rate} am Tag. Los geht's!"}, "iOk": {"coach": "Verstanden.", "nadia": "Notiert.", "guru": "Gut.", "genie": "In die Schriftrolle eingetragen! 📜"}, "iSly": {"coach": "Netter Versuch. Zurück zu den Zahlen.", "nadia": "Interessanter Gedanke. Aber kommen wir zurück zum Ziel.", "guru": "Auch ein Fluss schlängelt sich gern. Aber er fließt zum Meer.", "genie": "Hehe, schlau! Aber mich legst du nicht rein 😏"}, "gGood": {"coach": "„{g}“: {r} % erledigt in zwei Wochen. Weiter so.", "nadia": "„{g}“ liegt im Plan – {r} % erledigt. Sehr gute Arbeit.", "guru": "„{g}“ wächst gleichmäßig wie ein Baum am Wasser. {r} % – ein guter Weg.", "genie": "„{g}“ – {r} %! Die Lampe leuchtet vor Stolz ✨"}, "gOk": {"coach": "„{g}“: {r} % erledigt. Da geht mehr.", "nadia": "„{g}“: {r} % erledigt. Nicht schlecht, da ist noch Luft nach oben.", "guru": "„{g}“: {r} %. Der Weg geht weiter, mit einigen Pausen.", "genie": "„{g}“: {r} % – Magie in Arbeit!"}, "gNew": {"coach": "„{g}“: Der Start ist gemacht. Die ersten Tage entscheiden.", "nadia": "„{g}“ hat gerade begonnen – ich behalte es im Blick.", "guru": "„{g}“: Der Samen ist gesät. Gieß ihn jeden Tag.", "genie": "„{g}“ – ein frischer Wunsch! Die ersten Schritte sind die magischsten."}, "gMiss": {"coach": "„{g}“: {n} verpasste Tage in Folge. Schauen wir, was im Weg steht?", "nadia": "„{g}“ hat {n} verpasste Tage in Folge. Sollen wir es neu planen?", "guru": "„{g}“ wartet seit {n} Tagen auf dich. Vielleicht ist der Pfad zu steil?", "genie": "Oje, „{g}“ ist seit {n} Tagen allein! Sollen wir den Zauber anpassen?"}, "gBehind": {"coach": "„{g}“: {d} {u} hinter dem Plan. Aufholen oder wir ändern den Plan.", "nadia": "„{g}“ liegt {d} {u} hinter dem Plan. Wir können die Frist oder das Tagesziel anpassen.", "guru": "„{g}“: Bis zum Plan fehlen {d} {u}. Kein Problem – der Weg lässt sich begradigen.", "genie": "„{g}“ liegt {d} {u} zurück. Sollen wir den Zauber nachjustieren?"}, "gLost": {"coach": "„{g}“: {n} Tage Funkstille. Entweder wir kommen zurück, oder wir streichen es ehrlich.", "nadia": "Sie sind seit {n} Tagen nicht zu „{g}“ zurückgekehrt. Neu planen oder löschen?", "guru": "„{g}“ schweigt seit {n} Tagen. Loslassen ist auch ein Weg.", "genie": "„{g}“ verstaubt seit {n} Tagen in der Lampe! Wiederbeleben oder loslassen?"}, "iRe": {"coach": "Was lief schief? Sag's direkt – wir passen den Plan an.", "nadia": "Erzählen Sie mir, was Ihnen im Weg steht, und ich passe den Plan an Ihr Leben an.", "guru": "Was steht dir im Weg? Erzähl – wir finden einen leichteren Pfad.", "genie": "Was hat den Zauber gebrochen? Erzähl – wir zaubern neu!"}, "iReS": {"coach": "Gehen wir den Plan durch. Zahl behalten oder ändern?", "nadia": "Gehen wir den Plan durch. Behalten wir das Ziel so oder ändern wir es?", "guru": "Schauen wir uns den Weg noch einmal an. Derselbe Gipfel?", "genie": "Zeit für einen neuen Zauber! Bleibt der Wunsch, wie er ist?"}, "iAsk": {"coach": "Fragen später. Beantworte zuerst meine.", "nadia": "Ich kann nur einen Plan für Ihr Ziel erstellen. Kehren wir zur Frage oben zurück.", "guru": "Eine gute Frage. Aber heute frage ich. Beantworte meine.", "genie": "Ho-ho, hier stelle ich die Fragen! 😏 Beantworte meine, und dein Wunsch geht in Erfüllung."}};
+Object.assign(I18N.fr, {"wel.hpT": "🎯 Crée ton premier objectif avec un assistant", "wel.hpSub": "Choisis un personnage : 7 questions, et ton souhait devient un plan pour chaque jour.", "wel.or": "ou", "tour.btn": "Visite de l’app", "tour.goal": "Créer un objectif", "tour.next": "Suivant", "tour.skip": "Passer", "tour.done": "Terminé", "tour.today": "Voici les tâches du jour. Coche ce qui est fait : chaque tâche rapporte un point.", "tour.fab": "Le bouton + ajoute une tâche, un objectif ou un événement. Tu peux aussi le dicter.", "tour.goals": "Les objectifs. Chacun se découpe tout seul en tâches quotidiennes : tu n’as qu’à cocher.", "tour.helper": "Et ça, c’est moi. Je t’aide à fixer des objectifs, je salue tes progrès et je te montre où tu bloques.", "tour.review": "Ici, je passe en revue chaque objectif : ce qui suit le plan, où il manque des jours, ce qui demande un nouveau plan.", "tour.rewards": "Les points s’accumulent : échange-les contre des récompenses que tu choisis toi-même.", "tour.history": "Le graphique de discipline montre comment tu tiens le rythme sur des semaines et des mois.", "tour.calendar": "Le calendrier : événements et tâches de tout le mois.", "tour.settings": "Réglages : thèmes, rappels et sauvegarde des données.", "tour.end": "C’est tout ! On commence par ton premier objectif ?", "nav.helper": "Assistant", "title.helper": "Assistant", "sc.helper": "Assistant", "hp.pickT": "Choisis ton assistant", "hp.pickSub": "Il t’aide à fixer un objectif, te félicite pour ce qui est fait et te rappelle les jours manqués. Tu peux le changer dans les réglages ci-dessous.", "hp.newGoal": "Nouvel objectif avec l’assistant", "hp.settings": "Réglages de l’assistant", "hp.sChar": "Personnage", "hp.sStyle": "Style", "hp.soft": "Doux", "hp.normal": "Normal", "hp.strict": "Strict", "hp.styleHint.soft": "Seulement encourageant, sans mots durs.", "hp.styleHint.normal": "Félicite ce qui est fait et devient plus strict dès le 2e jour manqué.", "hp.styleHint.strict": "Strict dès le premier jour manqué.", "hp.sFreq": "Messages sur les autres écrans", "hp.f0": "Aucun", "hp.f1": "Une fois par jour", "hp.f3": "Jusqu’à 3 par jour", "hp.sMorning": "Mot du matin à l’ouverture", "hp.gT": "Tes objectifs vus par l’assistant", "hp.replan": "Replanifier", "hp.keep": "Garder", "hp.del": "Supprimer", "hp.kept": "D’accord, pas de rappel pour cet objectif pendant une semaine", "hp.st.good": "dans le plan", "hp.st.ok": "en cours", "hp.st.new": "début", "hp.st.miss": "jours manqués", "hp.st.behind": "en retard", "hp.st.lost": "oublié", "hp.keepVal": "Garder {v}", "hp.keepDate": "Garder l’échéance", "hp.saveRe": "Enregistrer les changements", "hp.cancel": "Annuler", "hp.reSaved": "Plan mis à jour", "hp.sNow": "Maintenant", "hp.sLeft": "Reste", "hp.sAI": "Qui répond dans l’entretien", "hp.aiOff": "Scénario", "hp.aiHint": "C’est une IA qui répond, un modèle ouvert (Qwen, GLM ou Llama) sur les serveurs de Cloudflare : tes réponses à l’entretien y sont envoyées pour être traitées et ne servent pas à l’entraînement. Hors ligne, le scénario habituel. ⚑ sur une réponse : la signaler. Built with Llama.", "hp.aiHintOff": "Scénario prêt à l’emploi : sans internet ni IA.", "hp.aiLimit": "La limite d’IA du jour est atteinte : on continue avec le scénario", "hp.aiReport": "Signaler cette réponse", "hp.aiThanks": "Merci, le signalement a été envoyé", "hp.goals": ["Économiser pour un voyage", "Courir 3 fois par semaine", "Lire chaque jour", "Apprendre une langue"], "hp.goalPh": "Ton propre objectif…", "hp.whyPh": "Ce qui va changer…", "hp.skip": "Passer", "hp.numPh": "Combien", "hp.units": ["€", "$", "CHF", "km", "fois", "pages", "minutes", "heures"], "hp.whens": [["Dans un mois", 30], ["Dans 3 mois", 91], ["Dans six mois", 182], ["D’ici la fin de l’année", 0]], "hp.ready": "Terminé", "hp.everyDay": "Tous les jours", "hp.obst": [["Fatigué après le travail", "si je suis fatigué, je fais le minimum : 10 minutes"], ["Je vais oublier", "un rappel le soir et la tâche dans la notification"], ["Pas le temps", "je le fais le matin, avant le travail"], ["La flemme", "je commence par 2 minutes, la suite vient toute seule"]], "hp.ownPh": "Le tien…", "hp.freePh": "Ta réponse…", "hp.whenPh": "Ou avec tes mots : « d’ici l’été »…", "hp.aiFail": "L’IA n’a pas répondu : je continue avec le scénario", "hp.keepTip": "Garder le conseil", "hp.rulePh": "Ta propre règle…", "hp.tipDefault": "je fais au moins le minimum, mais le jour même", "hp.again": "Recommencer", "hp.create": "Créer l’objectif", "hp.sGoal": "Objectif", "hp.sDays": "Jours", "hp.sNorm": "Quota par jour", "rw.d1": "Une tablette de chocolat", "rw.d2": "Un café en terrasse", "rw.d3": "Une soirée film", "rw.d4": "Un nouveau livre", "rw.balance": "points", "rw.todayPlus": "aujourd’hui +{n}", "rw.weekOn": "Semaine sans jour manqué : +{n} ⭐ après dimanche", "rw.weekLost": "Il y a eu un jour manqué cette semaine : pas de bonus", "rw.warnOne": "Hier, jour manqué. Fais au moins une tâche aujourd’hui et tu ne perds rien.", "rw.warnChain": "Deux jours de suite sans tâche faite. Aujourd’hui les points comptent ×½, et si tu manques aussi aujourd’hui, les retenues commencent.", "rw.warnPen": "Jours manqués d’affilée : {n}, des points sont retirés. Fais au moins une tâche pour arrêter ça.", "rw.shop": "Mes récompenses", "rw.take": "Prendre", "rw.need": "encore {n} ⭐", "rw.add": "Ajouter une récompense", "rw.log": "Historique des points", "rw.today": "Aujourd’hui", "rw.logEmpty": "Vide pour l’instant : termine une tâche et tes premiers points apparaîtront ici.", "rw.more": "Tout afficher", "rw.less": "Réduire", "rw.penDay": "Jour manqué, {n}e d’affilée", "rw.weekBonus": "🔥 Semaine sans jour manqué", "rw.buyQ": "{p} ⭐ seront dépensés, il en restera {b} ⭐. Profite : tu l’as mérité.", "rw.enjoy": "{e} Bonne dégustation !", "rw.addT": "Nouvelle récompense", "rw.editT": "Récompense", "rw.name": "Nom", "rw.namePh": "Par exemple, un épisode de série", "rw.price": "Prix en points", "rw.save": "Enregistrer", "rw.del": "Supprimer", "rw.nameReq": "Saisis un nom", "rw.rulesT": "Comment gagner des points", "rw.rules": "<p><b>+1 ⭐</b> pour chaque tâche terminée. Pour une checklist, pour chaque élément coché : une séance de 5 exercices rapporte 5 points.</p><p><b>+{n} ⭐</b> pour une semaine (lun–dim) sans un seul jour manqué.</p><p><b>Jour manqué</b> : un jour avec des tâches où aucune n’a été faite. Les jours sans tâches ne comptent pas.</p><p>1 jour manqué : tu ne perds rien.<br>2 jours de suite : le jour de ton retour, les points comptent ×½.<br>À partir du 3e jour d’affilée : on retire autant de points que les tâches de ce jour en auraient donné, mais pas plus que ce que tu as gagné la semaine d’avant.</p><p>Au moins une tâche faite dans la journée : aucune retenue. Le solde ne descend jamais sous zéro.</p><p>Les récompenses, c’est toi qui les inventes : tout ce qui te fait plaisir. Touche une récompense pour la modifier ou la supprimer.</p>"});
+HL.fr = {"name": {"coach": "Coach Max", "nadia": "Assistante Nadia", "guru": "Gourou", "genie": "Génie"}, "tag": {"coach": "Strict et direct", "nadia": "Polie et organisée", "guru": "Calme et profond", "genie": "Joyeux et blagueur"}, "pick": {"coach": "Pas d’excuses. On fixe un objectif, on calcule le quota du jour et on le fait. Fait : je félicite. Manqué : je demande pourquoi.", "nadia": "Je retiendrai votre objectif, calculerai le quota du jour et suivrai le résultat. Vous n’avez qu’à faire le travail.", "guru": "Un voyage de mille lieues commence par un pas. Je t’aiderai à voir ce pas chaque jour.", "genie": "Je ne promets pas trois vœux. Mais un vrai, on le réalise ensemble : un petit morceau chaque jour !"}, "hello": {"coach": ["Nouveau jour. Les tâches attendent : au travail.", "Debout. Le plan est prêt, maintenant on le fait.", "Aujourd’hui, seul ce qui est fait compte."], "nadia": ["Bonjour ! Le plan du jour est prêt, je suis là.", "Bonjour ! Les tâches du jour sont déjà en place.", "Belle journée ! On commence par la tâche la plus facile ?"], "guru": ["Un nouveau jour est un nouveau pas. Sans hâte, mais avance.", "Le matin est calme. Un bon moment pour commencer.", "Fais bien une seule chose aujourd’hui."], "genie": ["Pouf ! ✨ Nouveau jour, nouveaux vœux !", "Bonjour ! La lampe est astiquée, les tâches attendent 🪔", "Je me suis réveillé de super humeur. Et toi ?"]}, "partial": {"coach": "{d} sur {t}. Pas mal, mais la journée n’est pas finie.", "nadia": "{d} sur {t} faites. Il reste très peu.", "guru": "{d} pas sur {t}. Le chemin continue.", "genie": "{d} sur {t} ! Encore un peu de magie et la journée est à nous ✨"}, "dayDone": {"coach": ["{d} sur {t}. C’est comme ça qu’on travaille.", "Tout est bouclé. Bien joué.", "{t} sur {t}. Pareil demain."], "nadia": ["Toutes les tâches sont faites. Une journée magnifique !", "{d} sur {t} : journée terminée. Je suis fière de vous.", "Tout est fait. Vous pouvez vous reposer l’esprit tranquille."], "guru": ["La journée n’a pas été vaine. {d} pas accomplis.", "Tout est fait. Repose-toi maintenant : cela aussi fait partie du chemin.", "La montagne baisse à chaque journée comme celle-ci."], "genie": ["✨ {d} sur {t} ! La lampe brille de fierté !", "Toutes les coches en place ! Tu es presque un génie toi-même 🧞", "C’est fait ! J’exauce ton vœu : un repos bien mérité ✨"]}, "week": {"coach": "Une semaine sans raté. +10 points. Ne te relâche pas.", "nadia": "Félicitations : une semaine sans jour manqué ! +10 points ajoutés.", "guru": "Sept jours sans raté. C’est ainsi que naît une habitude.", "genie": "Une semaine sans raté ! Voici +10 points magiques 🌟"}, "miss1": {"coach": "Rien hier. Ça arrive. Aujourd’hui, au moins une tâche.", "nadia": "Les tâches d’hier sont restées en plan. Aujourd’hui, une seule suffit pour ne rien perdre.", "guru": "Hier est passé. Aujourd’hui t’appartient encore.", "genie": "Ma lampe s’est ennuyée de toi hier 🥺 Au moins une coche aujourd’hui ?"}, "miss2": {"coach": "Deux jours de silence. Encore un et tu perds des points. Une tâche. Maintenant.", "nadia": "J’ai quelque chose pour vous… mais seulement si au moins une tâche est faite aujourd’hui. Vous ne voulez pas savoir ce qui arrive le troisième jour, n’est-ce pas ?", "guru": "Depuis deux jours tu restes immobile. Un petit pas, et le chemin reprend.", "genie": "Deux jours sans magie… Je suis un génie, pas un canapé ! Une coche, s’il te plaît ? 😉"}, "miss3": {"coach": "{n} jours d’affilée sans rien. Les points s’envolent. Ça suffit : une tâche tout de suite.", "nadia": "{n} jours d’affilée sans tâche terminée, des points sont retirés. Une tâche arrête ça.", "guru": "{n} jours immobile, et les points s’effacent. Fais un pas, n’importe lequel.", "genie": "{n} jours sans coche : mes points fondent comme une glace ! Sauve-les avec une tâche 🙏"}, "noTasks": {"coach": "Pas de tâches aujourd’hui. Fixe un objectif, et il y aura du travail.", "nadia": "Aucune tâche pour aujourd’hui. On fait un plan ensemble ?", "guru": "Le chemin est libre aujourd’hui. Peut-être le moment de choisir un nouveau sommet ?", "genie": "Pas de tâches : c’est le moment de faire un nouveau vœu ! ✨"}, "joke": {"genie": ["Tu sais pourquoi les génies ne sont jamais en retard ? Nos délais durent mille ans !", "Un jour, je suis resté dix siècles dans une lampe. Belle série… assis.", "On dit que les vœux ne se réalisent pas tout seuls. C’est vrai : ils se réalisent avec des coches ✅", "Je t’aiderais bien pour ta tâche, mais j’ai de la fumée à la place des jambes.", "Trois vœux, c’est dépassé. Une tâche par jour, c’est la nouvelle tendance !", "Quelqu’un a souhaité des vœux infinis. Je lui ai donné une liste de tâches quotidienne.", "La magie, c’est juste une habitude de tous les jours. Plus un peu de fumée pour le style.", "Frotte la lampe et j’apparais. Frotte une tâche, elle ne se fera quand même pas toute seule : j’ai essayé.", "Mon sport préféré, c’est l’échauffement pour les vœux. Tu t’es échauffé aujourd’hui ?", "Abracadabra ! La tâche a disparu… ah non, il faut quand même la faire 😅", "Un génie sans lampe, c’est comme un agenda sans tâches : triste et sans maison.", "Je voulais un jour de congé, puis je me suis rappelé que tu n’as encore rien coché ✨"]}, "iHello": {"coach": "Au travail. Sept questions, deux minutes, et tu as un plan.", "nadia": "Bonjour ! Je vais vous poser sept courtes questions et transformer vos réponses en plan prêt à l’emploi. Cela prend deux minutes.", "guru": "Assieds-toi. Sept questions, et le brouillard autour de ton objectif se dissipera.", "genie": "Pouf ! ✨ Sept questions et ton vœu devient un plan !"}, "iGoal": {"coach": "Quel est l’objectif ? Court, en une ligne.", "nadia": "Quel objectif souhaitez-vous atteindre ? Choisissez un exemple ou écrivez le vôtre.", "guru": "Que veux-tu vraiment accomplir ?", "genie": "Alors, quel est ton vœu ? Vas-y, dis-le !"}, "iWhy": {"coach": "Pourquoi tu en as besoin ? Sans un « pourquoi », tu abandonnes la deuxième semaine.", "nadia": "Qu’est-ce qui changera quand vous l’atteindrez ? Je vous le rappellerai un jour difficile.", "guru": "Imagine que l’objectif est atteint. Qu’est-ce qui a changé ?", "genie": "Que se passe-t-il quand le vœu se réalise ? Raconte : je le garderai dans ma lampe 🪔"}, "iNum": {"coach": "Des chiffres. Combien au total, et en quoi ?", "nadia": "Comment mesurerons-nous le résultat ? Indiquez un nombre et une unité.", "guru": "Comment sauras-tu que tu es arrivé ? Donne un nombre.", "genie": "La magie adore la précision ! Combien de quoi ?"}, "iWhen": {"coach": "Échéance. Pour quelle date ?", "nadia": "Pour quand aimeriez-vous y arriver ?", "guru": "Combien de temps donnes-tu à ce chemin ?", "genie": "Quand doit-il se réaliser ? Même les génies ont des délais ⏳"}, "iDays": {"coach": "Quels jours tu t’y mets ? Choisis honnêtement, sans héroïsme.", "nadia": "Quels jours de la semaine vous conviennent ?", "guru": "Quels jours es-tu prêt à marcher ? Moins, mais toujours.", "genie": "Quels jours fait-on de la magie ? Choisis-les !"}, "iObst": {"coach": "Qu’est-ce qui va te freiner ? Nomme l’ennemi principal.", "nadia": "Qu’est-ce qui vous gêne d’habitude ? Prévoyons-le dès maintenant.", "guru": "Quel obstacle rencontreras-tu sur le chemin ?", "genie": "Quel méchant sorcier pourrait tout gâcher ? 😈"}, "iPlan": {"coach": "Quand ça arrive, tu fais quoi ? Mon conseil : « {tip} ».", "nadia": "Je propose une règle pour ce cas : « {tip} ». Gardez-la ou écrivez la vôtre.", "guru": "Prépare ta réponse à l’avance. Par exemple : « {tip} ».", "genie": "J’ai un contre-sort : « {tip} ». Ou invente le tien !"}, "iDone": {"coach": "C’est prêt. Le quota est de {rate} par jour. On commence demain.", "nadia": "Votre plan est prêt ! Chaque jour : {rate}. Je suivrai vos progrès.", "guru": "Le chemin est clair : {rate} chaque jour. Le reste est une habitude.", "genie": "Tadam ! ✨ Ton vœu est découpé en étapes : {rate} par jour. C’est parti !"}, "iOk": {"coach": "Compris.", "nadia": "C’est noté.", "guru": "Bien.", "genie": "Inscrit sur le parchemin ! 📜"}, "iSly": {"coach": "Bien essayé. Retour aux chiffres.", "nadia": "Idée intéressante. Mais revenons à l’objectif.", "guru": "La rivière aime serpenter, elle aussi. Mais elle va à la mer.", "genie": "Hé hé, malin ! Mais on ne me la fait pas 😏"}, "gGood": {"coach": "« {g} » : {r} % fait en deux semaines. Continue comme ça.", "nadia": "« {g} » suit le plan : {r} % fait. Excellent travail.", "guru": "« {g} » pousse régulièrement, comme un arbre au bord de l’eau. {r} % : un bon chemin.", "genie": "« {g} » : {r} % ! La lampe brille de fierté ✨"}, "gOk": {"coach": "« {g} » : {r} % fait. Tu peux faire mieux.", "nadia": "« {g} » : {r} % fait. Pas mal, il y a de la marge.", "guru": "« {g} » : {r} %. Le chemin continue, avec quelques haltes.", "genie": "« {g} » : {r} %, magie en cours !"}, "gNew": {"coach": "« {g} » : c’est parti. Les premiers jours décident.", "nadia": "« {g} » vient de commencer, je suis ses progrès.", "guru": "« {g} » : la graine est plantée. Arrose-la chaque jour.", "genie": "« {g} » : un vœu tout frais ! Les premiers pas sont les plus magiques."}, "gMiss": {"coach": "« {g} » : {n} jours manqués d’affilée. On regarde ce qui bloque ?", "nadia": "« {g} » compte {n} jours manqués d’affilée. On le retravaille ?", "guru": "« {g} » t’attend depuis {n} jours. Le sentier est peut-être trop raide ?", "genie": "Oh là là, « {g} » est seul depuis {n} jours ! On ajuste le sort ?"}, "gBehind": {"coach": "« {g} » : {d} {u} de retard sur le plan. Rattrape ou on change le plan.", "nadia": "« {g} » a {d} {u} de retard sur le plan. On peut ajuster l’échéance ou le quota.", "guru": "« {g} » : il manque {d} {u} pour suivre le plan. Peu importe, le chemin peut se redresser.", "genie": "« {g} » a {d} {u} de retard. On règle le sort ?"}, "gLost": {"coach": "« {g} » : {n} jours de silence. Soit on revient, soit on raye honnêtement.", "nadia": "Vous n’êtes pas revenu à « {g} » depuis {n} jours. Replanifier ou supprimer ?", "guru": "« {g} » se tait depuis {n} jours. Lâcher prise, c’est aussi un chemin.", "genie": "« {g} » prend la poussière dans la lampe depuis {n} jours ! On le ranime ou on le libère ?"}, "iRe": {"coach": "Qu’est-ce qui a coincé ? Dis-le franchement, on ajuste le plan.", "nadia": "Dites-moi ce qui vous gêne, et j’adapterai le plan à votre vie.", "guru": "Qu’est-ce qui se dresse sur ton chemin ? Raconte, on trouvera un sentier plus facile.", "genie": "Qu’est-ce qui a brisé le sort ? Raconte, on le relance !"}, "iReS": {"coach": "Reprenons le plan. On garde le chiffre ou on le change ?", "nadia": "Reprenons le plan. On garde l’objectif tel quel ou on le change ?", "guru": "Regardons à nouveau le chemin. Même sommet ?", "genie": "C’est l’heure de refaire le sort ! On garde le vœu tel quel ?"}, "iAsk": {"coach": "Les questions, plus tard. Réponds d’abord à la mienne.", "nadia": "Je ne peux établir qu’un plan pour votre objectif. Revenons à la question ci-dessus.", "guru": "Bonne question. Mais aujourd’hui, c’est moi qui demande. Réponds à la mienne.", "genie": "Ho ho, ici c’est moi qui pose les questions ! 😏 Réponds à la mienne et ton vœu se réalise."}};
+
 function render(){
   fitHeadDate();
   renderToday();
   renderGoals();
   renderUndone();
+  renderHelper();
   renderHistory();
   renderCalendar();
   updateBadge();
+  updateRewardsBadge();
   updateAppBadge();  updateNotificationTasks(); // Этап 2Б: кормим нативное уведомление
   updateDemoBar();   // 1.7.5: плашка «Это пример»
+  try{ hpCheck(); }catch(e){}   // 1.7.8: реплика помощника
 }
 
 function taskCardHTML(t){
@@ -6417,12 +7898,81 @@ function openWelcome(){
   if(state.demo || stateHasData(state)) return;   // данные уже появились (импорт, перенос)
   _welcomeOpen=true;
   showModal(`
-    <h2>${tr('wel.title')}</h2>
-    <div class="hint" style="margin-top:0">${tr('wel.text')}</div>
+    <div class="wel-hp">
+      <div class="wel-hp-t">${t('wel.hpT')}</div>
+      <div class="wel-hp-s">${t('wel.hpSub')}</div>
+      <div class="wel-hp-team">${HP_LIST.map(id=>`<button onclick="welHelper('${id}')" style="--cc:${HP[id].color}">
+        <img src="${hpImg(id,'hello')}" alt=""><b>${esc(hpName(id))}</b></button>`).join('')}</div>
+    </div>
+    <div class="wel-or">${t('wel.or')}</div>
     <div class="wel-btns">
-      <button class="primary" onclick="startDemo()">${tr('wel.demo')}</button>
+      <button class="ghost" onclick="startDemo()">${tr('wel.demo')}</button>
       <button class="ghost" onclick="_welcomeOpen=false;openTemplates()">${tr('wel.scratch')}</button>
     </div>`);
+}
+/* ===== 1.7.8: экскурсия по приложению =====
+   Помощник ведёт по экранам: затемнение с «окном» над нужным элементом и облачко
+   с подсказкой. Шаги, чьего элемента нет на экране, пропускаются. Без ИИ и сети.
+   Запуск: после «Посмотреть на примере» и кнопкой в настройках помощника. */
+const TOUR = [
+  {scr:'today',    sel:'#s-today .task',  key:'tour.today'},
+  {scr:'today',    sel:'#fab',            key:'tour.fab'},
+  {scr:'goals',    sel:'#s-goals .goal',  key:'tour.goals'},
+  {scr:'helper',   sel:'.hp-hero,.hp-intro', key:'tour.helper'},
+  {scr:'helper',   sel:'.hp-gl .hp-gc',   key:'tour.review'},
+  {scr:'helper',   sel:'#hpRewards > :first-child', key:'tour.rewards'},
+  {scr:'history',  sel:'.dc-wrap',        key:'tour.history'},
+  {scr:'calendar', sel:'.cal-grid',       key:'tour.calendar'},
+  {scr:null,       sel:'.head .gear',     key:'tour.settings'},
+  {scr:null,       sel:null,              key:'tour.end'}
+];
+let tourI=-1;
+function tourStart(){ closeModal(); hpPopClose(); hqClose(); tourI=-1; tourNext(); }
+function tourNext(){
+  for(tourI++; tourI<TOUR.length; tourI++){
+    const st=TOUR[tourI];
+    if(st.scr && curScreen!==st.scr) switchScreen(st.scr);
+    if(!st.sel || document.querySelector(st.sel)) break;
+  }
+  if(tourI>=TOUR.length){ tourEnd(); return; }
+  tourShow();
+}
+function tourEnd(){ const ov=document.getElementById('tourOv'); if(ov) ov.remove(); tourI=-1; }
+function tourShow(){
+  const st=TOUR[tourI], p=(state.coach && HP[state.coach]) ? state.coach : 'nadia';
+  let ov=document.getElementById('tourOv');
+  if(!ov){ ov=document.createElement('div'); ov.id='tourOv'; ov.className='tour-ov'; document.body.appendChild(ov); }
+  const el = st.sel ? document.querySelector(st.sel) : null;
+  if(el) el.scrollIntoView({block:'center'});
+  const last = st.key==='tour.end';
+  const total = TOUR.filter(x=>x.key!=='tour.end').length;
+  const btns = last
+    ? `<button class="tour-skip" onclick="tourEnd()">${t('tour.done')}</button>${state.demo ? '' : `<button class="tour-next" onclick="tourEnd();switchScreen('helper');if(state.coach)hpStart()">🎯 ${t('tour.goal')}</button>`}`
+    : `<button class="tour-skip" onclick="tourEnd()">${t('tour.skip')}</button><span class="tour-n">${Math.min(tourI+1,total)}/${total}</span><button class="tour-next" onclick="tourNext()">${t('tour.next')} →</button>`;
+  ov.style.setProperty('--cc', HP[p].color);
+  ov.classList.toggle('dim', !el);
+  ov.innerHTML = `<div class="tour-hole${el?'':' none'}"></div>
+    <div class="tour-card">${hpFigHTML(p, last ? 'happy' : (tourI%2 ? 'think' : 'hello'), 'tour-img')}
+      <div class="tour-txt"><b>${esc(hpName(p))}</b><div>${esc(t(st.key))}</div><div class="tour-btns">${btns}</div></div></div>`;
+  requestAnimationFrame(()=>{
+    const hole=ov.querySelector('.tour-hole'), card=ov.querySelector('.tour-card');
+    const vh=window.innerHeight;
+    if(el){
+      const r=el.getBoundingClientRect(), pad=6;
+      const top=Math.max(4, r.top-pad), bottom=Math.min(vh-4, r.bottom+pad, top+vh*0.5);  // высокий блок — только его верх
+      Object.assign(hole.style,{left:Math.max(4,r.left-pad)+'px', top:top+'px',
+        width:(Math.min(window.innerWidth-4, r.right+pad)-Math.max(4,r.left-pad))+'px', height:(bottom-top)+'px'});
+      // облачко — с той стороны, где больше места
+      if((r.top+r.bottom)/2 > vh/2){ card.style.top='calc(10px + env(safe-area-inset-top))'; card.style.bottom='auto'; }
+      else { card.style.bottom='calc(14px + env(safe-area-inset-bottom))'; card.style.top='auto'; }
+    }
+  });
+}
+/* 1.7.8: тап по персонажу в приветствии — выбрать его и сразу начать опрос по цели */
+function welHelper(id){
+  _welcomeOpen=false; closeModal();
+  state.coach=id; hpInit(); save();
+  switchScreen('helper'); hpStart();
 }
 function shiftDemoDates(obj, delta){
   const walk=o=>{
@@ -6459,6 +8009,7 @@ async function startDemo(){
   closeModal();
   applyTheme(curScreen);
   render();
+  setTimeout(tourStart, 500);    // 1.7.8: пример сразу с экскурсией
 }
 function updateDemoBar(){
   const bar=document.getElementById('demoBar');
@@ -6553,6 +8104,45 @@ function openGoalTemplate(k){
    (мост openStore появился в 1.7.4) — вместо кнопки текстовая подсказка.
    Браузер/PWA (нет AndroidBridge) — плашки нет. */
 const APP_RELEASES = [
+  // live:false до одобрения в Play; после выхода в прод — live:true (иначе старым версиям покажется «доступно обновление» раньше времени)
+  { code:17, name:'1.7.8', live:false, notes:{
+    ru:['Вкладка «Помощник»: четыре персонажа — Тренер Макс, Надежда, Гуру и Джин — с эмоциями и анимацией. «Незавершённые» переехали в «Историю»',
+        'Новая цель в разговоре с помощником: 7 вопросов — и готовый план с нормой на каждый день. По желанию отвечает AI — открытая модель на серверах Cloudflare',
+        'Помощник разбирает каждую цель: что идёт по плану, где пропуски, что забыто — перепланировать или удалить в одно касание',
+        'Баллы и награды: +1 за задачу, +10 за неделю без пропусков. Меняйте баллы на награды, которые придумали сами',
+        'Экскурсия по приложению',
+        'Микрофон в разговоре с помощником; клавиатура больше не закрывает поле ввода'],
+    en:['Helper tab: four characters — Coach Max, Nadia, Guru and Genie — with emotions and animation. “Unfinished” moved to History',
+        'Create a goal in a conversation with the helper: 7 questions and you get a plan with a daily norm. Optionally, AI answers — an open model running on Cloudflare',
+        'The helper reviews each goal: what’s on track, where you miss days, what’s forgotten — replan or delete in one tap',
+        'Points and rewards: +1 per task, +10 for a week without misses. Trade points for rewards you set yourself',
+        'App tour',
+        'Microphone in the helper conversation; the keyboard no longer covers the input field'],
+    es:['Pestaña «Asistente»: cuatro personajes —Coach Max, Nadia, Gurú y Genio— con emociones y animación. «Pendientes» pasó al Historial',
+        'Crea una meta conversando con el asistente: 7 preguntas y tienes un plan con una norma diaria. Opcionalmente responde una IA: un modelo abierto en los servidores de Cloudflare',
+        'El asistente revisa cada meta: qué va según el plan, dónde faltas días, qué está olvidado; replanifica o elimina con un toque',
+        'Puntos y recompensas: +1 por tarea, +10 por una semana sin días perdidos. Cámbialos por recompensas que tú eliges',
+        'Recorrido por la app',
+        'Micrófono en la conversación con el asistente; el teclado ya no tapa el campo de texto'],
+    pt:['Aba «Assistente»: quatro personagens — Coach Max, Nadia, Guru e Gênio — com emoções e animação. «Pendentes» foi para o Histórico',
+        'Crie uma meta conversando com o assistente: 7 perguntas e você recebe um plano com meta diária. Se quiser, quem responde é uma IA — um modelo aberto nos servidores da Cloudflare',
+        'O assistente revisa cada meta: o que está no plano, onde faltam dias, o que foi esquecido; replaneje ou exclua com um toque',
+        'Pontos e recompensas: +1 por tarefa, +10 por semana sem dias perdidos. Troque por recompensas que você mesmo define',
+        'Tour pelo app',
+        'Microfone na conversa com o assistente; o teclado não cobre mais o campo de texto'],
+    de:['Tab „Helfer“: vier Figuren – Coach Max, Nadia, Guru und Dschinn – mit Emotionen und Animation. „Offen“ ist in den Verlauf umgezogen',
+        'Neues Ziel im Gespräch mit dem Helfer: 7 Fragen, und du hast einen Plan mit Tagesziel. Auf Wunsch antwortet eine KI – ein offenes Modell auf Servern von Cloudflare',
+        'Der Helfer geht jedes Ziel durch: was im Plan liegt, wo Tage fehlen, was vergessen ist – mit einem Tipp neu planen oder löschen',
+        'Punkte und Belohnungen: +1 pro Aufgabe, +10 für eine Woche ohne verpasste Tage. Tausche Punkte gegen selbst gewählte Belohnungen',
+        'App-Tour',
+        'Mikrofon im Gespräch mit dem Helfer; die Tastatur verdeckt das Eingabefeld nicht mehr'],
+    fr:['Onglet « Assistant » : quatre personnages — Coach Max, Nadia, Gourou et Génie — avec émotions et animation. « En attente » est passé dans l’Historique',
+        'Crée un objectif en discutant avec l’assistant : 7 questions et tu obtiens un plan avec un quota par jour. En option, une IA répond — un modèle ouvert sur les serveurs de Cloudflare',
+        'L’assistant passe en revue chaque objectif : ce qui suit le plan, les jours manqués, ce qui est oublié — replanifie ou supprime d’un geste',
+        'Points et récompenses : +1 par tâche, +10 pour une semaine sans jour manqué. Échange-les contre des récompenses que tu choisis',
+        'Visite de l’app',
+        'Micro dans la conversation avec l’assistant ; le clavier ne cache plus le champ de saisie']
+  }},
   { code:16, name:'1.7.7', live:true, notes:{
     ru:['Виджет «Сегодня» на главный экран: задачи дня и ☐, чтобы отмечать их прямо с рабочего стола','Отмечайте задачи в шторке кнопкой ☐ — чек-лист закрывается одним касанием','Серии недель 🔥: неделя засчитывается при 80% плана, один пропуск серию не обнуляет','Поделиться графиком дисциплины за 30 дней — картинкой в Telegram или соцсети','Французский язык','Новый значок в строке уведомлений'],
     en:['“Today” home screen widget: tasks for the day and a ☐ to check them off right from the home screen','Check off tasks in the notification with the ☐ button — checklists close in one tap','Weekly streaks 🔥: a week counts at 80% of the plan, one missed day doesn’t break it','Share your 30-day discipline chart as a picture','French language','New notification icon'],
@@ -7625,7 +9215,7 @@ function renderHistory(){
       <span class="hc">${esc(catLabel(cat))}</span>
     </div>`;
   });
-  el.innerHTML = html;
+  el.innerHTML = undoneSectionHTML() + html;   // 1.7.8: «Незавершённые» теперь здесь
   renderDiscChart();
 }
 
@@ -7692,6 +9282,7 @@ function updateBadge(){
     !t.done && (t.date<today || t.skipped)
   ).length;
   const b = document.getElementById('undoneBadge');
+  if(!b) return;   // 1.7.8: кнопки «Незавершённые» на панели больше нет
   if(n>0){ b.style.display='flex'; b.textContent=n; } else { b.style.display='none'; }
 }
 
@@ -7885,7 +9476,7 @@ function switchScreen(name){
      «назад» Android, перехватывать его нельзя;
    - мультитач (пинч-зум) пропускаем.
 */
-const SWIPE_SCREENS = ['today','goals','undone','history','calendar'];
+const SWIPE_SCREENS = ['today','goals','helper','history','calendar'];
 const SW_MIN_DIST   = 55;   // px — короче считаем случайным движением
 const SW_RATIO      = 1.8;  // во сколько раз горизонталь должна обгонять вертикаль
 const SW_EDGE       = 22;   // px от края — зона системного жеста
@@ -8823,7 +10414,7 @@ function backToGoal(){
 const SCREEN_LIST=[
   {id:'today',   get name(){return t('nav.today');},    emoji:'✅'},
   {id:'goals',   get name(){return t('nav.goals');},    emoji:'🎯'},
-  {id:'undone',  get name(){return t('sc.undone');},    emoji:'⏰'},
+  {id:'helper',  get name(){return t('sc.helper');},    emoji:'🤝'},
   {id:'history', get name(){return t('nav.history');},  emoji:'📚'},
   {id:'calendar',get name(){return t('nav.calendar');}, emoji:'📅'},
 ];
@@ -8989,7 +10580,7 @@ let toastTimer=null;
    Поля выбраны по селектору, а не правкой каждого шаблона: разметку
    модалок строят десятки функций, обёртку ставит MutationObserver.
    g-unit и newcat исключены намеренно — там 2-3 символа. */
-const VOICE_SEL = '#g-name,#g-vision,#tk-title,#vis-text,#tn-title,#tne-name,#tne-vision,'
+const VOICE_SEL = '#g-name,#g-vision,#tk-title,#vis-text,#tn-title,#tne-name,#tne-vision,#hqIn,'
   + '#tr-title,#ev-title,#ev-note,input[oninput^="splitEdit("],input[oninput^="wpEdit("]';
 const VOICE_LANG_TAG = {ru:'ru-RU', en:'en-US', es:'es-419', pt:'pt-BR', de:'de-DE', fr:'fr-FR'};
 const VOICE_MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
@@ -9070,6 +10661,17 @@ function voiceClean(s){
   s = String(s||'').replace(/\s+/g,' ').trim();
   return s.replace(/\b\d(?: \d){2,}\b/g, m=>m.replace(/ /g,''));
 }
+
+/* 1.7.8: APK ужимает WebView над клавиатурой и сообщает об этом сюда */
+window.onNativeKeyboard = function(open){
+  document.documentElement.classList.toggle('kb', !!open);
+  if(!open){ window.scrollTo(0,0); return; }
+  setTimeout(()=>{
+    const ch=document.getElementById('hqChat'); if(ch) ch.scrollTop=ch.scrollHeight;
+    const a=document.activeElement;
+    if(a && a.scrollIntoView && /^(INPUT|TEXTAREA)$/.test(a.tagName)) a.scrollIntoView({block:'nearest'});
+  }, 80);
+};
 
 window.onNativeVoiceResult = function(status, b64){
   const p = voicePending; voicePending = null;
