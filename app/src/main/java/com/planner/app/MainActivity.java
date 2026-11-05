@@ -44,6 +44,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.speech.RecognizerIntent;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -93,8 +95,9 @@ public class MainActivity extends Activity {
 
     private WebView webView;
 
+    // Путь берётся из сборки: /planner/ у боевой версии, /planner-test/ у тестовой.
     private static final String PAGES_URL =
-        "https://yuriilosiev-png.github.io/planner/index.html";
+        "https://yuriilosiev-png.github.io" + BuildConfig.PAGES_PATH + "index.html";
     private static final String ASSET_URL = "file:///android_asset/index.html";
 
     private volatile boolean loadedOfflineFallback = false;
@@ -154,6 +157,24 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.setBackgroundColor(Color.parseColor("#0f1115"));
         setContentView(webView);
+
+        // ---- КЛАВИАТУРА (1.7.8) ----
+        // При edge-to-edge (LAYOUT_FULLSCREEN, а на Android 15+ всегда) adjustResize
+        // не ужимает окно: клавиатура ложится поверх WebView и закрывает поля внизу
+        // экрана (опрос помощника). Ужимаем сами: нижний отступ контейнера = высота
+        // клавиатуры. Вставки отдаём дальше без изменений — safe-area у страницы
+        // остаётся прежней. Странице сообщаем через onNativeKeyboard(открыта, px).
+        final View content = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
+            boolean open = insets.isVisible(WindowInsetsCompat.Type.ime());
+            int kb = open ? insets.getInsets(WindowInsetsCompat.Type.ime()).bottom : 0;
+            if (v.getPaddingBottom() != kb) {
+                v.setPadding(0, 0, 0, kb);
+                float d = getResources().getDisplayMetrics().density;
+                callJs("window.onNativeKeyboard&&onNativeKeyboard(" + open + "," + Math.round(kb / d) + ")");
+            }
+            return insets;
+        });
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -331,7 +352,9 @@ public class MainActivity extends Activity {
     private boolean isPagesIndex(Uri u) {
         if (u == null || !PAGES_HOST.equalsIgnoreCase(u.getHost())) return false;
         String path = u.getPath();
-        return "/planner/index.html".equals(path) || "/planner/".equals(path) || "/planner".equals(path);
+        String p = BuildConfig.PAGES_PATH;                     // "/planner/" или "/planner-test/"
+        return (p + "index.html").equals(path) || p.equals(path)
+            || p.substring(0, p.length() - 1).equals(path);
     }
 
     /** Сеть → свежий index.html с Pages; не вышло → офлайн-копия из assets.
