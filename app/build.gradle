@@ -24,26 +24,51 @@
 //     цветах текста — читается на любой шторке (MIUI не рисовал свой синий фон)
 //   - versionCode=16, versionName="1.7.7": виджет «Сегодня» на главном экране и
 //     кнопка «выполнено» в строках шторки (DoneReceiver, TodayWidget, TodayWidgetService).
+//   - versionCode=17, versionName="1.7.8": вкладка «Помощник» (персонажи, AI-опрос через
+//     Cloudflare Worker, разбор целей, экскурсия), баллы и награды; клавиатура больше
+//     не закрывает поле ввода (MainActivity: отступ по высоте IME); вариант prod/test.
 // 1.8 зарезервирован под миграцию на OnBackInvokedCallback (см. комментарий
 // enableOnBackInvokedCallback в AndroidManifest.xml) — поэтому здесь 1.7.x.
 // Тулчейн (compileSdk 36, minSdk 24, target 36, AGP 8.9.1, Gradle 8.11.1) — как в
 // рабочем билде Options Analyst, чтобы гарантированно собралось тем же CI.
 apply plugin: 'com.android.application'
 
+// Вариант сборки задаётся в gradle.properties (plannerVariant):
+//   prod — боевое приложение: com.losev.planner, страница /planner/, имя «Planner»;
+//   test — тестовая копия из репо planner-test: com.losev.planner.test,
+//          страница /planner-test/, имя «Planner TEST». Ставится РЯДОМ с боевым,
+//          данные у них раздельные.
+// Код в обоих репо одинаковый, отличается только эта строка в gradle.properties.
+def plannerTest = (project.findProperty('plannerVariant') ?: 'prod') == 'test'
+
 android {
     namespace "com.planner.app"
+    // BuildConfig.PAGES_PATH (в AGP 8 BuildConfig по умолчанию выключен)
+    buildFeatures { buildConfig true }
     compileSdkVersion 36
     defaultConfig {
         // applicationId — идентификатор в Google Play, необратим после публикации.
         // com.planner.app оказался занят чужим приложением. namespace ниже остаётся
         // прежним (это Java-пакет, Play его не видит) — Java-файлы трогать не нужно.
-        applicationId "com.losev.planner"
+        applicationId plannerTest ? "com.losev.planner.test" : "com.losev.planner"
+        resValue "string", "app_name", plannerTest ? "Planner TEST" : "Planner"
+        buildConfigField "String", "PAGES_PATH", plannerTest ? '"/planner-test/"' : '"/planner/"'
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 16
-        versionName "1.7.7"
+        versionCode 17
+        versionName "1.7.8"
     }
     signingConfigs {
+        // Тестовая сборка подписывается своим ключом app/test.jks — он лежит только
+        // в репо planner-test, пароли открытые. Секреты GitHub ей не нужны, а подпись
+        // от сборки к сборке одна и та же — APK ставится поверх без удаления.
+        // В Google Play этот ключ никогда не идёт.
+        test {
+            storeFile file("test.jks")
+            storePassword "plannertest"
+            keyAlias "plannertest"
+            keyPassword "plannertest"
+        }
         release {
             // keystore и пароли приходят из env-переменных, которые задаёт workflow
             // из GitHub Secrets. Имя файла по умолчанию — planner.jks.
@@ -56,7 +81,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            signingConfig plannerTest ? signingConfigs.test : signingConfigs.release
         }
         debug { minifyEnabled false }
     }
