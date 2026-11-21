@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -92,6 +95,9 @@ public class MainActivity extends Activity {
     private static final int REQ_PICK_BACKUP = 2001;
     private static final int REQ_VOICE = 3001;
     private static final String CHANNEL_ID = "planner_tasks";
+    /** 1.7.9: тап по напоминанию помощника — что открыть на странице. */
+    static final String EXTRA_OPEN = "planner_open";
+    private volatile String pendingOpen = null;
 
     private WebView webView;
 
@@ -111,6 +117,11 @@ public class MainActivity extends Activity {
     private static final String PAGES_HOST = "yuriilosiev-png.github.io";
     private static final String MIG_PREFS = "planner_migration";
     private static final String KEY_LEGACY_DONE = "legacy_offline_store_done";
+    /** 1.7.9: индикатор загрузки поверх WebView до первой отрисовки страницы. */
+    private ProgressBar loader;
+    private void hideLoader() {
+        if (loader != null && loader.getVisibility() != View.GONE) loader.setVisibility(View.GONE);
+    }
     private static final String KEY_LEGACY_TRIES = "legacy_offline_store_tries";
     /** Идёт разовое чтение старого офлайн-хранилища (file://). */
     private volatile boolean migratingLegacy = false;
@@ -156,7 +167,17 @@ public class MainActivity extends Activity {
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.parseColor("#0f1115"));
-        setContentView(webView);
+        // 1.7.9: пока страница грузится (медленный интернет при первом запуске),
+        // по центру крутится индикатор — чтобы не было «чёрного экрана, ничего не работает».
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.parseColor("#0f1115"));
+        root.addView(webView, new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        loader = new ProgressBar(this);
+        loader.setIndeterminate(true);
+        int sz = (int) (44 * getResources().getDisplayMetrics().density);
+        root.addView(loader, new FrameLayout.LayoutParams(sz, sz, Gravity.CENTER));
+        setContentView(root);
 
         // ---- КЛАВИАТУРА (1.7.8) ----
         // При edge-to-edge (LAYOUT_FULLSCREEN, а на Android 15+ всегда) adjustResize
@@ -210,10 +231,18 @@ public class MainActivity extends Activity {
             }
 
             @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                super.onPageCommitVisible(view, url);
+                // страница уже рисуется — картинки персонажей могут догружаться, ждать их не надо
+                if (url != null && !url.startsWith("file:")) hideLoader();
+            }
+
+            @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 // страница разового чтения старого хранилища — это не приложение
                 if (url != null && url.startsWith("file:")) return;
+                hideLoader();
                 pageReady = true;
                 if (clearHistoryOnPagesLoad) {
                     clearHistoryOnPagesLoad = false;
@@ -292,6 +321,7 @@ public class MainActivity extends Activity {
 
         // файл мог прийти вместе с запуском («Поделиться» из Telegram, тап в Файлах)
         handleIncomingFile(getIntent());
+        takeOpenExtra(getIntent(), false);   // 1.7.9: запуск тапом по напоминанию помощника
 
         // vC 11: первый запуск — включаем шторку сами, если уведомления разрешены.
         // Стоит ПЕРЕД restore, чтобы сервис поднялся тем же вызовом.
@@ -318,6 +348,22 @@ public class MainActivity extends Activity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleIncomingFile(intent);
+        takeOpenExtra(intent, true);
+    }
+
+    /** 1.7.9: из напоминания помощника пришёл запрос открыть экран.
+     *  Холодный старт — страница ещё грузится, кладём в очередь (JS заберёт
+     *  takePendingOpen). Приложение уже открыто — говорим странице сразу. */
+    private void takeOpenExtra(Intent intent, boolean live) {
+        if (intent == null) return;
+        String what = intent.getStringExtra(EXTRA_OPEN);
+        if (what == null || !what.matches("[a-z]{1,16}")) return;
+        intent.removeExtra(EXTRA_OPEN);
+        if (live) {
+            callJs("window.onNativeOpen&&onNativeOpen('" + what + "')");
+        } else {
+            pendingOpen = what;
+        }
     }
 
     /** Вытащить ссылку на файл из SEND или VIEW и передать в общий читатель. */
@@ -365,8 +411,10 @@ public class MainActivity extends Activity {
             HttpURLConnection c = null;
             try {
                 c = (HttpURLConnection) new URL(PAGES_URL).openConnection();
-                c.setConnectTimeout(4000);
-                c.setReadTimeout(7000);
+                // 1.7.9: на медленной сети не держим человека на пустом экране 11 секунд —
+                // раньше отдаём офлайн-копию из APK (та же версия), свежая придёт при следующем запуске
+                c.setConnectTimeout(3000);
+                c.setReadTimeout(5000);
                 c.setUseCaches(false);
                 c.setRequestProperty("Cache-Control", "no-cache");
                 if (c.getResponseCode() == 200) {
@@ -402,6 +450,9 @@ public class MainActivity extends Activity {
        там человек (если данные есть в обоих местах) выбирает, что оставить. */
     private void startMainPage() {
         SharedPreferences p = getSharedPreferences(MIG_PREFS, MODE_PRIVATE);
+        // 1.7.9: свежая установка (ни одного обновления) — старого хранилища нет,
+        // лишний шаг с чтением только задерживает первый запуск
+        if (!p.getBoolean(KEY_LEGACY_DONE, false) && isFreshInstall()) markLegacyDone();
         if (p.getBoolean(KEY_LEGACY_DONE, false) || p.getInt(KEY_LEGACY_TRIES, 0) >= 3) {
             webView.loadUrl(PAGES_URL);
             return;
@@ -433,6 +484,15 @@ public class MainActivity extends Activity {
         }
         clearHistoryOnPagesLoad = true;
         webView.loadUrl(PAGES_URL);
+    }
+
+    private boolean isFreshInstall() {
+        try {
+            android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return pi.firstInstallTime == pi.lastUpdateTime;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     void markLegacyDone() {
@@ -812,6 +872,33 @@ public class MainActivity extends Activity {
         public void legacyStoreDone() {
             final MainActivity a = activityRef.get();
             if (a != null) a.markLegacyDone();
+        }
+
+        /** 1.7.9: план напоминаний помощника (JSON: char, color, channel,
+         *  channelDesc, items[{at,title,text}]). Каждое открытие переписывает. */
+        @JavascriptInterface
+        public void scheduleNudge(final String json) {
+            final MainActivity a = activityRef.get();
+            if (a == null || json == null || json.length() > 20000) return;
+            NudgeReceiver.save(a.getApplicationContext(), json);
+        }
+
+        /** 1.7.9: напоминания выключены в настройках помощника. */
+        @JavascriptInterface
+        public void cancelNudge() {
+            final MainActivity a = activityRef.get();
+            if (a == null) return;
+            NudgeReceiver.cancel(a.getApplicationContext());
+        }
+
+        /** 1.7.9: экран, который просили открыть тапом по напоминанию (или ""). */
+        @JavascriptInterface
+        public String takePendingOpen() {
+            final MainActivity a = activityRef.get();
+            if (a == null || a.pendingOpen == null) return "";
+            String v = a.pendingOpen;
+            a.pendingOpen = null;
+            return v;
         }
 
         /** 1.7.7: отметки «выполнено» из шторки и виджета, ещё не применённые
